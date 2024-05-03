@@ -1,11 +1,12 @@
 #ifndef MEMENTER_FEEDSTORAGE_H
 #define MEMENTER_FEEDSTORAGE_H
 
+#include <mutex>
+#include <queue>
 #include <regex>
 #include <string>
 #include <vector>
 
-#include "mementar/core/feeder/DoubleQueue.h"
 #include "mementar/core/memGraphs/Branchs/types/Fact.h"
 
 namespace mementar {
@@ -59,15 +60,22 @@ public:
 
   size_t size()
   {
+    fact_mutex_.lock();
+    action_mutex_.lock();
     std::cout << fact_queue_.size() << " : " << action_queue_.size() << std::endl;
-    return fact_queue_.size() + action_queue_.size();
+    size_t queues_size = fact_queue_.size() + action_queue_.size();
+    action_mutex_.unlock();
+    fact_mutex_.unlock();
+    return queues_size;
   }
 
 private:
   std::regex base_regex;
 
-  DoubleQueue<feed_fact_t> fact_queue_;
-  DoubleQueue<feed_action_t> action_queue_;
+  std::mutex fact_mutex_;
+  std::mutex action_mutex_;
+  std::queue<feed_fact_t> fact_queue_;
+  std::queue<feed_action_t> action_queue_;
 
   feed_fact_t getFeedFact(const std::string& regex, const SoftPoint::Ttime& stamp = SoftPoint::default_time);
   std::vector<std::string> split(const std::string& str, const std::string& delim);

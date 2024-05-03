@@ -5,14 +5,14 @@
 namespace mementar {
 
 FeedStorage::FeedStorage() : base_regex(R"(^\[(\w+)\](.*)$)")
-{
-
-}
+{}
 
 void FeedStorage::insertFact(const std::string& regex, const SoftPoint::Ttime& stamp)
 {
   feed_fact_t feed = getFeedFact(regex, stamp);
-  fact_queue_.insert(feed);
+  fact_mutex_.lock();
+  fact_queue_.push(feed);
+  fact_mutex_.unlock();
 }
 
 void FeedStorage::insertFact(const std::string& regex, const std::string& expl_regex)
@@ -24,12 +24,17 @@ void FeedStorage::insertFact(const std::string& regex, const std::string& expl_r
   auto explanations = split(expl_regex.substr(expl_pose), ";");
   for(auto& expl : explanations)
     feed.expl_.push_back(getFeedFact(expl_action + expl).fact_.value());
-  fact_queue_.insert(feed);
+  fact_mutex_.lock();
+  fact_queue_.push(feed);
+  fact_mutex_.unlock();
 }
 
 void FeedStorage::insertFacts(std::vector<feed_fact_t>& datas)
 {
-  fact_queue_.insert(datas);
+  fact_mutex_.lock();
+  for(auto& data : datas)
+    fact_queue_.push(data);
+  fact_mutex_.unlock();
 }
 
 void FeedStorage::insertAction(const std::string& name, const SoftPoint::Ttime& start_stamp, const SoftPoint::Ttime& end_stamp)
@@ -38,22 +43,35 @@ void FeedStorage::insertAction(const std::string& name, const SoftPoint::Ttime& 
   feed.name_ = name;
   feed.t_start_ = start_stamp;
   feed.t_end_ = end_stamp;
-  action_queue_.insert(feed);
+  action_mutex_.lock();
+  action_queue_.push(feed);
+  action_mutex_.unlock();
 }
 
 void FeedStorage::insertActions(std::vector<feed_action_t>& datas)
 {
-  action_queue_.insert(datas);
+  action_mutex_.lock();
+  for(auto& data : datas)
+    action_queue_.push(data);
+  action_mutex_.unlock();
 }
 
 std::queue<feed_fact_t> FeedStorage::getFacts()
 {
-  return fact_queue_.get();
+  fact_mutex_.lock();
+  std::queue<feed_fact_t> tmp;
+  fact_queue_.swap(tmp);
+  fact_mutex_.unlock();
+  return tmp;
 }
 
 std::queue<feed_action_t> FeedStorage::getActions()
 {
-  return action_queue_.get();
+  action_mutex_.lock();
+  std::queue<feed_action_t> tmp;
+  action_queue_.swap(tmp);
+  action_mutex_.unlock();
+  return tmp;
 }
 
 feed_fact_t FeedStorage::getFeedFact(const std::string& regex, const SoftPoint::Ttime& stamp)
