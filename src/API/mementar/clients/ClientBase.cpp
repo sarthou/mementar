@@ -38,7 +38,7 @@ namespace mementar {
                     std::cout << COLOR_RED << "Failure to callArray mementar/" << name_ << COLOR_OFF << std::endl;
                 }
 
-                return {};
+                return res;
             }
         }
     }
