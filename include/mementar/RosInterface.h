@@ -4,18 +4,9 @@
 #include <string>
 #include <shared_mutex>
 
-#include <ros/ros.h>
-#include "std_msgs/String.h"
-
+#include "mementar/compat/ros.h"
+#include "ontologenius/compat/ros.h"
 #include "ontologenius/OntologyManipulator.h"
-
-#include "mementar/MementarAction.h"
-#include "mementar/MementarExplanation.h"
-#include "mementar/MementarService.h"
-#include "mementar/StampedString.h"
-
-#include "ontologenius/OntologeniusStampedString.h"
-#include "ontologenius/OntologeniusExplanation.h"
 
 //#include "mementar/core/LtManagement/EpisodicTree/ArchivedLeafNode.h"
 #include "mementar/core/feeder/Feeder.h"
@@ -37,7 +28,7 @@ struct param_t
 class RosInterface
 {
 public:
-  RosInterface(ros::NodeHandle* n, const std::string& directory, const std::string& configuration_file, size_t order = 10, std::string name = "");
+  RosInterface(const std::string& directory, const std::string& configuration_file, size_t order = 10, std::string name = "");
   ~RosInterface();
 
   void run();
@@ -48,7 +39,6 @@ public:
   void release();
 
 private:
-  ros::NodeHandle* n_;
   std::string directory_;
   Configuration configuration_;
   size_t order_;
@@ -66,19 +56,22 @@ private:
 
   void reset();
 
-  void knowledgeCallback(const std_msgs::String::ConstPtr& msg);
-  void stampedKnowledgeCallback(const StampedString::ConstPtr& msg);
-  void explanationKnowledgeCallback(const MementarExplanation::ConstPtr& msg);
-  void actionKnowledgeCallback(const MementarAction::ConstPtr& msg);
-  void ontoStampedKnowledgeCallback(const ontologenius::OntologeniusStampedString::ConstPtr& msg);
-  void ontoExplanationKnowledgeCallback(const ontologenius::OntologeniusExplanation::ConstPtr& msg);
+  void knowledgeCallback(compat::onto_ros::MessageWrapper<compat::StampedString> msg);
+  void stampedKnowledgeCallback(compat::onto_ros::MessageWrapper<compat::StampedString> msg);
+  void explanationKnowledgeCallback(compat::onto_ros::MessageWrapper<compat::MementarExplanation> msg);
+  void actionKnowledgeCallback(compat::onto_ros::MessageWrapper<compat::MementarAction> msg);
+  void ontoStampedKnowledgeCallback(compat::onto_ros::MessageWrapper<ontologenius::compat::OntologeniusStampedString> msg);
+  void ontoExplanationKnowledgeCallback(compat::onto_ros::MessageWrapper<ontologenius::compat::OntologeniusExplanation> msg);
 
-  bool managerInstanceHandle(mementar::MementarService::Request &req,
-                             mementar::MementarService::Response &res);
-  bool actionHandle(mementar::MementarService::Request &req,
-                    mementar::MementarService::Response &res);
-  bool factHandle(mementar::MementarService::Request &req,
-                  mementar::MementarService::Response &res);
+  // todo: do not return bool
+  bool managerInstanceHandle(compat::onto_ros::ServiceWrapper<compat::MementarService::Request>& req,
+                             compat::onto_ros::ServiceWrapper<compat::MementarService::Response>& res);
+
+  bool actionHandle(compat::onto_ros::ServiceWrapper<compat::MementarService::Request>& req,
+                    compat::onto_ros::ServiceWrapper<compat::MementarService::Response>& res);
+
+  bool factHandle(compat::onto_ros::ServiceWrapper<compat::MementarService::Request>& req,
+                  compat::onto_ros::ServiceWrapper<compat::MementarService::Response>& res);
 
    void feedThread();
 
