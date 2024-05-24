@@ -144,11 +144,11 @@ endfunction(meme_install_executables)
 
 include(cmake/BuildCommon.cmake)
 
-# install(DIRECTORY launch/ros2/launch DESTINATION share/${PROJECT_NAME}/)
-# install(DIRECTORY include/ DESTINATION include)
+install(DIRECTORY launch/ros2/launch DESTINATION share/${PROJECT_NAME}/)
+install(DIRECTORY include/ DESTINATION include)
 
-# install(DIRECTORY files DESTINATION share/${PROJECT_NAME}/)
-# install(DIRECTORY docs DESTINATION share/${PROJECT_NAME}/)
+install(DIRECTORY files DESTINATION share/${PROJECT_NAME}/)
+install(DIRECTORY docs DESTINATION share/${PROJECT_NAME}/)
 # install(DIRECTORY configuration DESTINATION share/${PROJECT_NAME}/)
 
 # ament_export_targets(mementar)
