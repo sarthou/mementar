@@ -6,11 +6,8 @@
 #include <thread>
 #include <atomic>
 
-#include <ros/ros.h>
-#include <ros/callback_queue.h>
-
-#include "mementar/MementarOccasion.h"
-#include "mementar/API/mementar/Fact.h"
+#include "mementar/compat/ros.h"
+#include "Fact.h"
 
 namespace mementar
 {
@@ -28,18 +25,15 @@ public:
   bool end() { return ids_.size() == 0; }
 
 private:
-  ros::Subscriber sub_;
-  ros::ServiceClient client_subscribe_;
-  ros::ServiceClient client_cancel_;
+  compat::onto_ros::Subscriber<compat::MementarOccasion> sub_;
+  compat::onto_ros::Client<compat::MementarOccasionSubscription> client_subscribe_;
+  compat::onto_ros::Client<compat::MementarOccasionUnsubscription> client_cancel_;
 
   std::atomic<bool> need_to_terminate_;
-  std::thread* spin_thread_;
-  ros::CallbackQueue callback_queue_;
-  ros::NodeHandle n_;
 
   std::vector<size_t> ids_;
 
-  void occasionCallback(MementarOccasion msg);
+  void occasionCallback(compat::MementarOccasion msg);
 
   std::function<void(const Fact&)> callback_;
 
