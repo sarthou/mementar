@@ -9,13 +9,13 @@ namespace mementar
 class FactClient : public ClientBase
 {
 public:
-  FactClient(ros::NodeHandle* n, const std::string& name) : ClientBase(n, (name == "") ? "fact" : "fact/" + name) {}
+  FactClient(const std::string& name) : ClientBase((name == "") ? "fact" : "fact/" + name) {}
 
-  bool exist(const std::string& fact_id);
-  bool isActionPart(const std::string& fact_id);
-  std::string getActionPart(const std::string& fact_id);
-  std::string getData(const std::string& fact_id);
-  ros::Time getStamp(const std::string& fact_id);
+    bool exist(const std::string& fact_id);
+    bool isActionPart(const std::string& fact_id);
+    std::string getActionPart(const std::string& fact_id);
+    std::string getData(const std::string& fact_id);
+    compat::onto_ros::Time getStamp(const std::string& fact_id);
 private:
 };
 
