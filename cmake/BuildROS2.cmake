@@ -10,30 +10,34 @@ find_package(TinyXML2 REQUIRED)
 find_package(ontologenius REQUIRED)
 # find_package(ament_cmake_python REQUIRED)
 
-################################################
-## Declare ROS messages, services and actions_ ##
-################################################
-
-rosidl_generate_interfaces(mementar
-    "msg/MementarAction.msg"
-    "msg/MementarExplanation.msg"
-    "msg/MementarOccasion.msg"
-    "msg/StampedFact.msg"
-    "msg/StampedString.msg"
-    "srv/MementarOccasionSubscription.srv"
-    "srv/MementarOccasionUnsubscription.srv"
-    "srv/MementarService.srv"
-    DEPENDENCIES builtin_interfaces std_msgs ontologenius
-)
-
 ###################################
 ##  ROS specific configuration   ##
 ###################################
 
-ament_export_dependencies(rosidl_default_runtime pluginlib)
-rosidl_get_typesupport_target(cpp_typesupport_target ${PROJECT_NAME} rosidl_typesupport_cpp)
+set(TMP_INTERFACES "")
 
+function(meme_queue_messages_generation)
+    foreach (MSG ${ARGN})
+        list(APPEND TMP_INTERFACES "msg/${MSG}")
+    endforeach ()
 
+    set(TMP_INTERFACES ${TMP_INTERFACES} PARENT_SCOPE)
+endfunction(meme_queue_messages_generation)
+
+function(meme_queue_services_generation)
+    foreach (SRV ${ARGN})
+        list(APPEND TMP_INTERFACES "srv/${SRV}")
+    endforeach ()
+
+    set(TMP_INTERFACES ${TMP_INTERFACES} PARENT_SCOPE)
+endfunction(meme_queue_services_generation)
+
+function(meme_generate_interfaces)
+    rosidl_generate_interfaces(mementar ${TMP_INTERFACES} DEPENDENCIES builtin_interfaces std_msgs ontologenius)
+
+    ament_export_dependencies(rosidl_default_runtime pluginlib)
+    rosidl_get_typesupport_target(cpp_typesupport_target mementar rosidl_typesupport_cpp)
+endfunction(meme_generate_interfaces)
 
 ###################################
 ##             Build             ##
@@ -69,8 +73,6 @@ function(meme_add_ros_generic TARGET)
     target_compile_definitions(${TARGET} PUBLIC MEME_ROS_VERSION=$ENV{ROS_VERSION})
     meme_add_generic(${TARGET})
 endfunction(meme_add_ros_generic)
-
-
 
 function(meme_add_library TARGET)
     if(NOT TARGET)
@@ -135,7 +137,6 @@ function(meme_install_libs)
         # INCLUDES DESTINATION include
         DESTINATION lib/${PROJECT_NAME})
 endfunction(meme_install_libs)
-
 
 function(meme_install_executables)
     install(

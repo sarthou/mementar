@@ -5,6 +5,25 @@
 
 include(cmake/Sanitizers.cmake)
 
+################################################
+## Declare ROS messages, services and actions ##
+################################################
+
+meme_queue_messages_generation(
+    MementarAction.msg
+    MementarExplanation.msg
+    MementarOccasion.msg
+    MementarTimestamp.msg
+    StampedFact.msg
+    StampedString.msg)
+
+meme_queue_services_generation(
+    MementarOccasionSubscription.srv
+    MementarOccasionUnsubscription.srv
+    MementarService.srv)
+
+meme_generate_interfaces()
+
 ###################################
 ##      Compatibility layer      ##
 ###################################
