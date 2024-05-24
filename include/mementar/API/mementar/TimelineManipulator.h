@@ -3,38 +3,35 @@
 
 #include <string>
 
-#include <ros/ros.h>
-
-#include "mementar/API/mementar/ActionsPublisher.h"
-#include "mementar/API/mementar/OccasionsPublisher.h"
-#include "mementar/API/mementar/clients/ClientBase.h"
+#include "mementar/compat/ros.h"
+#include "OccasionsPublisher.h"
+#include "ActionsPublisher.h"
 #include "mementar/API/mementar/clients/ActionClient.h"
 #include "mementar/API/mementar/clients/FactClient.h"
+#include "mementar/API/mementar/clients/ManagerClient.h"
+#include "mementar/API/mementar/clients/InstanceManagerClient.h"
 
-namespace mementar
-{
+namespace mementar {
+    class TimelineManipulator {
+    public:
+        TimelineManipulator(const std::string &name = "");
 
-class TimelineManipulator
-{
-public:
-  TimelineManipulator(ros::NodeHandle* n, const std::string& name = "");
+        bool waitInit(int32_t timeout = -1);
 
-  bool waitInit(int32_t timeout = -1);
+        /*size_t nb() {return actions_.nb();}
+        void resetNb() {actions_.resetNb();}*/
 
-  /*size_t nb() {return actions.nb();}
-  void resetNb() {actions.resetNb();}*/
+        void verbose(bool verbose) { ClientBase::verbose(verbose); }
 
-  void verbose(bool verbose) { ClientBase::verbose(verbose); }
-
-  OccasionsPublisher fact_feeder;
-  ActionsPublisher action_feeder;
-  ActionClient actions;
-  FactClient facts;
-
-private:
-  ros::NodeHandle* n_;
-  std::string name_;
-};
+        OccasionsPublisher fact_feeder_;
+        ActionsPublisher action_feeder_;
+        ActionClient actions_;
+        FactClient facts_;
+        ManagerClient manager_;
+        InstanceManagerClient inst_manager_;
+    private:
+        std::string name_;
+    };
 
 } // namespace mementar
 
