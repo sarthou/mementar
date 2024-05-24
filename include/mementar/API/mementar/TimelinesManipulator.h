@@ -4,34 +4,30 @@
 #include <map>
 #include <string>
 
-#include <ros/ros.h>
-
+#include "mementar/compat/ros.h"
 #include "mementar/API/mementar/clients/ManagerClient.h"
-#include "mementar/API/mementar/TimelineManipulator.h"
 
-namespace mementar
-{
+#include "TimelineManipulator.h"
 
-class TimelinesManipulator : public ManagerClient
-{
-public:
-  TimelinesManipulator(ros::NodeHandle* n);
-  ~TimelinesManipulator();
+namespace mementar {
+    class TimelinesManipulator : public ManagerClient {
+    public:
+        TimelinesManipulator();
+        ~TimelinesManipulator();
 
-  bool waitInit(int32_t timeout = -1);
+        bool waitInit(int32_t timeout = -1);
 
-  TimelineManipulator* operator[](const std::string& name);
-  TimelineManipulator* get(const std::string& name);
+        // todo: it would be wiser to return references instead
+        TimelineManipulator* operator[](const std::string &name);
+        TimelineManipulator* get(const std::string &name);
 
-  bool add(const std::string& name);
-  bool del(const std::string& name);
+        bool add(const std::string &name);
+        bool del(const std::string &name);
 
-  void verbose(bool verbose) { ClientBase::verbose(verbose); }
-
-private:
-  ros::NodeHandle* n_;
-  std::map<std::string, TimelineManipulator*> manipulators_;
-};
+        void verbose(bool verbose) { ClientBase::verbose(verbose); }
+    private:
+        std::map<std::string, std::unique_ptr<TimelineManipulator>> manipulators_;
+    };
 
 } // namespace mementar
 
