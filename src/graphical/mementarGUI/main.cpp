@@ -6,31 +6,31 @@
 #include <csignal>
 #include <thread>
 
-#include <ros/package.h>
-#include <ros/ros.h>
+#include "mementar/compat/ros.h"
 
 void spinThread(bool* run)
 {
-  ros::Rate r(100);
-  while(*run == true)
-  {
-    ros::spinOnce();
+  mementar::compat::onto_ros::Rate r(100);
+  while(*run == true) {
+    // ros::spinOnce();
     r.sleep();
   }
 }
 
 int main(int argc, char *argv[])
 {
-  ros::init(argc, argv, "mementarGUI");
-
-  ros::NodeHandle n;
+  mementar::compat::onto_ros::Node::init(argc, argv, "mementarGUI");
 
   QApplication a(argc, argv);
 
   a.setStyle(new DarkStyle);
 
-  std::string path = ros::package::getPath("mementar");
+  std::string path = mementar::compat::onto_ros::getShareDirectory("mementar");
   path = path + "/docs/img/logo/mementar.ico";
+
+  // todo: check if the path actually points where it should
+  printf("%s\n", path.c_str());
+
   QIcon icon(QString::fromStdString(path));
   a.setWindowIcon(icon);
 
@@ -39,7 +39,7 @@ int main(int argc, char *argv[])
 
   bool run = true;
 
-  w.init(&n);
+  w.init();
   w.wait();
 
   w.start();
@@ -51,6 +51,8 @@ int main(int argc, char *argv[])
 
   run = false;
   spin_thread.join();
+
+  mementar::compat::onto_ros::Node::shutdown();
 
   return a_exec;
 }
