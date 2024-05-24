@@ -4,7 +4,7 @@
 
 ```
 G. Sarthou, mementar,” https://github.com/sarthou/mementar,
-LAAS-CNRS, Toulouse, 2018 – 2020.
+LAAS-CNRS, Toulouse, 2018 – 2024.
 ```
 
 [Release-Url]: https://github.com/sarthou/mementar/releases
