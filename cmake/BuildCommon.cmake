@@ -29,15 +29,13 @@ meme_generate_interfaces()
 ###################################
 
 meme_add_ros_library(mementar_compat
-    src/compat/ros.cpp
-)
+    src/compat/ros.cpp)
 
 ###################################
 
 meme_add_ros_library(mementar_events_lib
     src/core/Occasions/Subscription.cpp
-    src/core/Occasions/OccasionsManager.cpp
-)
+    src/core/Occasions/OccasionsManager.cpp)
 
 ###################################
 
@@ -48,8 +46,7 @@ meme_add_ros_library(mementar_compression_lib
     src/core/LtManagement/archiving_compressing/compressing/LzUncompress.cpp
     src/core/LtManagement/archiving_compressing/compressing/Huffman.cpp
     src/core/LtManagement/archiving_compressing/archiving/Header.cpp
-    src/core/LtManagement/archiving_compressing/archiving/Archive.cpp
-)
+    src/core/LtManagement/archiving_compressing/archiving/Archive.cpp)
 
 meme_add_ros_library(mementar_memGraphs_lib
     src/core/memGraphs/Branchs/ValuedNode.cpp
@@ -58,8 +55,7 @@ meme_add_ros_library(mementar_memGraphs_lib
     src/core/memGraphs/Branchs/types/SoftPoint.cpp
     src/core/memGraphs/Branchs/types/Triplet.cpp
     src/core/memGraphs/Graphs/ActionGraph.cpp
-    src/core/memGraphs/Graphs/FactGraph.cpp
-)
+    src/core/memGraphs/Graphs/FactGraph.cpp)
 
 meme_add_ros_library(mementar_lt_lib
     src/core/LtManagement/EpisodicTree/CompressedLeaf.cpp
@@ -68,45 +64,38 @@ meme_add_ros_library(mementar_lt_lib
     src/core/LtManagement/EpisodicTree/CompressedLeafSession.cpp
     src/core/LtManagement/EpisodicTree/CompressedLeafNodeSession.cpp
     src/core/LtManagement/EpisodicTree/ArchivedLeaf.cpp
-    src/core/LtManagement/EpisodicTree/ArchivedLeafNode.cpp
-)
+    src/core/LtManagement/EpisodicTree/ArchivedLeafNode.cpp)
 
 target_link_libraries(mementar_lt_lib
     PUBLIC
         mementar_compression_lib
         mementar_memGraphs_lib
-        pthread
-)
+        pthread)
 
 meme_add_ros_library(mementar_core_lib
     src/core/feeder/FeedStorage.cpp
     src/core/feeder/Feeder.cpp
-    src/core/Parametrization/Configuration.cpp
-)
+    src/core/Parametrization/Configuration.cpp)
 
 target_link_libraries(mementar_core_lib
     PUBLIC
-        mementar_lt_lib
-)
+        mementar_lt_lib)
 
 ###################################
 
 meme_add_ros_library(mementar_drawer_lib
     src/graphical/timeline/ActionReader.cpp
     src/graphical/timeline/FactReader.cpp
-    src/graphical/timeline/TimelineDrawer.cpp
-)
+    src/graphical/timeline/TimelineDrawer.cpp)
 
 target_include_directories(mementar_drawer_lib
     PUBLIC
-        ${OpenCV_INCLUDE_DIRS}
-)
+        ${OpenCV_INCLUDE_DIRS})
 
 target_link_libraries(mementar_drawer_lib
     PUBLIC
         ${OpenCV_LIBS}
-        mementar_memGraphs_lib
-)
+        mementar_memGraphs_lib)
 
 ###################################
 
@@ -121,22 +110,19 @@ meme_add_ros_library(mementar_lib
     src/API/mementar/clients/ManagerClient.cpp
     src/API/mementar/clients/InstanceManagerClient.cpp
     src/API/mementar/OccasionsPublisher.cpp
-    src/API/mementar/OccasionsSubscriber.cpp
-)
+    src/API/mementar/OccasionsSubscriber.cpp)
 
 ###################################
 
 meme_add_ros_library(mementar_interface
     src/RosInterface.cpp
-    src/graphical/timeline/CsvSaver.cpp
-)
+    src/graphical/timeline/CsvSaver.cpp)
 
 target_link_libraries(mementar_interface
     PUBLIC
         mementar_core_lib
         mementar_events_lib
-        mementar_drawer_lib
-)
+        mementar_drawer_lib)
 
 ###################################
 
@@ -174,19 +160,18 @@ QT5_WRAP_UI(QT_FORMS_HPP ${QT_FORMS})
 ##############################################################################
 
 set(QT_SOURCES
-        src/graphical/mementarGUI/main.cpp
-        src/graphical/mementarGUI/mementargui.cpp
-        src/graphical/mementarGUI/DarkStyle.cpp
-        src/graphical/mementarGUI/QPushButtonExtended.cpp
-        src/graphical/mementarGUI/QCheckBoxExtended.cpp
-        src/graphical/mementarGUI/QLineEditExtended.cpp
+    src/graphical/mementarGUI/main.cpp
+    src/graphical/mementarGUI/mementargui.cpp
+    src/graphical/mementarGUI/DarkStyle.cpp
+    src/graphical/mementarGUI/QPushButtonExtended.cpp
+    src/graphical/mementarGUI/QCheckBoxExtended.cpp
+    src/graphical/mementarGUI/QLineEditExtended.cpp
+    include/mementar/graphical/mementarGUI/mementargui.h
+    include/mementar/graphical/mementarGUI/DarkStyle.h
+    include/mementar/graphical/mementarGUI/QPushButtonExtended.h
+    include/mementar/graphical/mementarGUI/QCheckBoxExtended.h
+    include/mementar/graphical/mementarGUI/QLineEditExtended.h)
 
-        include/mementar/graphical/mementarGUI/mementargui.h
-        include/mementar/graphical/mementarGUI/DarkStyle.h
-        include/mementar/graphical/mementarGUI/QPushButtonExtended.h
-        include/mementar/graphical/mementarGUI/QCheckBoxExtended.h
-        include/mementar/graphical/mementarGUI/QLineEditExtended.h
-)
 ##############################################################################
 # Binaries
 ##############################################################################
@@ -204,14 +189,14 @@ target_link_libraries(mementarGUI
         mementar_lib
         Qt5::Core
         Qt5::Widgets
-        Qt5::PrintSupport
-)
+        Qt5::PrintSupport)
 
 target_include_directories(mementarGUI PUBLIC include)
 
 meme_install_executables(
-        mementar_single
-        mementar_multi
-        mementar_timeline)
+    mementar_single
+    mementar_multi
+    mementar_timeline
+    mementarGUI)
 
 ###################################

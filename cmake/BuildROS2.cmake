@@ -14,30 +14,28 @@ find_package(ontologenius REQUIRED)
 ##  ROS specific configuration   ##
 ###################################
 
-set(TMP_INTERFACES "")
+set(TMP_INTERFACES "mementar")
 
-function(meme_queue_messages_generation)
+macro(meme_queue_messages_generation)
     foreach (MSG ${ARGN})
         list(APPEND TMP_INTERFACES "msg/${MSG}")
     endforeach ()
+endmacro(meme_queue_messages_generation)
 
-    set(TMP_INTERFACES ${TMP_INTERFACES} PARENT_SCOPE)
-endfunction(meme_queue_messages_generation)
-
-function(meme_queue_services_generation)
+macro(meme_queue_services_generation)
     foreach (SRV ${ARGN})
         list(APPEND TMP_INTERFACES "srv/${SRV}")
-    endforeach ()
+    endforeach()
+endmacro(meme_queue_services_generation)
 
-    set(TMP_INTERFACES ${TMP_INTERFACES} PARENT_SCOPE)
-endfunction(meme_queue_services_generation)
+macro(meme_generate_interfaces)
+    list(APPEND TMP_INTERFACES DEPENDENCIES builtin_interfaces std_msgs ontologenius)
 
-function(meme_generate_interfaces)
-    rosidl_generate_interfaces(mementar ${TMP_INTERFACES} DEPENDENCIES builtin_interfaces std_msgs ontologenius)
+    rosidl_generate_interfaces(${TMP_INTERFACES})
 
     ament_export_dependencies(rosidl_default_runtime pluginlib)
-    rosidl_get_typesupport_target(cpp_typesupport_target mementar rosidl_typesupport_cpp)
-endfunction(meme_generate_interfaces)
+    rosidl_get_typesupport_target(cpp_typesupport_target ${PROJECT_NAME} rosidl_typesupport_cpp)
+endmacro(meme_generate_interfaces)
 
 ###################################
 ##             Build             ##
@@ -47,12 +45,12 @@ function(meme_add_generic TARGET)
     set_target_properties(${TARGET}
         PROPERTIES
             CXX_STANDARD 17
-            CXX_STANDARD_REQUIRED ON
-    )
+            CXX_STANDARD_REQUIRED ON)
+
     target_compile_options(${TARGET}
         PRIVATE
-            -Wall -Wextra
-    )
+            -Wall -Wextra)
+
     target_enable_sanitizers(${TARGET})
 endfunction(meme_add_generic)
 
@@ -63,8 +61,8 @@ function(meme_add_ros_generic TARGET)
             pluginlib
             builtin_interfaces
             std_msgs
-            ontologenius
-    )
+            ontologenius)
+
     target_link_libraries(${TARGET} PUBLIC
             ontologenius::ontologenius_lib
             # todo: I feel like I shouldn't be doing this ^
@@ -88,8 +86,8 @@ function(meme_add_library TARGET)
     target_include_directories(${TARGET}
         PUBLIC
             $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-            $<INSTALL_INTERFACE:include>
-    )
+            $<INSTALL_INTERFACE:include>)
+
     meme_add_generic(${TARGET})
 endfunction(meme_add_library)
 
@@ -107,8 +105,8 @@ function(meme_add_ros_library TARGET)
     target_include_directories(${TARGET}
         PUBLIC
             $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-            $<INSTALL_INTERFACE:include>
-    )
+            $<INSTALL_INTERFACE:include>)
+
     ament_export_libraries(${TARGET})
     meme_add_ros_generic(${TARGET})
 endfunction(meme_add_ros_library)
@@ -143,7 +141,6 @@ function(meme_install_executables)
         TARGETS ${ARGN}
         DESTINATION lib/${PROJECT_NAME})
 endfunction(meme_install_executables)
-
 
 include(cmake/BuildCommon.cmake)
 
