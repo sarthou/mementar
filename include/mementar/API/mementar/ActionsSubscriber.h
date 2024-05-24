@@ -6,34 +6,30 @@
 #include <thread>
 #include <atomic>
 
-#include <ros/ros.h>
-#include <ros/callback_queue.h>
+#include "mementar/compat/ros.h"
+#include "Fact.h"
+#include "OccasionsSubscriber.h"
 
-#include "mementar/MementarOccasion.h"
-#include "mementar/API/mementar/Fact.h"
-#include "mementar/API/mementar/OccasionsSubscriber.h"
+namespace mementar {
+    class ActionsSubscriber : private OccasionsSubscriber {
+    public:
+        ActionsSubscriber(std::function<void(const std::string &)> callback, const std::string &name = "",
+                          bool spin_thread = true);
+        ActionsSubscriber(std::function<void(const std::string &)> callback, bool spin_thread);
 
-namespace mementar
-{
+        ~ActionsSubscriber();
 
-class ActionsSubscriber : private OccasionsSubscriber
-{
-public:
-  ActionsSubscriber(std::function<void(const std::string&)> callback, const std::string& name = "", bool spin_thread = true);
-  ActionsSubscriber(std::function<void(const std::string&)> callback, bool spin_thread);
-  ~ActionsSubscriber();
+        bool subscribeToStart(const std::string &name, size_t count = -1);
+        bool subscribeToEnd(const std::string &name, size_t count = -1);
+        bool cancel();
 
-  bool subscribeToStart(const std::string& name, size_t count = -1);
-  bool subscribeToEnd(const std::string& name, size_t count = -1);
-  bool cancel();
+        bool end() { return OccasionsSubscriber::end(); }
 
-  bool end() { return OccasionsSubscriber::end(); }
+    private:
+        std::function<void(const std::string &)> callback_;
 
-private:
-  std::function<void(const std::string&)> callback_;
-
-  void privateCallback(const Fact& fact);
-};
+        void privateCallback(const Fact &fact);
+    };
 
 } // namespace mementar
 
