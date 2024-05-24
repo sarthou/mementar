@@ -3,8 +3,7 @@
 
 #include <mutex>
 
-#include <ros/ros.h>
-#include "mementar/StampedFact.h"
+#include "mementar/compat/ros.h"
 #include "mementar/core/memGraphs/Branchs/ContextualizedFact.h"
 
 namespace mementar {
@@ -12,7 +11,7 @@ namespace mementar {
 class FeederEcho
 {
 public:
-  explicit FeederEcho(const std::string& echo_topic) : feeder_echo_pub_(n_.advertise<mementar::StampedFact>(echo_topic, 1000))
+  explicit FeederEcho(const std::string& echo_topic) : feeder_echo_pub_(echo_topic, 1000)
   {}
 
   ~FeederEcho()
@@ -31,11 +30,14 @@ public:
   void publish()
   {
     mut_.lock();
-    mementar::StampedFact ros_msg;
-    for(auto& message : echo_messages)
+    compat::StampedFact ros_msg;
+    for(const auto& message : echo_messages)
     {
+      const auto rosTime = compat::onto_ros::Time(message->getTime());
+
       ros_msg.id = message->getId();
-      ros_msg.stamp = ros::Time(message->getTime());
+      ros_msg.stamp.seconds = rosTime.seconds();
+      ros_msg.stamp.nanoseconds = rosTime.nanoseconds();
       ros_msg.subject = message->subject_;
       ros_msg.predicat = message->predicat_;
       ros_msg.object = message->object_;
@@ -48,8 +50,7 @@ public:
 
 private:
   std::mutex mut_;
-  ros::NodeHandle n_;
-  ros::Publisher feeder_echo_pub_;
+  compat::onto_ros::Publisher<compat::StampedFact> feeder_echo_pub_;
   std::vector<ContextualizedFact*> echo_messages;
 };
 
