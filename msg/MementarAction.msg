@@ -1,3 +1,3 @@
 string name
-time start_stamp
-time end_stamp
+MementarTimestamp start_stamp
+MementarTimestamp end_stamp
