@@ -8,48 +8,58 @@
 
 #include "mementar/compat/ros.h"
 
-void spinThread(bool* run)
-{
-  mementar::compat::onto_ros::Rate r(100);
-  while(*run == true) {
-    // ros::spinOnce();
-    r.sleep();
-  }
+#include <execinfo.h>
+
+void handler(int sig) {
+    void *array[10];
+    size_t size;
+
+    size = backtrace(array, 10);
+
+    fprintf(stderr, "Error: signal %d:\n", sig);
+    backtrace_symbols_fd(array, size, STDERR_FILENO);
+    exit(1);
 }
 
-int main(int argc, char *argv[])
-{
-  mementar::compat::onto_ros::Node::init(argc, argv, "mementarGUI");
+int main(int argc, char *argv[]) {
+    signal(SIGSEGV, handler);
 
-  QApplication a(argc, argv);
+    mementar::compat::onto_ros::Node::init(argc, argv, "mementarGUI");
 
-  a.setStyle(new DarkStyle);
+    std::thread th([]() {
+        while (mementar::compat::onto_ros::Node::ok()) {
+            mementar::compat::onto_ros::Node::get().spin();
+            usleep(5000);
+        }
+    });
 
-  std::string path = mementar::compat::onto_ros::getShareDirectory("mementar");
-  path = path + "/docs/img/logo/mementar.ico";
+    QApplication a(argc, argv);
 
-  QIcon icon(QString::fromStdString(path));
-  a.setWindowIcon(icon);
+    a.setStyle(new DarkStyle);
 
-  mementarGUI w;
-  w.show();
+    std::string path = mementar::compat::onto_ros::getShareDirectory("mementar");
+    path = path + "/docs/img/logo/mementar.ico";
 
-  bool run = true;
+    QIcon icon(QString::fromStdString(path));
+    a.setWindowIcon(icon);
 
-  w.init();
-  w.wait();
+    mementarGUI w;
+    w.show();
 
-  w.start();
+    bool run = true;
 
-  std::thread spin_thread(spinThread,&run);
+    w.init();
+    w.wait();
 
-  signal(SIGINT, SIG_DFL);
-  auto a_exec = a.exec();
+    w.start();
 
-  run = false;
-  spin_thread.join();
+    signal(SIGINT, SIG_DFL);
+    auto a_exec = a.exec();
 
-  mementar::compat::onto_ros::Node::shutdown();
+    run = false;
 
-  return a_exec;
+    mementar::compat::onto_ros::Node::shutdown();
+    th.join();
+
+    return a_exec;
 }
