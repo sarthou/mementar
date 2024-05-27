@@ -8,7 +8,7 @@ find_package(rclcpp REQUIRED)
 find_package(pluginlib REQUIRED)
 find_package(TinyXML2 REQUIRED)
 find_package(ontologenius REQUIRED)
-# find_package(ament_cmake_python REQUIRED)
+find_package(ament_cmake_python REQUIRED)
 
 ###################################
 ##  ROS specific configuration   ##
