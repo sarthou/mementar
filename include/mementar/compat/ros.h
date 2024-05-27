@@ -256,7 +256,7 @@ public:
 
     Node(Node &&other) = delete;
 
-    ~Node() {}
+    ~Node() { if (ros_thread_.joinable()) ros_thread_.join(); }
 
     static Node &get();
 

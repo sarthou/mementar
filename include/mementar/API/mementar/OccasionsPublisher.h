@@ -3,21 +3,22 @@
 
 #include <string>
 
-#include "mementar/compat/ros.h"
 #include "Fact.h"
+#include "mementar/compat/ros.h"
 
 namespace mementar {
-    class OccasionsPublisher {
-    public:
-        OccasionsPublisher(const std::string& name = "");
+  class OccasionsPublisher
+  {
+  public:
+    OccasionsPublisher(const std::string& name = "");
 
-        void insert(const Fact& fact, time_t stamp = time(0));
+    void insert(const Fact& fact, time_t stamp = time(0));
 
-    private:
-        compat::onto_ros::Publisher<compat::StampedString> pub_;
+  private:
+    compat::onto_ros::Publisher<compat::StampedString> pub_;
 
-        void publish(const std::string &str, time_t stamp = time(0));
-    };
+    void publish(const std::string& str, time_t stamp = time(0));
+  };
 
 } // namespace mementar
 
