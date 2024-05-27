@@ -28,9 +28,6 @@ int main(int argc, char *argv[])
   std::string path = mementar::compat::onto_ros::getShareDirectory("mementar");
   path = path + "/docs/img/logo/mementar.ico";
 
-  // todo: check if the path actually points where it should
-  printf("%s\n", path.c_str());
-
   QIcon icon(QString::fromStdString(path));
   a.setWindowIcon(icon);
 
