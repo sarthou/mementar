@@ -436,7 +436,7 @@ void mementarGUI::saveInstanceSlot()
 
 void mementarGUI::drawInstanceSlot()
 {
-  auto service_name = (ui->manager_instance_name_editline->text().toStdString() == "") ? "mementar/manage_instance" : "mementar/manage_instance/" + ui->manager_instance_name_editline->text().toStdString();
+  auto service_name = ui->manager_instance_name_editline->text().toStdString();
   auto param = ui->manager_draw_path_editline->text().toStdString();
 
   mementar::InstanceManagerClient client(service_name);
