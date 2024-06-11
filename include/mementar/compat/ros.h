@@ -169,7 +169,7 @@ public:
             : RosTime(sec, nsec) {}
 
     explicit Time(double t)
-            : RosTime(t) {}
+            : RosTime((uint32_t) t, (uint32_t) ((t - std::floor(t)) * 1'000'000'000.)) {}
 
     Time(const RosTime &time)
             : RosTime(time) {} // do not put it as explicit
