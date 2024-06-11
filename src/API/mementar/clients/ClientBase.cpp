@@ -1,7 +1,7 @@
 #include "mementar/API/mementar/clients/ClientBase.h"
 
 namespace mementar {
-  mementar::compat::onto_ros::ServiceWrapper<mementar::compat::MementarService::Response> ClientBase::call(const std::string& action, const std::string& param, int16_t& code)
+  mementar::compat::onto_ros::ServiceWrapper<mementar::compat::MementarService::Response> ClientBase::call(const std::string& action, const std::string& param)
   {
     cpt++;
 
@@ -29,10 +29,7 @@ namespace mementar {
     }
     case ResultTy::SUCCESSFUL:
     {
-      return [&](auto&& res) {
-        code = res->code;
-        return res;
-      }(mementar::compat::onto_ros::getServicePointer(res));
+      return mementar::compat::onto_ros::getServicePointer(res);
     }
     case ResultTy::FAILURE:
       [[fallthrough]];
@@ -50,9 +47,9 @@ namespace mementar {
     }
   }
 
-  std::vector<std::string> ClientBase::callArray(const std::string& action, const std::string& param, int16_t& code)
+  std::vector<std::string> ClientBase::callArray(const std::string& action, const std::string& param)
   {
-    auto res = call(action, param, code);
+    auto res = call(action, param);
 
     if(error_code_ == -1)
     {
@@ -62,16 +59,16 @@ namespace mementar {
     return res->values;
   }
 
-  std::string ClientBase::callStr(const std::string& action, const std::string& param, int16_t& code)
+  std::string ClientBase::callStr(const std::string& action, const std::string& param)
   {
-    auto res = this->callArray(action, param, code);
+    auto res = this->callArray(action, param);
     return res.empty() ? "" : res[0];
   }
 
   bool ClientBase::callBool(const std::string& action, const std::string& param)
   {
     int16_t code;
-    auto res = this->callStr(action, param, code);
+    auto res = this->callStr(action, param);
 
     return (res != "ERR:SERVICE_FAIL") && (code == 0);
   }
@@ -81,9 +78,9 @@ namespace mementar {
     return this->callStr(action, param) != "ERR:SERVICE_FAIL";
   }
 
-  compat::onto_ros::Time ClientBase::callStamp(const std::string& action, const std::string& param, int16_t& code)
+  compat::onto_ros::Time ClientBase::callStamp(const std::string& action, const std::string& param)
   {
-    auto res = call(action, param, code)->time_value;
+    auto res = call(action, param)->time_value;
 
     if(error_code_ == -1)
     {
@@ -95,6 +92,5 @@ namespace mementar {
 
   size_t ClientBase::cpt = 0;
   bool ClientBase::verbose_ = false;
-  int16_t ClientBase::ignore_ = 0;
 
 } // namespace mementar

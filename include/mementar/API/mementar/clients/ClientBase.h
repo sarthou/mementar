@@ -31,12 +31,12 @@ namespace mementar {
     int getErrorCode() { return error_code_; }
 
     // todo: get rid of the extra parameter `code` since we can get the error code via `getErrorCode`
-    mementar::compat::onto_ros::ServiceWrapper<mementar::compat::MementarService::Response> call(const std::string& action, const std::string& param, int16_t& code = ignore_);
-    std::vector<std::string> callArray(const std::string& action, const std::string& param, int16_t& code = ignore_);
-    std::string callStr(const std::string& action, const std::string& param, int16_t& code = ignore_);
+    mementar::compat::onto_ros::ServiceWrapper<mementar::compat::MementarService::Response> call(const std::string& action, const std::string& param);
+    std::vector<std::string> callArray(const std::string& action, const std::string& param);
+    std::string callStr(const std::string& action, const std::string& param);
     bool callBool(const std::string& action, const std::string& param);
     bool callNR(const std::string& action, const std::string& param);
-    compat::onto_ros::Time callStamp(const std::string& action, const std::string& param, int16_t& code = ignore_);
+    compat::onto_ros::Time callStamp(const std::string& action, const std::string& param);
 
   private:
     compat::onto_ros::Client<compat::MementarService> client_;
@@ -44,7 +44,6 @@ namespace mementar {
     int error_code_ = 0;
     static size_t cpt;
     static bool verbose_;
-    static int16_t ignore_;
   };
 
 } // namespace mementar
