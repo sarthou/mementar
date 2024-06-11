@@ -62,49 +62,6 @@ namespace std_msgs_compat = std_msgs::msg;
 #include <mutex>
 
 namespace mementar::compat {
-// todo: temporarily here
-
-namespace rsv {
-// primary template.
-template<class T>
-struct function_traits : function_traits<decltype(&T::operator())> {
-};
-
-// partial specialization for function type
-template<class R, class... Args>
-struct function_traits<R(Args...)> {
-    using result_type = R;
-    using argument_types = std::tuple<Args...>;
-};
-
-// partial specialization for function pointer
-template<class R, class... Args>
-struct function_traits<R (*)(Args...)> {
-    using result_type = R;
-    using argument_types = std::tuple<Args...>;
-};
-
-// partial specialization for std::function
-template<class R, class... Args>
-struct function_traits<std::function<R(Args...)>> {
-    using result_type = R;
-    using argument_types = std::tuple<Args...>;
-};
-
-// partial specialization for pointer-to-member-function (i.e., operator()'s)
-template<class T, class R, class... Args>
-struct function_traits<R (T::*)(Args...)> {
-    using result_type = R;
-    using argument_types = std::tuple<Args...>;
-};
-
-template<class T, class R, class... Args>
-struct function_traits<R (T::*)(Args...) const> {
-    using result_type = R;
-    using argument_types = std::tuple<Args...>;
-};
-}
-
 #if MEME_ROS_VERSION == 1
 using namespace ::mementar;
 
@@ -289,8 +246,10 @@ private:
 template<typename T>
 class Publisher {
 public:
-    Publisher(const std::string &topic_name, std::size_t queue_size) {
+    Publisher(const std::string &topic_name, std::size_t queue_size) : name_(topic_name) {
         auto &node = Node::get();
+
+        printf("[Publisher '%s'] Create\n", topic_name.c_str());
 
 #if MEME_ROS_VERSION == 1
         handle_ = node.handle_.advertise<T>(topic_name, queue_size);
@@ -301,6 +260,8 @@ public:
     }
 
     void publish(const T &message) {
+        printf("[Publisher '%s'] Create\n", name_.c_str());
+
 #if MEME_ROS_VERSION == 1
         handle_.publish(message);
 #elif MEME_ROS_VERSION == 2
@@ -322,6 +283,8 @@ private:
 #elif MEME_ROS_VERSION == 2
     typename rclcpp::Publisher<T>::SharedPtr handle_;
 #endif
+
+    std::string name_;
 };
 
 template<typename T>
@@ -330,6 +293,8 @@ public:
     template<typename Ta, typename Tb>
     Subscriber(const std::string &topic_name, std::size_t queue_size, Ta &&callback, Tb &&ptr) {
         auto &node = Node::get();
+
+        printf("[Subscriber '%s'] Create\n", topic_name.c_str());
 
 #if MEME_ROS_VERSION == 1
         handle_ = node.handle_.subscribe(topic_name, queue_size, callback, ptr);
@@ -349,13 +314,14 @@ private:
 #endif
 };
 
-// todo: figure out how to stuff deduction guides in Service<T>
 template<typename T>
 class Service {
 public:
     template<typename Ta>
     Service(const std::string &service_name, Ta &&callback) {
         auto &node = Node::get();
+
+        printf("[Service '%s'] Create\n", service_name.c_str());
 
 #if MEME_ROS_VERSION == 1
         handle_ = node.handle_.advertiseService(service_name, callback);
@@ -376,6 +342,8 @@ public:
     template<typename Ta, typename Tb>
     Service(const std::string &service_name, Ta &&callback, Tb &&ptr) {
         auto &node = Node::get();
+
+        printf("[Service '%s'] Create\n", service_name.c_str());
 
 #if MEME_ROS_VERSION == 1
         handle_ = node.handle_.advertiseService(service_name, callback, ptr);
@@ -406,6 +374,8 @@ public:
             : name_(service_name) {
         auto &node = Node::get();
 
+        printf("[Client '%s'] Create\n", service_name.c_str());
+
 #if MEME_ROS_VERSION == 1
         handle_ = node.handle_.serviceClient<T>(service_name, true);
 #elif MEME_ROS_VERSION == 2
@@ -414,6 +384,8 @@ public:
     }
 
     Status call(const mementar::compat::RequestType<T> &req, mementar::compat::ResponseType<T> &res) {
+        printf("[Client '%s'] Call\n", name_.c_str());
+
         using namespace std::chrono_literals;
         auto status = Status::FAILURE;
 
@@ -452,6 +424,7 @@ public:
     }
 
     bool wait(double timeout) {
+        printf("[Client '%s'] Wait\n", name_.c_str());
 #if MEME_ROS_VERSION == 1
         return handle_.waitForExistence(ros::Duration(timeout));
 #elif MEME_ROS_VERSION == 2

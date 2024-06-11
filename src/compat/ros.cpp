@@ -63,7 +63,6 @@ namespace mementar::compat::onto_ros {
 #endif
       running_(true)
   {
-    // todo: should we put something here?
 #if ONTO_ROS_VERSION == 2
     ros_thread_ = std::thread([this]() { rclcpp::spin(handle_); });
 #endif
