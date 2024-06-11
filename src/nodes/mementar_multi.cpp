@@ -132,7 +132,11 @@ int main(int argc, char** argv)
   params.display();
 
   mementar::compat::onto_ros::Service<mementar::compat::MementarService> service("/mementar/manage", managerHandle);
-  mementar::compat::onto_ros::Node::get().spin();
+
+  while(mementar::compat::onto_ros::Node::ok()) {
+    mementar::compat::onto_ros::Node::get().spin();
+    usleep(1);
+  }
 
   std::vector<std::string> interfaces_names;
   std::transform(interfaces_.cbegin(),
@@ -144,9 +148,6 @@ int main(int argc, char** argv)
   {
     deleteInterface(interfaces_names[i]);
   }
-
-  while(mementar::compat::onto_ros::Node::ok())
-    usleep(1);
 
   mementar::compat::onto_ros::Node::shutdown();
 
