@@ -313,8 +313,6 @@ void mementarGUI::currentTabChangedSlot(int index)
 
 void mementarGUI::addInstanceSlot()
 {
-  mementar::compat::onto_ros::Client<mementar::compat::MementarService> client("mementar/manage");
-
   bool doCopy = false;
 
   std::string param = ui->manager_instance_name_editline->text().toStdString();
@@ -418,9 +416,9 @@ void mementarGUI::saveInstanceSlot()
 
   mementar::InstanceManagerClient client(service_name);
 
-  auto code = meme_.inst_manager_.save(ui->manager_save_path_editline->text().toStdString());
+  auto code = client.save(ui->manager_save_path_editline->text().toStdString());
 
-  if(meme_.inst_manager_.getErrorCode() == -1)
+  if(client.getErrorCode() == -1)
   {
     displayErrorInfo("mementar/manage_instance client call failed");
     return;
@@ -441,9 +439,11 @@ void mementarGUI::drawInstanceSlot()
   auto service_name = (ui->manager_instance_name_editline->text().toStdString() == "") ? "mementar/manage_instance" : "mementar/manage_instance/" + ui->manager_instance_name_editline->text().toStdString();
   auto param = ui->manager_draw_path_editline->text().toStdString();
 
-  auto code = meme_.inst_manager_.draw(ui->manager_save_path_editline->text().toStdString());
+  mementar::InstanceManagerClient client(service_name);
 
-  if(meme_.inst_manager_.getErrorCode() == -1)
+  auto code = client.draw(ui->manager_save_path_editline->text().toStdString());
+
+  if(client.getErrorCode() == -1)
   {
     displayErrorInfo("mementar/manage_instance client call failed");
     return;
