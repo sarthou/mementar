@@ -54,9 +54,11 @@ endfunction(meme_add_generic)
 
 function(meme_add_ros_generic TARGET)
     target_link_libraries(${TARGET} PUBLIC ${catkin_LIBRARIES})
+    target_include_directories(${TARGET} PUBLIC ${catkin_INCLUDE_DIRS})
     add_dependencies(${TARGET} ${catkin_EXPORTED_TARGETS} mementar_gencpp)
 
     target_compile_definitions(${TARGET} PUBLIC MEME_ROS_VERSION=$ENV{ROS_VERSION})
+    target_compile_definitions(${TARGET} PUBLIC ONTO_ROS_VERSION=$ENV{ROS_VERSION})
     meme_add_generic(${TARGET})
 endfunction(meme_add_ros_generic)
 
