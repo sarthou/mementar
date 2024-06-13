@@ -69,6 +69,7 @@ function(meme_add_ros_generic TARGET)
             ${cpp_typesupport_target})
 
     target_compile_definitions(${TARGET} PUBLIC MEME_ROS_VERSION=$ENV{ROS_VERSION})
+    target_compile_definitions(${TARGET} PUBLIC ONTO_ROS_VERSION=$ENV{ROS_VERSION})
     meme_add_generic(${TARGET})
 endfunction(meme_add_ros_generic)
 
