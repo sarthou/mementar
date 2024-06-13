@@ -32,6 +32,8 @@ namespace mementar {
 
     // todo: get rid of the extra parameter `code` since we can get the error code via `getErrorCode`
     mementar::compat::onto_ros::ServiceWrapper<mementar::compat::MementarService::Response> call(const std::string& action, const std::string& param);
+
+    std::int16_t callCode(const std::string& action, const std::string& param);
     std::vector<std::string> callArray(const std::string& action, const std::string& param);
     std::string callStr(const std::string& action, const std::string& param);
     bool callBool(const std::string& action, const std::string& param);

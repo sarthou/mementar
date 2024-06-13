@@ -29,7 +29,7 @@ namespace mementar {
     }
     case ResultTy::SUCCESSFUL:
     {
-      return mementar::compat::onto_ros::getServicePointer(res);
+      return res;
     }
     case ResultTy::FAILURE:
       [[fallthrough]];
@@ -47,6 +47,11 @@ namespace mementar {
     }
   }
 
+  std::int16_t ClientBase::callCode(const std::string& action, const std::string& param) {
+    auto res = call(action, param);
+    return compat::onto_ros::getServicePointer(res)->code;
+  }
+
   std::vector<std::string> ClientBase::callArray(const std::string& action, const std::string& param)
   {
     auto res = call(action, param);
@@ -56,7 +61,7 @@ namespace mementar {
       return {"ERR:SERVICE_FAIL"};
     }
 
-    return res->values;
+    return compat::onto_ros::getServicePointer(res)->values;
   }
 
   std::string ClientBase::callStr(const std::string& action, const std::string& param)
@@ -80,14 +85,15 @@ namespace mementar {
 
   compat::onto_ros::Time ClientBase::callStamp(const std::string& action, const std::string& param)
   {
-    auto res = call(action, param)->time_value;
+    auto res = call(action, param);
+    auto res_time = compat::onto_ros::getServicePointer(res)->time_value;
 
     if(error_code_ == -1)
     {
       return compat::onto_ros::Time(0);
     }
 
-    return compat::onto_ros::Time(res.seconds, res.nanoseconds);
+    return compat::onto_ros::Time(res_time.seconds, res_time.nanoseconds);
   }
 
   size_t ClientBase::cpt = 0;
