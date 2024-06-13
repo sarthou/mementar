@@ -1,5 +1,6 @@
 #include <execinfo.h>
 #include <mementar/compat/ros.h>
+#include <csignal>
 #include <thread>
 
 #include "mementar/RosInterface.h"

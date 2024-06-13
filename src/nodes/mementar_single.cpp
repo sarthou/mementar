@@ -1,4 +1,6 @@
 #include <execinfo.h>
+#include <csignal>
+#include <thread>
 
 #include "mementar/RosInterface.h"
 #include "mementar/core/Parametrization/Parameters.h"
