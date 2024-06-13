@@ -121,7 +121,7 @@ using Rate = ros::Rate;
 using RosTime = ros::Time;
 
 template <typename T>
-T* getServicePointer(T service) { return &service; }
+T* getServicePointer(T& service) { return &service; }
 
 inline std::string getShareDirectory(const std::string& name) {
     return ros::package::getPath(name);
