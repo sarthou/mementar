@@ -154,28 +154,30 @@ void mementarGUI::actionButtonClickedSlot()
 
   auto response = client.call(qText.toStdString(), qParam.toStdString());
 
-  if(client.getErrorCode() == -1)
-  {
-    displayErrorInfo(serviceName + " client call failed");
-    return;
-  }
-
-  start();
-  std::string res;
-
-  if(response->values.size())
-  {
-    res = vector2string(response->values);
-  }
-  else
-  {
-    if(response->time_value.seconds != 0)
+  [&](auto response) {
+    if(client.getErrorCode() == -1)
     {
-      res = std::to_string(response->time_value.seconds);
+      displayErrorInfo(serviceName + " client call failed");
+      return;
     }
-  }
 
-  ui->static_result_editext->setText(QString::fromStdString(res));
+    start();
+    std::string res;
+
+    if(response->values.size())
+    {
+      res = vector2string(response->values);
+    }
+    else
+    {
+      if(response->time_value.seconds != 0)
+      {
+        res = std::to_string(response->time_value.seconds);
+      }
+    }
+
+    ui->static_result_editext->setText(QString::fromStdString(res));
+  }(mementar::compat::onto_ros::getServicePointer(response));
 }
 
 void mementarGUI::factButtonClickedSlot()
@@ -192,28 +194,30 @@ void mementarGUI::factButtonClickedSlot()
 
   auto response = client.call(qText.toStdString(), qParam.toStdString());
 
-  if(client.getErrorCode() == -1)
-  {
-    displayErrorInfo(service_name + " client call failed");
-    return;
-  }
-
-  start();
-  std::string res;
-
-  if(response->values.size())
-  {
-    res = vector2string(response->values);
-  }
-  else
-  {
-    if(response->time_value.seconds != 0)
+  [&](auto response) {
+    if(client.getErrorCode() == -1)
     {
-      res = std::to_string(response->time_value.seconds);
+      displayErrorInfo(service_name + " client call failed");
+      return;
     }
-  }
 
-  ui->static_result_editext->setText(QString::fromStdString(res));
+    start();
+    std::string res;
+
+    if(response->values.size())
+    {
+      res = vector2string(response->values);
+    }
+    else
+    {
+      if(response->time_value.seconds != 0)
+      {
+        res = std::to_string(response->time_value.seconds);
+      }
+    }
+
+    ui->static_result_editext->setText(QString::fromStdString(res));
+  }(mementar::compat::onto_ros::getServicePointer(response));
 }
 
 void mementarGUI::nameEditingFinishedSlot()
