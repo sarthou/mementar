@@ -3,6 +3,7 @@
 
 #if MEME_ROS_VERSION == 1
 #include <ros/ros.h>
+#include <ros/package.h>
 #include <ros/callback_queue.h>
 
 // Commonly used built-in interfaces
@@ -11,18 +12,15 @@
 // User-defined message interfaces
 #include <mementar/MementarAction.h>
 #include <mementar/MementarExplanation.h>
-#include <mementar/MementarSparqlIndexResponse.h>
-#include <mementar/MementarSparqlResponse.h>
-#include <mementar/MementarStampedString.h>
+#include <mementar/MementarOccasion.h>
 #include <mementar/MementarTimestamp.h>
+#include <mementar/StampedFact.h>
+#include <mementar/StampedString.h>
 
 // User-defined service interfaces
-#include <mementar/MementarConversion.h>
-#include <mementar/MementarIndexService.h>
+#include <mementar/MementarOccasionUnsubscription.h>
+#include <mementar/MementarOccasionSubscription.h>
 #include <mementar/MementarService.h>
-#include <mementar/MementarSparqlIndexService.h>
-#include <mementar/MementarSparqlService.h>
-#include <mementar/MementarSparqlIndexService.h>
 
 namespace std_msgs_compat = std_msgs;
 
@@ -123,7 +121,7 @@ using Rate = ros::Rate;
 using RosTime = ros::Time;
 
 template <typename T>
-T* getServicePointer(T& service) { return &service; }
+T* getServicePointer(T service) { return &service; }
 
 inline std::string getShareDirectory(const std::string& name) {
     return ros::package::getPath(name);
@@ -213,7 +211,11 @@ public:
 
     Node(Node &&other) = delete;
 
-    ~Node() { if (ros_thread_.joinable()) ros_thread_.join(); }
+    ~Node() {
+#if MEME_ROS_VERSION == 2
+    if (ros_thread_.joinable()) ros_thread_.join();
+#endif
+    }
 
     static Node &get();
 
