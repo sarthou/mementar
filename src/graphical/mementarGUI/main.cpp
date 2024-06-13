@@ -26,9 +26,10 @@ int main(int argc, char* argv[])
   mementar::compat::onto_ros::Node::init(argc, argv, "mementarGUI");
 
   std::thread th([]() {
+    mementar::compat::onto_ros::Node::get().spin();
+
     while(mementar::compat::onto_ros::Node::ok())
     {
-      mementar::compat::onto_ros::Node::get().spin();
       usleep(5000);
     }
   });
