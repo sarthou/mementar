@@ -9,17 +9,17 @@ namespace mementar {
 
   int16_t ManagerClient::add(const std::string& name)
   {
-    return call("add", name)->code;
+    return callCode("add", name);
   }
 
   int16_t ManagerClient::copy(const std::string& name)
   {
-    return call("copy", name)->code;
+    return callCode("copy", name);
   }
 
   int16_t ManagerClient::del(const std::string& name)
   {
-    return call("delete", name)->code;
+    return callCode("delete", name);
   }
 
 } // namespace mementar
