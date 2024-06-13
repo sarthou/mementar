@@ -1,0 +1,7 @@
+<launch>
+    <arg name="intern_directory" default="$(find-pkg-share mementar)/file_intern"/>
+    <arg name="config_file" default="none"/>
+
+    <node pkg="mementar" name="mementar_core" exec="mementar_single" output="screen" args="-d $(var intern_directory) -c $(var config_file)"> </node>
+    <node pkg="mementar" name="mementar_gui" exec="mementarGUI" output="screen"> </node>
+</launch>

@@ -5,8 +5,8 @@
 
 #include "ontologenius/OntologyManipulator.h"
 
-#include "mementar/API/mementar/TimelineManipulator.h"
-#include "mementar/API/mementar/OccasionsSubscriber.h"
+#include "include/mementar/API/mementar/TimelineManipulator.h"
+#include "include/mementar/API/mementar/OccasionsSubscriber.h"
 
 using namespace std::chrono;
 

@@ -1,0 +1,23 @@
+<launch>
+    <arg name="onto_display" default="false"/>
+    <arg name="onto_config_file" default="none"/>
+    <arg name="onto_intern_file" default="none"/>
+    <arg name="onto_files" default=""/>
+
+    <arg name="mementar_intern_directory" default="none"/>
+    <arg name="mementar_config_file" default="$(find-pkg-share mementar)/files/config_example.yaml"/>
+
+    <group>
+        <include file="$(find-pkg-share ontologenius)/launch/ontologenius_full.xml">
+            <arg name="display" value="$(var onto_display)"/>
+            <arg name="config_file" value="$(var onto_config_file)"/>
+            <arg name="files" value="$(var onto_files)"/>
+            <arg name="intern_file" value="$(var onto_intern_file)"/>
+        </include>
+    </group>
+
+    <include file="$(find-pkg-share mementar)/launch/mementar_full.xml">
+        <arg name="intern_directory" value="$(var mementar_intern_directory)"/>
+        <arg name="config_file" value="$(var mementar_config_file)"/>
+    </include>
+</launch>

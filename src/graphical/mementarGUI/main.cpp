@@ -1,36 +1,46 @@
-#include "include/mementar/graphical/mementarGUI/DarkStyle.h"
-#include "include/mementar/graphical/mementarGUI/mementargui.h"
-
 #include <QApplication>
-
 #include <csignal>
+#include <execinfo.h>
 #include <thread>
 
-#include <ros/package.h>
-#include <ros/ros.h>
+#include "include/mementar/graphical/mementarGUI/DarkStyle.h"
+#include "include/mementar/graphical/mementarGUI/mementargui.h"
+#include "mementar/compat/ros.h"
 
-void spinThread(bool* run)
+void handler(int sig)
 {
-  ros::Rate r(100);
-  while(*run == true)
-  {
-    ros::spinOnce();
-    r.sleep();
-  }
+  void* array[10];
+  size_t size;
+
+  size = backtrace(array, 10);
+
+  fprintf(stderr, "Error: signal %d:\n", sig);
+  backtrace_symbols_fd(array, size, STDERR_FILENO);
+  exit(1);
 }
 
-int main(int argc, char *argv[])
+int main(int argc, char* argv[])
 {
-  ros::init(argc, argv, "mementarGUI");
+  signal(SIGSEGV, handler);
 
-  ros::NodeHandle n;
+  mementar::compat::onto_ros::Node::init(argc, argv, "mementarGUI");
+
+  std::thread th([]() {
+    mementar::compat::onto_ros::Node::get().spin();
+
+    while(mementar::compat::onto_ros::Node::ok())
+    {
+      usleep(5000);
+    }
+  });
 
   QApplication a(argc, argv);
 
   a.setStyle(new DarkStyle);
 
-  std::string path = ros::package::getPath("mementar");
+  std::string path = mementar::compat::onto_ros::getShareDirectory("mementar");
   path = path + "/docs/img/logo/mementar.ico";
+
   QIcon icon(QString::fromStdString(path));
   a.setWindowIcon(icon);
 
@@ -39,18 +49,18 @@ int main(int argc, char *argv[])
 
   bool run = true;
 
-  w.init(&n);
+  w.init();
   w.wait();
 
   w.start();
-
-  std::thread spin_thread(spinThread,&run);
 
   signal(SIGINT, SIG_DFL);
   auto a_exec = a.exec();
 
   run = false;
-  spin_thread.join();
+
+  mementar::compat::onto_ros::Node::shutdown();
+  th.join();
 
   return a_exec;
 }

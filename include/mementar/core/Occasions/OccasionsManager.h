@@ -5,15 +5,12 @@
 #include <queue>
 #include <atomic>
 
-#include <ros/ros.h>
+#include <mementar/compat/ros.h>
 
-#include "ontologenius/OntologyManipulator.h"
+#include <ontologenius/OntologyManipulator.h>
 
-#include "mementar/MementarOccasionSubscription.h"
-#include "mementar/MementarOcassionUnsubscription.h"
-
-#include "mementar/core/Occasions/Subscription.h"
-#include "mementar/core/memGraphs/Branchs/types/Triplet.h"
+#include <mementar/core/Occasions/Subscription.h>
+#include <mementar/core/memGraphs/Branchs/types/Triplet.h>
 
 namespace mementar
 {
@@ -21,8 +18,8 @@ namespace mementar
 class OccasionsManager
 {
 public:
-  explicit OccasionsManager(ros::NodeHandle* n, std::string name = "");
-  OccasionsManager(ros::NodeHandle* n, onto::OntologyManipulator* onto, std::string name = "");
+  explicit OccasionsManager(std::string name = "");
+  OccasionsManager(onto::OntologyManipulator* onto, std::string name = "");
 
   void run();
 
@@ -32,14 +29,13 @@ public:
   inline bool isRunning() { return run_; }
 
 private:
-  ros::NodeHandle* n_;
   onto::OntologyManipulator* onto_;
   Subscription subscription_;
   std::atomic<bool> run_;
 
-  ros::Publisher pub_;
-  ros::ServiceServer sub_service_;
-  ros::ServiceServer unsub_service_;
+  compat::onto_ros::Publisher<compat::MementarOccasion> pub_;
+  compat::onto_ros::Service<compat::MementarOccasionSubscription> sub_service_;
+  compat::onto_ros::Service<compat::MementarOccasionUnsubscription> unsub_service_;
 
   std::mutex mutex_;
 
@@ -47,10 +43,11 @@ private:
   std::queue<Triplet> fifo_1;
   std::queue<Triplet> fifo_2;
 
-  bool SubscribeCallback(mementar::MementarOccasionSubscription::Request &req,
-                         mementar::MementarOccasionSubscription::Response &res);
-  bool UnsubscribeCallback(mementar::MementarOcassionUnsubscription::Request &req,
-                           mementar::MementarOcassionUnsubscription::Response &res);
+  bool SubscribeCallback(compat::onto_ros::ServiceWrapper<compat::MementarOccasionSubscription::Request>& req,
+                         compat::onto_ros::ServiceWrapper<compat::MementarOccasionSubscription::Response>& res);
+
+  bool UnsubscribeCallback(compat::onto_ros::ServiceWrapper<compat::MementarOccasionUnsubscription::Request>& req,
+                           compat::onto_ros::ServiceWrapper<compat::MementarOccasionUnsubscription::Response>& res);
 
   Triplet get();
   bool empty();

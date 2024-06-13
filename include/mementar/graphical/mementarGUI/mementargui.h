@@ -6,11 +6,11 @@
 #include "include/mementar/graphical/mementarGUI/CallBackTimer.h"
 #include <QTextCursor>
 
-#include <ros/ros.h>
+#include "mementar/compat/ros.h"
+#include "mementar/API/mementar/TimelineManipulator.h"
+
 #include <vector>
 #include <string>
-
-#include "std_msgs/String.h"
 
 namespace Ui {
 class mementarGUI;
@@ -24,21 +24,25 @@ public:
   explicit mementarGUI(QWidget *parent = 0);
   ~mementarGUI();
 
-  void init(ros::NodeHandle* n);
+  void init();
   void wait();
   void start();
 
 private:
-  Ui::mementarGUI *ui;
-  ros::NodeHandle* n_;
+  Ui::mementarGUI* ui;
 
-  std::map<std::string, ros::Publisher> facts_publishers_;
-  std::map<std::string, ros::Publisher> actions_publishers_;
-  std::map<std::string, ros::Subscriber> feeder_notifications_subs_;
+  mementar::TimelineManipulator meme_;
+
+  std::map<std::string, std::unique_ptr<mementar::compat::onto_ros::Publisher<mementar::compat::StampedString>>> facts_publishers_;
+  std::map<std::string, std::unique_ptr<mementar::compat::onto_ros::Publisher<mementar::compat::MementarAction>>> actions_publishers_;
+  std::map<std::string, std::unique_ptr<mementar::compat::onto_ros::Subscriber<std_msgs_compat::String>>> feeder_notifications_subs_;
   std::string feeder_notifications_;
 
   int time_source_;
-  std::atomic<ros::Time> current_time_;
+
+  // todo: can't make it atomic because its not trivially copiable
+  mementar::compat::MementarTimestamp current_time_;
+
   CallBackTimer timer_;
 
   void displayInstancesList();
@@ -71,7 +75,7 @@ public slots:
   void timesourceChangedSlot(int index);
   void currentTimeEditingFinishedSlot();
 
-  void feederCallback(const std_msgs::String& msg);
+  void feederCallback(const std_msgs_compat::String& msg);
   void feederAddSlot();
   void feederDelSlot();
   void feederCommitSlot();

@@ -1,73 +1,75 @@
-#include "mementar/API/mementar/TimelinesManipulator.h"
+#include "include/mementar/API/mementar/TimelinesManipulator.h"
 
-namespace mementar
-{
+namespace mementar {
+  TimelinesManipulator::TimelinesManipulator() : ManagerClient("") {}
 
-TimelinesManipulator::TimelinesManipulator(ros::NodeHandle* n) : ManagerClient(n)
-{
-  n_ = n;
-}
+  TimelinesManipulator::~TimelinesManipulator() {}
 
-TimelinesManipulator::~TimelinesManipulator()
-{
-  for(auto manipulator : manipulators_)
-    if(manipulator.second != nullptr)
-      delete manipulator.second;
-}
-
-bool TimelinesManipulator::waitInit(int32_t timeout)
-{
-  return ros::service::waitForService("mementar/manage", timeout);
-}
-
-TimelineManipulator* TimelinesManipulator::operator[](const std::string& name)
-{
-  if(manipulators_.find(name) != manipulators_.end())
-    return manipulators_[name];
-  else
-    return nullptr;
-}
-
-TimelineManipulator* TimelinesManipulator::get(const std::string& name)
-{
-  if(manipulators_.find(name) != manipulators_.end())
-    return manipulators_[name];
-  else
-    return nullptr;
-}
-
-bool TimelinesManipulator::add(const std::string& name)
-{
-  if(manipulators_.find(name) != manipulators_.end())
-    return true;
-  else
+  bool TimelinesManipulator::waitInit(int32_t timeout)
   {
-    if(ManagerClient::add(name) == false)
-      return false;
+    // todo
+    // return ros::service::waitForService("mementar/manage", timeout);
+    return false;
+  }
+
+  TimelineManipulator* TimelinesManipulator::operator[](const std::string& name)
+  {
+    if(manipulators_.find(name) != manipulators_.end())
+    {
+      return manipulators_[name].get();
+    }
     else
     {
-      TimelineManipulator* tmp = new TimelineManipulator(n_, name);
-      manipulators_[name] = tmp;
-      return true;
+      return nullptr;
     }
   }
-}
 
-bool TimelinesManipulator::del(const std::string& name)
-{
-  if(manipulators_.find(name) == manipulators_.end())
-    return true;
-  else
+  TimelineManipulator* TimelinesManipulator::get(const std::string& name)
   {
-    if(ManagerClient::del(name) == false)
-      return false;
+    if(manipulators_.find(name) != manipulators_.end())
+    {
+      return manipulators_[name].get();
+    }
     else
     {
-      delete manipulators_[name];
-      manipulators_.erase(name);
-      return true;
+      return nullptr;
     }
   }
-}
 
-} // namepsace mementar
+  bool TimelinesManipulator::add(const std::string& name)
+  {
+    if(manipulators_.find(name) != manipulators_.end())
+    {
+      return true;
+    }
+    else
+    {
+      if(ManagerClient::add(name) == false)
+      {
+        return false;
+      }
+      else
+      {
+        manipulators_[name] = std::make_unique<TimelineManipulator>(name);
+        return true;
+      }
+    }
+  }
+
+  bool TimelinesManipulator::del(const std::string& name)
+  {
+    if(manipulators_.find(name) == manipulators_.end())
+      return true;
+    else
+    {
+      if(ManagerClient::del(name) == false)
+        return false;
+      else
+      {
+        manipulators_.erase(name);
+        return true;
+      }
+    }
+  }
+
+} // namespace mementar

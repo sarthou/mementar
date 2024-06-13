@@ -5,6 +5,7 @@
 #include <vector>
 #include <string>
 #include <iostream>
+#include <algorithm>
 
 #include "mementar/graphical/Display.h"
 

@@ -2,5 +2,5 @@
   <arg name="intern_directory" default="$(find mementar)/file_intern"/>
   <arg name="config_file" default="none"/>
 
-  <node name="mementar_core" pkg="mementar" type="mementar" output="screen" args="-d $(arg intern_directory) -c $(arg config_file)"> </node>
+  <node name="mementar_core" pkg="mementar" type="mementar_single" output="screen" args="-d $(arg intern_directory) -c $(arg config_file)"> </node>
 </launch>
