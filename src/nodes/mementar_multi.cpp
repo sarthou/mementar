@@ -133,9 +133,9 @@ int main(int argc, char** argv)
   params.display();
 
   mementar::compat::onto_ros::Service<mementar::compat::MementarService> service("/mementar/manage", managerHandle);
+  mementar::compat::onto_ros::Node::get().spin();
 
   while(mementar::compat::onto_ros::Node::ok()) {
-    mementar::compat::onto_ros::Node::get().spin();
     usleep(1);
   }
 
