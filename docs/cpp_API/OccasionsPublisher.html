@@ -13,16 +13,20 @@
   <div class="header" id="header">
     <header class="fixed" id="navbar">
       <div class="container">
-          <div class="navbar-header">
-            <div id="header-buttons">
-                <ul id="header-ul" data-event="hover_intent" data-effect="fade" data-effect-speed="500">
-                    <li class="header-item"><a class="header-link" href="https://github.com/sarthou/mementar/wiki" tabindex="0">Wiki</a></li>
-                    <li class="header-item"><a class="header-link" href="https://github.com/sarthou/mementar" tabindex="0"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Octicons-mark-github.svg/1200px-Octicons-mark-github.svg.png" alt="github" width="40px" height="40px"/></a></li>
-                </ul>
-            </div>
-            <a class="navbar-icon" href="../index.html">
-              <img src="../img/logo/mementar.png " alt="mementar" width="65px" height="65px"/>
-            </a>
+        <div class="navbar-header">
+          <div id="header-buttons">
+            <ul id="header-ul" data-event="hover_intent" data-effect="fade" data-effect-speed="500">
+              <li class="header-item"><a class="header-link" href="https://github.com/sarthou/mementar/wiki"
+                  tabindex="0">Wiki</a></li>
+              <li class="header-item"><a class="header-link" href="https://github.com/sarthou/mementar"
+                  tabindex="0"><img
+                    src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Octicons-mark-github.svg/1200px-Octicons-mark-github.svg.png"
+                    alt="github" width="40px" height="40px" /></a></li>
+            </ul>
+          </div>
+          <a class="navbar-icon" href="../index.html">
+            <img src="../img/logo/mementar_light.png " alt="mementar" width="65px" height="65px" />
+          </a>
         </div>
       </div>
     </header>
@@ -37,7 +41,6 @@
         <li><a href="https://gitlab.com/sarthou/mementar/pipelines">Pipelines</a></li>
       </ul>
       <h1>Mementar API Documentation</h1>
-      <h2>Mementar 0.0.3</h2>
     </div>
 
     <div class="content">
@@ -80,12 +83,20 @@
 
       <div class="context">
         <h1 class="title">OccasionsPublisher Class</h1>
-        <p>The OccasionsPublisher class provides an abstraction for mementar insertion topic. <a href="#details">More...</a></p>
+        <p>The OccasionsPublisher class provides an abstraction for mementar insertion topic. <a
+            href="#details">More...</a></p>
         <div class="table">
           <table class="alignedsummary">
             <tbody>
-              <tr><td class="memItemLeft rightAlign topAlign"> Header:</td><td class="memItemRight bottomAlign"> <span class="preprocessor">#include &quot;mementar/OccasionsPublisher.h&quot;</span>
-              <tr><td class="memItemLeft rightAlign topAlign"> Inherited By:</td><td class="memItemRight bottomAlign"> <a href="OntologiesManipulator.html">OntologiesManipulator</a></td></tr>
+              <tr>
+                <td class="memItemLeft rightAlign topAlign"> Header:</td>
+                <td class="memItemRight bottomAlign"> <span class="preprocessor">#include
+                    &quot;mementar/OccasionsPublisher.h&quot;</span>
+              <tr>
+                <td class="memItemLeft rightAlign topAlign"> Inherited By:</td>
+                <td class="memItemRight bottomAlign"> <a href="OntologiesManipulator.html">OntologiesManipulator</a>
+                </td>
+              </tr>
             </tbody>
           </table>
         </div>
@@ -95,8 +106,19 @@
         <div class="table">
           <table class="alignedsummary">
             <tbody>
-              <tr><td class="memItemLeft rightAlign topAlign"> </td><td class="memItemRight bottomAlign"><b><a href="OccasionsPublisher.html#OccasionsPublisher">OccasionsPublisher</a></b>(ros::NodeHandle* <i>n</i>, const std::string&amp; <i>name</i> = "")</td></tr>
-              <tr><td class="memItemLeft rightAlign topAlign"> void </td><td class="memItemRight bottomAlign"><b><a href="OccasionsPublisher.html#insert2">insert</a></b>(const <a href="Fact.html">Fact</a>&amp; <i>fact</i>, time_t <i>stamp</i> = 0)</td></tr>
+              <tr>
+                <td class="memItemLeft rightAlign topAlign"> </td>
+                <td class="memItemRight bottomAlign"><b><a
+                      href="OccasionsPublisher.html#OccasionsPublisher">OccasionsPublisher</a></b>(ros::NodeHandle*
+                  <i>n</i>, const std::string&amp; <i>name</i> = "")
+                </td>
+              </tr>
+              <tr>
+                <td class="memItemLeft rightAlign topAlign"> void </td>
+                <td class="memItemRight bottomAlign"><b><a href="OccasionsPublisher.html#insert2">insert</a></b>(const
+                  <a href="Fact.html">Fact</a>&amp; <i>fact</i>, time_t <i>stamp</i> = 0)
+                </td>
+              </tr>
             </tbody>
           </table>
         </div>
@@ -106,23 +128,34 @@
           <h2 id="details">Detailed Description</h2>
           <p>The OccasionsPublisher class provides an abstraction for mementar insertion ROS topic.</p>
           <p>The insertion process is asynchronous and therefore does not guarantee any response time.</p>
-          <p>In mementar, a fact is a datum that is not linked to a temporal stamp. When a fact occurs at a moment t, it is
-            called an occasion. An occasion is a particular time or instance of an event. An event occurs on a time interval.
-            It is thus composed of two occasions, one being the beginning of the event and the other the end. An event is
-            therefore a change of state of a fact, so that two facts have the same subject and the same predicate, but the
+          <p>In mementar, a fact is a datum that is not linked to a temporal stamp. When a fact occurs at a moment t, it
+            is
+            called an occasion. An occasion is a particular time or instance of an event. An event occurs on a time
+            interval.
+            It is thus composed of two occasions, one being the beginning of the event and the other the end. An event
+            is
+            therefore a change of state of a fact, so that two facts have the same subject and the same predicate, but
+            the
             object changes.</p>
         </div>
 
         <div class="func">
           <h2>Public Functions Documentation</h2>
 
-          <h3 class="fn" id="OccasionsPublisher"><a name="OccasionsPublisher"></a>mementar::OccasionsPublisher::<span class="name">OccasionsPublisher</span>(<span class="type">ros::NodeHandle</span>*<i> n</i>, const <span class="type">std::string</span>&amp; <i>name</i> = "")</h3>
+          <h3 class="fn" id="OccasionsPublisher"><a name="OccasionsPublisher"></a>mementar::OccasionsPublisher::<span
+              class="name">OccasionsPublisher</span>(<span class="type">ros::NodeHandle</span>*<i> n</i>, const <span
+              class="type">std::string</span>&amp; <i>name</i> = "")</h3>
           <p>Constructs an OccasionsPublisher with a pointer to a NodeHandle <i>n</i>.</p>
-          <p>Can be used in a multi-process mode by specifying the name of the mementar instance <i>name</i>. For classic use, <i>name</i> should be defined as &quot;&quot;.</p>
+          <p>Can be used in a multi-process mode by specifying the name of the mementar instance <i>name</i>. For
+            classic use, <i>name</i> should be defined as &quot;&quot;.</p>
 
-          <h3 class="fn" id="insert2"><a name="insert2"></a><span class="type">void</span> mementar::OccasionsPublisher::<span class="name">insert</span>(const <span class="type"><a href="Fact.html">Fact</a></span>&amp; <i>fact</i>, <span class="type">time_t</span> <i>stamp</i> = 0)</h3>
+          <h3 class="fn" id="insert2"><a name="insert2"></a><span class="type">void</span>
+            mementar::OccasionsPublisher::<span class="name">insert</span>(const <span class="type"><a
+                href="Fact.html">Fact</a></span>&amp; <i>fact</i>, <span class="type">time_t</span> <i>stamp</i> = 0)
+          </h3>
           <p>Inserts the fact defined in the <i>fact</i> object.</p>
-          <p>The fact can be stamped using the <i>stamp</i> parameter. If the stamp parameter is not set (set to default 0), it will be set at the current time.</p>
+          <p>The fact can be stamped using the <i>stamp</i> parameter. If the stamp parameter is not set (set to default
+            0), it will be set at the current time.</p>
 
         </div>
       </div>
@@ -136,7 +169,7 @@
     <p>
       Brought to you by:
       <a class="laas_logo" href="https://www.laas.fr/public/">
-        <img src="../img/LogoLAAS-2016_BW.png " alt="LAAS-CNRS" height="60px"/>
+        <img src="../img/LogoLAAS-2016_BW.png " alt="LAAS-CNRS" height="60px" />
       </a>
     </p>
   </div>
