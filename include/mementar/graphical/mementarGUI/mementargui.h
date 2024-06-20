@@ -2,34 +2,33 @@
 #define MEMENTAR_MEMENTARGUI_H
 
 #include <QMainWindow>
-#include "include/mementar/graphical/mementarGUI/QCheckBoxExtended.h"
-#include "include/mementar/graphical/mementarGUI/CallBackTimer.h"
 #include <QTextCursor>
-
-#include "mementar/compat/ros.h"
-#include "mementar/API/mementar/TimelineManipulator.h"
-
-#include <vector>
 #include <string>
+#include <vector>
 
-namespace Ui {
-class mementarGUI;
+#include "include/mementar/graphical/mementarGUI/CallBackTimer.h"
+#include "include/mementar/graphical/mementarGUI/QCheckBoxExtended.h"
+#include "mementar/API/mementar/TimelineManipulator.h"
+#include "mementar/compat/ros.h"
+
+namespace Ui { // NOLINT
+  class mementarGUI;
 }
 
 class mementarGUI : public QMainWindow
 {
-    Q_OBJECT
+  Q_OBJECT
 
 public:
-  explicit mementarGUI(QWidget *parent = 0);
-  ~mementarGUI();
+  explicit mementarGUI(QWidget* parent = nullptr);
+  ~mementarGUI() override;
 
   void init();
   void wait();
   void start();
 
 private:
-  Ui::mementarGUI* ui;
+  Ui::mementarGUI* ui_;
 
   mementar::TimelineManipulator meme_;
 
@@ -70,8 +69,8 @@ public slots:
   void deleteInstanceSlot();
   void saveInstanceSlot();
   void drawInstanceSlot();
-  void InstanceNameAddDelChangedSlot(const QString&);
-  void InstanceNameChangedSlot(const QString&);
+  void instanceNameAddDelChangedSlot(const QString&);
+  void instanceNameChangedSlot(const QString&);
   void timesourceChangedSlot(int index);
   void currentTimeEditingFinishedSlot();
 
@@ -80,7 +79,7 @@ public slots:
   void feederDelSlot();
   void feederCommitSlot();
   void feederCheckoutSlot();
-  void createPublisher(const std::string& onto_ns);
+  void createPublisher(const std::string& instance_ns);
 
 signals:
   void feederSetHtmlSignal(QString);

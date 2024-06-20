@@ -7,15 +7,15 @@
 
 namespace mementar {
 
-class CsvSaver
-{
-public:
-    CsvSaver() {}
+  class CsvSaver
+  {
+  public:
+    CsvSaver() = default;
     bool save(const std::string& file_name, Timeline* timeline);
 
-private:
+  private:
     void replaceAll(std::string& text, const std::string& to_replace, const std::string& replace_with);
-};
+  };
 
 } // namespace mementar
 

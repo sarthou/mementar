@@ -1,19 +1,25 @@
-#include <execinfo.h>
+#include <array>
 #include <csignal>
+#include <cstdio>
+#include <cstdlib>
+#include <execinfo.h>
 #include <thread>
+#include <unistd.h>
+#include <vector>
 
 #include "mementar/RosInterface.h"
+#include "mementar/compat/ros.h"
 #include "mementar/core/Parametrization/Parameters.h"
 
 void handler(int sig)
 {
-  void* array[10];
-  size_t size;
+  std::array<void*, 10> array;
+  int size = 0;
 
-  size = backtrace(array, 10);
+  size = backtrace(array.data(), 10);
 
   fprintf(stderr, "Error: signal %d:\n", sig);
-  backtrace_symbols_fd(array, size, STDERR_FILENO);
+  backtrace_symbols_fd(array.data(), size, STDERR_FILENO);
   exit(1);
 }
 

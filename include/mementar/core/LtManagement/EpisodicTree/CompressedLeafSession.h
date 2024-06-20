@@ -3,27 +3,26 @@
 
 #include "mementar/core/LtManagement/archiving_compressing/archiving/Archive.h"
 #include "mementar/core/LtManagement/archiving_compressing/archiving/Header.h"
-
-#include "mementar/core/memGraphs/Btree/BplusTree.h"
 #include "mementar/core/memGraphs/Branchs/types/Fact.h"
+#include "mementar/core/memGraphs/Btree/BplusTree.h"
 
-namespace mementar
-{
+namespace mementar {
 
-class CompressedLeafSession
-{
-public:
-  CompressedLeafSession(const time_t& key, size_t index);
+  class CompressedLeafSession
+  {
+  public:
+    CompressedLeafSession(const time_t& key, size_t index);
 
-  time_t getKey() { return key_; }
-  size_t getIndex() { return index_; }
+    time_t getKey() const { return key_; }
+    size_t getIndex() const { return index_; }
 
-  BplusTree<time_t, Fact*>* getTree(Header& header, Archive& arch);
-  std::vector<char> getRawData(Header& header, Archive& arch);
-private:
-  time_t key_;
-  size_t index_;
-};
+    BplusTree<time_t, Fact*>* getTree(Header& header, Archive& arch) const;
+    std::vector<char> getRawData(Header& header, Archive& arch) const;
+
+  private:
+    time_t key_;
+    size_t index_;
+  };
 
 } // namespace mementar
 

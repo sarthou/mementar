@@ -1,23 +1,32 @@
 #include "mementar/API/mementar/clients/ClientBase.h"
 
+#include <cstddef>
+#include <cstdint>
+#include <iostream>
+#include <string>
+#include <vector>
+
+#include "mementar/compat/ros.h"
+
 namespace mementar {
+
   mementar::compat::onto_ros::ServiceWrapper<mementar::compat::MementarService::Response> ClientBase::call(const std::string& action, const std::string& param)
   {
     cpt++;
 
-    auto req = mementar::compat::make_request<mementar::compat::MementarService>();
-    auto res = mementar::compat::make_response<mementar::compat::MementarService>();
+    auto req = mementar::compat::makeRequest<mementar::compat::MementarService>();
+    auto res = mementar::compat::makeResponse<mementar::compat::MementarService>();
 
     [action, param](auto&& req) {
       req->action = action;
       req->param = param;
     }(mementar::compat::onto_ros::getServicePointer(req));
 
-    using ResultTy = typename decltype(client_)::Status;
+    using ResultTy = typename decltype(client_)::RosStatus_e;
 
     switch(client_.call(req, res))
     {
-    case ResultTy::SUCCESSFUL_WITH_RETRIES:
+    case ResultTy::ros_status_successful_with_retries:
     {
       error_code_ = 0;
 
@@ -27,11 +36,11 @@ namespace mementar {
       }
       [[fallthrough]];
     }
-    case ResultTy::SUCCESSFUL:
+    case ResultTy::ros_status_successful:
     {
       return res;
     }
-    case ResultTy::FAILURE:
+    case ResultTy::ros_status_failure:
       [[fallthrough]];
     default:
     {
@@ -47,7 +56,8 @@ namespace mementar {
     }
   }
 
-  std::int16_t ClientBase::callCode(const std::string& action, const std::string& param) {
+  std::int16_t ClientBase::callCode(const std::string& action, const std::string& param)
+  {
     auto res = call(action, param);
     return compat::onto_ros::getServicePointer(res)->code;
   }
@@ -72,7 +82,7 @@ namespace mementar {
 
   bool ClientBase::callBool(const std::string& action, const std::string& param)
   {
-    int16_t code;
+    int16_t code = 0;
     auto res = this->callStr(action, param);
 
     return (res != "ERR:SERVICE_FAIL") && (code == 0);

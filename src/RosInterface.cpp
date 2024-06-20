@@ -1,8 +1,19 @@
 #include "mementar/RosInterface.h"
 
+#include <algorithm>
+#include <cstddef>
 #include <filesystem>
+#include <iterator>
+#include <string>
 #include <thread>
+#include <unordered_set>
+#include <vector>
 
+#include "mementar/compat/ros.h"
+#include "mementar/core/memGraphs/Branchs/ContextualizedFact.h"
+#include "mementar/core/memGraphs/Branchs/ValuedNode.h"
+#include "mementar/core/memGraphs/Branchs/types/SoftPoint.h"
+#include "mementar/core/memGraphs/Timeline.h"
 #include "mementar/core/utility/error_code.h"
 #include "mementar/graphical/Display.h"
 #include "mementar/graphical/timeline/CsvSaver.h"
@@ -11,21 +22,22 @@
 
 namespace mementar {
 
-  RosInterface::RosInterface(const std::string& directory, const std::string& configuration_file, size_t order,
-                             std::string name)
-    : onto_(name),
-      feeder_(&onto_),
-      feeder_echo_(getTopicName("echo", name)),
-      occasions_(&onto_, name),
-      run_(true)
+  RosInterface::RosInterface(const std::string& directory,
+                             const std::string& configuration_file,
+                             size_t order,
+                             const std::string& name) : order_(order),
+                                                        onto_(name),
+                                                        feeder_(&onto_),
+                                                        feeder_echo_(getTopicName("echo", name)),
+                                                        occasions_(&onto_, name),
+                                                        run_(true)
   {
-    order_ = order;
     onto_.close();
 
     if(directory != "none")
     {
       directory_ = directory;
-      if(name == "")
+      if(name.empty())
         directory_ += "/mementar";
       else
         directory_ += "/" + name;
@@ -153,7 +165,7 @@ namespace mementar {
   double RosInterface::rosTime2Float(double s, int ns)
   {
     ns = ns / 100000000;
-    double res = ns / 10.f;
+    double res = (double)ns / 10.;
     if(res < 0.25)
       return s;
     else if(res < 0.5)
@@ -166,7 +178,7 @@ namespace mementar {
 
   void RosInterface::knowledgeCallback(compat::onto_ros::MessageWrapper<compat::StampedString> msg)
   {
-    feeder_.storeFact(msg->data, time(0));
+    feeder_.storeFact(msg->data, std::time(nullptr));
   }
 
   void RosInterface::stampedKnowledgeCallback(compat::onto_ros::MessageWrapper<compat::StampedString> msg)
@@ -212,11 +224,11 @@ namespace mementar {
                                            compat::onto_ros::ServiceWrapper<compat::MementarService::Response>& res)
   {
     return [this](auto&& req, auto&& res) {
-      res->code = NO_ERROR;
+      res->code = ServiceCode::service_no_error;
 
       removeUselessSpace(req->action);
       removeUselessSpace(req->param);
-      // param_t params = getParams(req->param);
+      // Param_t params = getParams(req->param);
 
       /*if(req->action == "newSession")
       {
@@ -231,16 +243,16 @@ namespace mementar {
       {
         TimelineDrawer drawer;
         if(drawer.draw(req->param, timeline_) == false)
-          res->code = NO_EFFECT;
+          res->code = ServiceCode::service_no_effect;
       }
       else if(req->action == "save")
       {
         CsvSaver saver;
         if(saver.save(req->param, timeline_) == false)
-          res->code = NO_EFFECT;
+          res->code = ServiceCode::service_no_effect;
       }
       else
-        res->code = UNKNOW_ACTION;
+        res->code = ServiceCode::service_unknown_action;
 
       return true;
     }(compat::onto_ros::getServicePointer(req), compat::onto_ros::getServicePointer(res));
@@ -254,7 +266,7 @@ namespace mementar {
 
       removeUselessSpace(req->action);
       removeUselessSpace(req->param);
-      param_t params = getParams(req->param);
+      Param_t params = getParams(req->param);
 
       std::unordered_set<std::string> set_res;
 
@@ -317,10 +329,10 @@ namespace mementar {
       else if(req->action == "removeAction")
       {
         if(timeline_->actions.removeAction(params()) == false)
-          res->code = NO_EFFECT;
+          res->code = ServiceCode::service_no_effect;
       }
       else
-        res->code = UNKNOW_ACTION;
+        res->code = ServiceCode::service_unknown_action;
 
       if(res->values.size() == 0)
         set2vector(set_res, res->values);
@@ -337,7 +349,7 @@ namespace mementar {
 
       removeUselessSpace(req->action);
       removeUselessSpace(req->param);
-      param_t params = getParams(req->param);
+      Param_t params = getParams(req->param);
 
       std::unordered_set<std::string> set_res;
 
@@ -354,13 +366,13 @@ namespace mementar {
       else if(req->action == "getActionPart")
       {
         auto action_name = timeline_->facts.getActionPart(params());
-        if(action_name != "")
+        if(action_name.empty() == false)
           res->values.push_back(action_name);
       }
       else if(req->action == "getData")
       {
         auto fact_data = timeline_->facts.getData(params());
-        if(fact_data != "")
+        if(fact_data.empty() == false)
           res->values.push_back(fact_data);
       }
       else if(req->action == "getStamp")
@@ -371,7 +383,7 @@ namespace mementar {
       }
       else
       {
-        res->code = UNKNOW_ACTION;
+        res->code = ServiceCode::service_unknown_action;
       }
 
       if(res->values.size() == 0)
@@ -409,7 +421,7 @@ namespace mementar {
         for(auto notif : notifications)
         {
           Display::error(notif);
-          if(name_ != "")
+          if(name_.empty() == false)
             notif = "[" + name_ + "]" + notif;
           msg.data = notif;
           feeder_publisher.publish(msg);
@@ -431,10 +443,10 @@ namespace mementar {
 
   void RosInterface::removeUselessSpace(std::string& text)
   {
-    while((text[0] == ' ') && (text.size() != 0))
+    while((text[0] == ' ') && (text.empty() == false))
       text.erase(0, 1);
 
-    while((text[text.size() - 1] == ' ') && (text.size() != 0))
+    while((text[text.size() - 1] == ' ') && (text.empty() == false))
       text.erase(text.size() - 1, 1);
   }
 
@@ -449,12 +461,12 @@ namespace mementar {
     std::copy(word_set.cbegin(), word_set.cend(), std::back_inserter(result));
   }
 
-  param_t RosInterface::getParams(const std::string& param)
+  Param_t RosInterface::getParams(const std::string& param)
   {
-    param_t parameters;
+    Param_t parameters;
     std::vector<std::string> str_params = split(param, " ");
 
-    if(str_params.size())
+    if(str_params.empty() == false)
       parameters.base = str_params[0];
 
     bool option_found = false;

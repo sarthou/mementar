@@ -14,14 +14,14 @@ namespace mementar {
   class OccasionsSubscriber
   {
   public:
-    OccasionsSubscriber(std::function<void(const Fact&)> callback, const std::string& name = "", bool spin_thread = true);
-    OccasionsSubscriber(std::function<void(const Fact&)> callback, bool spin_thread);
+    OccasionsSubscriber(const std::function<void(const Fact&)>& callback, const std::string& name = "", bool spin_thread = true);
+    OccasionsSubscriber(const std::function<void(const Fact&)>& callback, bool spin_thread);
     virtual ~OccasionsSubscriber();
 
     bool subscribe(const Fact& pattern, size_t count = -1);
     bool cancel();
 
-    bool end() { return ids_.size() == 0; }
+    bool end() const { return ids_.empty(); }
 
   private:
     compat::onto_ros::Subscriber<compat::MementarOccasion> sub_;

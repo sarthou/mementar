@@ -24,7 +24,7 @@ namespace mementar {
       else
       {
         std::vector<std::string> splitted = split(fact, "|");
-        if(splitted.size() >= 1)
+        if(splitted.empty() == false)
           subject_ = splitted[0];
         if(splitted.size() >= 2)
           predicat_ = splitted[1];
@@ -34,13 +34,14 @@ namespace mementar {
       }
     }
 
-    Fact(const std::string& subject, const std::string& predicat, const std::string& object, bool add = true)
-    {
-      subject_ = subject;
-      predicat_ = predicat;
-      object_ = object;
-      add_ = true;
-    }
+    Fact(const std::string& subject,
+         const std::string& predicat,
+         const std::string& object,
+         bool add = true) : subject_(subject),
+                            predicat_(predicat),
+                            object_(object),
+                            add_(add)
+    {}
 
     std::string getSubject() const { return subject_; }
     std::string getPredicat() const { return predicat_; }
@@ -56,7 +57,7 @@ namespace mementar {
     void operator()(const std::string& fact, bool add = true)
     {
       std::vector<std::string> splitted = split(fact, "|");
-      if(splitted.size() >= 1)
+      if(splitted.empty() == false)
         subject_ = splitted[0];
       if(splitted.size() >= 2)
         predicat_ = splitted[1];

@@ -1,60 +1,73 @@
-#include <execinfo.h>
-#include <mementar/compat/ros.h>
+#include <algorithm>
+#include <array>
 #include <csignal>
+#include <cstdio>
+#include <cstdlib>
+#include <execinfo.h>
+#include <iostream>
+#include <iterator>
+#include <map>
+#include <memory>
+#include <stdexcept>
+#include <string>
 #include <thread>
+#include <unistd.h>
+#include <utility>
+#include <vector>
 
 #include "mementar/RosInterface.h"
+#include "mementar/compat/ros.h"
 #include "mementar/core/Parametrization/Parameters.h"
 #include "mementar/core/utility/error_code.h"
 
 void handler(int sig)
 {
-  void* array[10];
-  size_t size;
+  std::array<void*, 10> array;
+  int size = 0;
 
-  size = backtrace(array, 10);
+  size = backtrace(array.data(), 10);
 
   fprintf(stderr, "Error: signal %d:\n", sig);
-  backtrace_symbols_fd(array, size, STDERR_FILENO);
+  backtrace_symbols_fd(array.data(), size, STDERR_FILENO);
   exit(1);
 }
 
 void removeUselessSpace(std::string& text)
 {
-  while((text[0] == ' ') && (text.size() != 0))
+  while((text[0] == ' ') && (text.empty() == false))
   {
     text.erase(0, 1);
   }
 
-  while((text[text.size() - 1] == ' ') && (text.size() != 0))
+  while((text[text.size() - 1] == ' ') && (text.empty() == false))
   {
     text.erase(text.size() - 1, 1);
   }
 }
 
-std::map<std::string, std::unique_ptr<mementar::RosInterface>> interfaces_;
-std::map<std::string, std::thread> interfaces_threads_;
+std::map<std::string, std::unique_ptr<mementar::RosInterface>> interfaces;
+std::map<std::string, std::thread> interfaces_threads;
 
 mementar::Parameters params;
 
-bool deleteInterface(std::string name)
+bool deleteInterface(const std::string& name)
 {
-  interfaces_[name]->stop();
+  interfaces[name]->stop();
   usleep(1000);
 
   try
   {
-    interfaces_threads_[name].join();
+    interfaces_threads[name].join();
   }
   catch(std::runtime_error& ex)
   {
     mementar::Display::error("Catch error when joining the interface thread : " + std::string(ex.what()));
     mementar::Display::warning("The thread will be detached");
-    interfaces_threads_[name].detach();
+    interfaces_threads[name].detach();
   }
 
-  interfaces_threads_.erase(name);
-  interfaces_.erase(name);
+  interfaces_threads.erase(name);
+  interfaces.erase(name);
 
   std::cout << name << " STOPPED" << std::endl;
   return true;
@@ -64,17 +77,17 @@ bool managerHandle(mementar::compat::onto_ros::ServiceWrapper<mementar::compat::
                    mementar::compat::onto_ros::ServiceWrapper<mementar::compat::MementarService::Response>& res)
 {
   return [](auto&& req, auto&& res) {
-    res->code = mementar::ServiceCode::NoError;
+    res->code = mementar::ServiceCode::service_no_error;
 
     removeUselessSpace(req->action);
     removeUselessSpace(req->param);
 
     if(req->action == "add")
     {
-      auto it = interfaces_.find(req->param);
-      if(it != interfaces_.end())
+      auto it = interfaces.find(req->param);
+      if(it != interfaces.end())
       {
-        res->code = mementar::ServiceCode::NoEffect;
+        res->code = mementar::ServiceCode::service_no_effect;
       }
       else
       {
@@ -85,36 +98,36 @@ bool managerHandle(mementar::compat::onto_ros::ServiceWrapper<mementar::compat::
 
         std::thread th(&mementar::RosInterface::run, tmp.get());
 
-        interfaces_[req->param] = std::move(tmp);
-        interfaces_threads_[req->param] = std::move(th);
+        interfaces[req->param] = std::move(tmp);
+        interfaces_threads[req->param] = std::move(th);
 
         std::cout << req->param << " STARTED" << std::endl;
       }
     }
     else if(req->action == "delete")
     {
-      auto it = interfaces_.find(req->param);
+      auto it = interfaces.find(req->param);
 
-      if(it == interfaces_.end())
+      if(it == interfaces.end())
       {
-        res->code = mementar::ServiceCode::NoEffect;
+        res->code = mementar::ServiceCode::service_no_effect;
       }
       else
       {
         if(deleteInterface(req->param) == false)
-          res->code = mementar::ServiceCode::RequestError;
+          res->code = mementar::ServiceCode::service_request_error;
       }
     }
     else if(req->action == "list")
     {
-      for(const auto& [name, _] : interfaces_)
+      for(const auto& [name, _] : interfaces)
       {
         res->values.push_back(name);
       }
     }
     else
     {
-      res->code = mementar::ServiceCode::UnknownAction;
+      res->code = mementar::ServiceCode::service_unknown_action;
     }
 
     return true;
@@ -135,19 +148,20 @@ int main(int argc, char** argv)
   mementar::compat::onto_ros::Service<mementar::compat::MementarService> service("/mementar/manage", managerHandle);
   mementar::compat::onto_ros::Node::get().spin();
 
-  while(mementar::compat::onto_ros::Node::ok()) {
+  while(mementar::compat::onto_ros::Node::ok())
+  {
     usleep(1);
   }
 
   std::vector<std::string> interfaces_names;
-  std::transform(interfaces_.cbegin(),
-                 interfaces_.cend(),
+  std::transform(interfaces.cbegin(),
+                 interfaces.cend(),
                  std::back_inserter(interfaces_names),
                  [](const auto& interface) { return interface.first; });
 
-  for(size_t i = 0; i < interfaces_names.size(); i++)
+  for(const auto& interfaces_names : interfaces_names)
   {
-    deleteInterface(interfaces_names[i]);
+    deleteInterface(interfaces_names);
   }
 
   mementar::compat::onto_ros::Node::shutdown();

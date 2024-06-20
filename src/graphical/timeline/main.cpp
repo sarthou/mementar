@@ -1,7 +1,7 @@
-#include "mementar/core/memGraphs/Timeline.h"
+#include <iostream>
 
-#include "mementar/graphical/timeline/ActionReader.h"
-#include "mementar/graphical/timeline/FactReader.h"
+#include "mementar/core/memGraphs/Branchs/types/Action.h"
+#include "mementar/core/memGraphs/Timeline.h"
 #include "mementar/graphical/timeline/TimelineDrawer.h"
 
 mementar::Timeline* getTimeline()
@@ -108,7 +108,6 @@ mementar::Timeline* getTimeline()
   return timeline;
 }*/
 
-
 /* HUMAN GREEN*/
 /*mementar::Timeline* getTimeline()
 {
@@ -164,7 +163,6 @@ mementar::Timeline* getTimeline()
   return timeline;
 }*/
 
-
 // Human bleu
 /*mementar::Timeline* getTimeline()
 {
@@ -191,6 +189,9 @@ mementar::Timeline* getTimeline()
 
 int main(int argc, char** argv)
 {
+  (void)argc;
+  (void)argv;
+
   mementar::Timeline* timeline = getTimeline();
 
   std::cout << "-------- DRAW---------" << std::endl;

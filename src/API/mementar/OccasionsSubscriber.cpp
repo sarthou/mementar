@@ -1,13 +1,22 @@
 #include "include/mementar/API/mementar/OccasionsSubscriber.h"
 
+#include <algorithm>
+#include <cstddef>
+#include <functional>
+#include <string>
+
+#include "mementar/API/mementar/Fact.h"
+#include "mementar/compat/ros.h"
+
 namespace mementar {
 
-  OccasionsSubscriber::OccasionsSubscriber(std::function<void(const Fact&)> callback, const std::string& name, bool spin_thread)
+  OccasionsSubscriber::OccasionsSubscriber(const std::function<void(const Fact&)>& callback, const std::string& name, bool spin_thread)
     : sub_(name.empty() ? "mementar/occasions" : "mementar/occasions/" + name, 1000, &OccasionsSubscriber::occasionCallback, this),
       client_subscribe_(name.empty() ? "mementar/subscribe" : "mementar/subscribe/" + name),
-      client_cancel_(name.empty() ? "mementar/unsubscribe" : "mementar/unsubscribe/" + name)
+      client_cancel_(name.empty() ? "mementar/unsubscribe" : "mementar/unsubscribe/" + name),
+      callback_(callback)
   {
-    callback_ = callback;
+    (spin_thread);
 
     /*if (spin_thread) {
         need_to_terminate_ = false;
@@ -17,7 +26,7 @@ namespace mementar {
     }*/
   }
 
-  OccasionsSubscriber::OccasionsSubscriber(std::function<void(const Fact&)> callback, bool spin_thread)
+  OccasionsSubscriber::OccasionsSubscriber(const std::function<void(const Fact&)>& callback, bool spin_thread)
     : OccasionsSubscriber(callback, "", spin_thread) {}
 
   OccasionsSubscriber::~OccasionsSubscriber()
@@ -34,17 +43,17 @@ namespace mementar {
 
   bool OccasionsSubscriber::subscribe(const Fact& pattern, size_t count)
   {
-    auto req = mementar::compat::make_request<mementar::compat::MementarOccasionSubscription>();
-    auto res = mementar::compat::make_response<mementar::compat::MementarOccasionSubscription>();
+    auto req = mementar::compat::makeRequest<mementar::compat::MementarOccasionSubscription>();
+    auto res = mementar::compat::makeResponse<mementar::compat::MementarOccasionSubscription>();
 
     [&](auto&& req) {
       req->data = pattern();
       req->count = count;
     }(mementar::compat::onto_ros::getServicePointer(req));
 
-    using ResultTy = typename decltype(client_subscribe_)::Status;
+    using ResultTy = typename decltype(client_subscribe_)::RosStatus_e;
 
-    if(client_subscribe_.call(req, res) != ResultTy::FAILURE)
+    if(client_subscribe_.call(req, res) != ResultTy::ros_status_failure)
     {
       ids_.push_back(mementar::compat::onto_ros::getServicePointer(res)->id);
       return true;
@@ -58,16 +67,16 @@ namespace mementar {
     bool done = true;
     for(size_t i = 0; i < ids_.size();)
     {
-      auto req = mementar::compat::make_request<mementar::compat::MementarOccasionUnsubscription>();
-      auto res = mementar::compat::make_response<mementar::compat::MementarOccasionUnsubscription>();
+      auto req = mementar::compat::makeRequest<mementar::compat::MementarOccasionUnsubscription>();
+      auto res = mementar::compat::makeResponse<mementar::compat::MementarOccasionUnsubscription>();
 
       [&](auto&& req) {
         req->id = ids_[i];
       }(mementar::compat::onto_ros::getServicePointer(req));
 
-      using ResultTy = typename decltype(client_cancel_)::Status;
+      using ResultTy = typename decltype(client_cancel_)::RosStatus_e;
 
-      if(client_cancel_.call(req, res) != ResultTy::FAILURE)
+      if(client_cancel_.call(req, res) != ResultTy::ros_status_failure)
       {
         if(mementar::compat::onto_ros::getServicePointer(res)->id != (int)ids_[i])
         {

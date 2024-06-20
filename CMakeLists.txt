@@ -1,4 +1,5 @@
 cmake_minimum_required(VERSION 3.8)
+set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
 project(mementar)
 
 set(CMAKE_CXX_STANDARD 20)
@@ -17,4 +18,3 @@ if($ENV{ROS_VERSION} STREQUAL "1")
 elseif($ENV{ROS_VERSION} STREQUAL "2")
     include(cmake/BuildROS2.cmake)
 endif()
-
