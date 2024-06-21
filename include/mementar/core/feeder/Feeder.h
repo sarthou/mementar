@@ -1,15 +1,18 @@
 #ifndef MEMENTAR_FEEDER_H
 #define MEMENTAR_FEEDER_H
 
+#include <functional>
+#include <string>
+#include <unordered_set>
+#include <vector>
+
 #include "mementar/core/feeder/FeedStorage.h"
 #include "mementar/core/feeder/IdGenerator.h"
 #include "mementar/core/memGraphs/Branchs/ContextualizedFact.h"
-// #include "ontologenius/core/feeder/Versionor.h"
-
-#include <functional>
-#include <unordered_set>
-
+#include "mementar/core/memGraphs/Branchs/types/SoftPoint.h"
 #include "ontologenius/OntologyManipulator.h"
+
+// #include "ontologenius/core/feeder/Versionor.h"
 
 namespace mementar {
 
@@ -66,7 +69,7 @@ namespace mementar {
 
     void setList(const std::vector<std::string>& base_list);
 
-    void defaultCallback(ContextualizedFact* fact) {}
+    void defaultCallback(ContextualizedFact* fact) { (void)fact; }
   };
 
 } // namespace mementar

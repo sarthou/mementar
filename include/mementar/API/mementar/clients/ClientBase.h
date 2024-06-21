@@ -23,12 +23,12 @@ namespace mementar {
   class ClientBase
   {
   public:
-    ClientBase(std::string name) : client_("mementar/" + name), name_(name) {}
+    ClientBase(const std::string& name) : client_("mementar/" + name), name_(name) {}
 
-    size_t nb() { return cpt; }
+    size_t nb() const { return cpt; }
     void resetNb() { cpt = 0; }
     static void verbose(bool verbose) { verbose_ = verbose; }
-    int getErrorCode() { return error_code_; }
+    int getErrorCode() const { return error_code_; }
 
     // todo: get rid of the extra parameter `code` since we can get the error code via `getErrorCode`
     mementar::compat::onto_ros::ServiceWrapper<mementar::compat::MementarService::Response> call(const std::string& action, const std::string& param);

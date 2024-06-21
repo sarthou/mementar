@@ -1,5 +1,9 @@
 #include "mementar/API/mementar/clients/ManagerClient.h"
 
+#include <cstdint>
+#include <string>
+#include <vector>
+
 namespace mementar {
 
   std::vector<std::string> ManagerClient::list()

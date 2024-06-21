@@ -10,6 +10,7 @@ namespace mementar {
   class Fact
   {
   public:
+    // Avoid to set it explicit
     Fact(const std::string& fact, bool add = true)
     {
       std::smatch match;

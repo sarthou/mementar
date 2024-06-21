@@ -1,16 +1,23 @@
 #include "mementar/core/Occasions/OccasionsManager.h"
 
+#include <cstddef>
+#include <string>
+#include <vector>
+
+#include "mementar/compat/ros.h"
+#include "mementar/core/memGraphs/Branchs/types/Triplet.h"
+
 namespace mementar {
   OccasionsManager::OccasionsManager(std::string name)
     : onto_(nullptr),
       run_(false),
-      pub_((name == "") ? "occasions" : "occasions/" + name, 1000),
+      pub_((name.empty()) ? "occasions" : "occasions/" + name, 1000),
       sub_service_(
         name.empty() ? "subscribe" : "subscribe/" + name,
-        &OccasionsManager::SubscribeCallback, this),
+        &OccasionsManager::subscribeCallback, this),
       unsub_service_(
         name.empty() ? "unsubscribe" : "unsubscribe/" + name,
-        &OccasionsManager::UnsubscribeCallback, this)
+        &OccasionsManager::unsubscribeCallback, this)
   {
   }
 
@@ -18,9 +25,9 @@ namespace mementar {
     : onto_(onto),
       subscription_(onto),
       run_(false),
-      pub_((name == "") ? "occasions" : "occasions/" + name, 1000),
-      sub_service_(name.empty() ? "subscribe" : "subscribe/" + name, &OccasionsManager::SubscribeCallback, this),
-      unsub_service_(name.empty() ? "unsubscribe" : "unsubscribe/" + name, &OccasionsManager::UnsubscribeCallback,
+      pub_((name.empty()) ? "occasions" : "occasions/" + name, 1000),
+      sub_service_(name.empty() ? "subscribe" : "subscribe/" + name, &OccasionsManager::subscribeCallback, this),
+      unsub_service_(name.empty() ? "unsubscribe" : "unsubscribe/" + name, &OccasionsManager::unsubscribeCallback,
                      this)
   {
   }
@@ -56,15 +63,14 @@ namespace mementar {
   {
     mutex_.lock();
     if(queue_choice_ == true)
-      fifo_1.push(triplet);
+      fifo_1_.push(triplet);
     else
-      fifo_2.push(triplet);
+      fifo_2_.push(triplet);
     mutex_.unlock();
   }
 
-  bool OccasionsManager::SubscribeCallback(
-    compat::onto_ros::ServiceWrapper<compat::MementarOccasionSubscription::Request>& req,
-    compat::onto_ros::ServiceWrapper<compat::MementarOccasionSubscription::Response>& res)
+  bool OccasionsManager::subscribeCallback(compat::onto_ros::ServiceWrapper<compat::MementarOccasionSubscription::Request>& req,
+                                           compat::onto_ros::ServiceWrapper<compat::MementarOccasionSubscription::Response>& res)
   {
     return [this](auto&& req, auto&& res) {
       auto triplet_patern = TripletPattern::deserialize(req->data);
@@ -78,9 +84,8 @@ namespace mementar {
     }(compat::onto_ros::getServicePointer(req), compat::onto_ros::getServicePointer(res));
   }
 
-  bool OccasionsManager::UnsubscribeCallback(
-    compat::onto_ros::ServiceWrapper<compat::MementarOccasionUnsubscription::Request>& req,
-    compat::onto_ros::ServiceWrapper<compat::MementarOccasionUnsubscription::Response>& res)
+  bool OccasionsManager::unsubscribeCallback(compat::onto_ros::ServiceWrapper<compat::MementarOccasionUnsubscription::Request>& req,
+                                             compat::onto_ros::ServiceWrapper<compat::MementarOccasionUnsubscription::Response>& res)
   {
     return [this](auto&& req, auto&& res) {
       if(subscription_.unsubscribe(req->id))
@@ -98,24 +103,24 @@ namespace mementar {
     mutex_.lock();
     if(queue_choice_ == true)
     {
-      if(!fifo_2.empty())
+      if(!fifo_2_.empty())
       {
-        res = fifo_2.front();
-        fifo_2.pop();
+        res = fifo_2_.front();
+        fifo_2_.pop();
       }
 
-      if(fifo_2.empty())
+      if(fifo_2_.empty())
         queue_choice_ = false;
     }
     else
     {
-      if(!fifo_1.empty())
+      if(!fifo_1_.empty())
       {
-        res = fifo_1.front();
-        fifo_1.pop();
+        res = fifo_1_.front();
+        fifo_1_.pop();
       }
 
-      if(fifo_1.empty())
+      if(fifo_1_.empty())
         queue_choice_ = true;
     }
     mutex_.unlock();
@@ -126,7 +131,7 @@ namespace mementar {
   {
     bool res = true;
     mutex_.lock();
-    res = fifo_2.empty() && fifo_1.empty();
+    res = fifo_2_.empty() && fifo_1_.empty();
     mutex_.unlock();
     return res;
   }

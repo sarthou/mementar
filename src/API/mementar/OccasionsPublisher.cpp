@@ -1,9 +1,14 @@
-#include "include/mementar/API/mementar/OccasionsPublisher.h"
+#include "mementar/API/mementar/OccasionsPublisher.h"
+
+#include <ctime>
+#include <string>
+
+#include "mementar/API/mementar/Fact.h"
 
 namespace mementar {
 
   OccasionsPublisher::OccasionsPublisher(const std::string& name)
-    : pub_((name == "") ? "mementar/insert_fact_stamped" : "mementar/insert_fact_stamped/" + name, 1000) {}
+    : pub_((name.empty()) ? "mementar/insert_fact_stamped" : "mementar/insert_fact_stamped/" + name, 1000) {}
 
   void OccasionsPublisher::insert(const Fact& fact, time_t stamp)
   {

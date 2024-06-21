@@ -1,5 +1,8 @@
 #include "include/mementar/API/mementar/TimelineManipulator.h"
 
+#include <cstdint>
+#include <string>
+
 namespace mementar {
 
   TimelineManipulator::TimelineManipulator(const std::string& name)

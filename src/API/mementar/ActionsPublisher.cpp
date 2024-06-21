@@ -1,6 +1,12 @@
 #include "include/mementar/API/mementar/ActionsPublisher.h"
 
+#include <ctime>
+#include <string>
+
+#include "mementar/compat/ros.h"
+
 namespace mementar {
+
   ActionsPublisher::ActionsPublisher(const std::string& name) : pub_(name.empty() ? "mementar/insert_action" : "mementar/insert_action/" + name, 1000) {}
 
   void ActionsPublisher::insert(const std::string& name, time_t start_stamp, time_t end_stamp)

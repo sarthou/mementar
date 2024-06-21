@@ -2,6 +2,7 @@
 #define MEMENTAR_FACT_H
 
 #include <ostream>
+#include <regex>
 #include <string>
 
 #include "mementar/core/memGraphs/Branchs/types/SoftPoint.h"
@@ -40,12 +41,12 @@ namespace mementar {
 
     static Fact deserialize(const std::string& str)
     {
-      if(std::regex_match(str, match, regex))
+      if(std::regex_match(str, fact_match, fact_regex))
       {
-        if(match[3].str().empty())
-          return Fact(Triplet::deserialize(match[4].str()), SoftPoint(std::stoul(match[1].str())));
+        if(fact_match[3].str().empty())
+          return Fact(Triplet::deserialize(fact_match[4].str()), SoftPoint(std::stoul(fact_match[1].str())));
         else
-          return Fact(Triplet::deserialize(match[4].str()), SoftPoint(std::stoul(match[1].str()), std::stoul(match[3].str())));
+          return Fact(Triplet::deserialize(fact_match[4].str()), SoftPoint(std::stoul(fact_match[1].str()), std::stoul(fact_match[3].str())));
       }
       else
         return Fact("", 0);
@@ -53,12 +54,12 @@ namespace mementar {
 
     static Fact* deserializePtr(const std::string& str)
     {
-      if(std::regex_match(str, match, regex))
+      if(std::regex_match(str, fact_match, fact_regex))
       {
-        if(match[3].str().empty())
-          return new Fact(Triplet::deserialize(match[4].str()), SoftPoint(std::stoul(match[1].str())));
+        if(fact_match[3].str().empty())
+          return new Fact(Triplet::deserialize(fact_match[4].str()), SoftPoint(std::stoul(fact_match[1].str())));
         else
-          return new Fact(Triplet::deserialize(match[4].str()), SoftPoint(std::stoul(match[1].str()), std::stoul(match[3].str())));
+          return new Fact(Triplet::deserialize(fact_match[4].str()), SoftPoint(std::stoul(fact_match[1].str()), std::stoul(fact_match[3].str())));
       }
       else
         return nullptr;
@@ -83,8 +84,8 @@ namespace mementar {
     }
 
   protected:
-    static std::regex regex;
-    static std::smatch match;
+    static std::regex fact_regex;
+    static std::smatch fact_match;
   };
 
 } // namespace mementar

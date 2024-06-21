@@ -1,21 +1,26 @@
 #include <QApplication>
+#include <array>
 #include <csignal>
+#include <cstdio>
 #include <execinfo.h>
+#include <string>
 #include <thread>
+#include <unistd.h>
 
 #include "include/mementar/graphical/mementarGUI/DarkStyle.h"
 #include "include/mementar/graphical/mementarGUI/mementargui.h"
 #include "mementar/compat/ros.h"
+#include "qapplication.h"
+#include "qicon.h"
+#include "qstring.h"
 
 void handler(int sig)
 {
-  void* array[10];
-  size_t size;
-
-  size = backtrace(array, 10);
+  std::array<void*, 10> array;
+  int size = backtrace(array.data(), 10);
 
   fprintf(stderr, "Error: signal %d:\n", sig);
-  backtrace_symbols_fd(array, size, STDERR_FILENO);
+  backtrace_symbols_fd(array.data(), size, STDERR_FILENO);
   exit(1);
 }
 
@@ -36,13 +41,13 @@ int main(int argc, char* argv[])
 
   QApplication a(argc, argv);
 
-  a.setStyle(new DarkStyle);
+  QApplication::setStyle(new DarkStyle);
 
   std::string path = mementar::compat::onto_ros::getShareDirectory("mementar");
   path = path + "/docs/img/logo/mementar.ico";
 
   QIcon icon(QString::fromStdString(path));
-  a.setWindowIcon(icon);
+  QApplication::setWindowIcon(icon);
 
   mementarGUI w;
   w.show();
@@ -55,7 +60,7 @@ int main(int argc, char* argv[])
   w.start();
 
   signal(SIGINT, SIG_DFL);
-  auto a_exec = a.exec();
+  auto a_exec = QApplication::exec();
 
   run = false;
 

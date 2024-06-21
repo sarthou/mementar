@@ -1,6 +1,7 @@
 #include "mementar/core/feeder/FeedStorage.h"
 
 #include <algorithm>
+#include <cctype>
 #include <cstddef>
 #include <iostream>
 #include <queue>
@@ -47,7 +48,9 @@ namespace mementar {
     fact_mutex_.unlock();
   }
 
-  void FeedStorage::insertAction(const std::string& name, const SoftPoint::Ttime& start_stamp, const SoftPoint::Ttime& end_stamp)
+  void FeedStorage::insertAction(const std::string& name,
+                                 const SoftPoint::Ttime& start_stamp,
+                                 const SoftPoint::Ttime& end_stamp)
   {
     FeedAction_t feed;
     feed.name_ = name;

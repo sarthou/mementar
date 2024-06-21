@@ -1,9 +1,15 @@
 #include "include/mementar/API/mementar/TimelinesManipulator.h"
 
-namespace mementar {
-  TimelinesManipulator::TimelinesManipulator() : ManagerClient("") {}
+#include <cstdint>
+#include <memory>
+#include <string>
 
-  TimelinesManipulator::~TimelinesManipulator() {}
+#include "include/mementar/API/mementar/TimelineManipulator.h"
+#include "include/mementar/API/mementar/clients/ManagerClient.h"
+
+namespace mementar {
+  TimelinesManipulator::TimelinesManipulator() : ManagerClient("")
+  {}
 
   bool TimelinesManipulator::waitInit(int32_t timeout)
   {

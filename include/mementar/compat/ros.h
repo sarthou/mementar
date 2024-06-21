@@ -165,14 +165,11 @@ namespace mementar::compat {
     class Time : public RosTime
     {
     public:
-      Time(uint32_t sec, uint32_t nsec)
-        : RosTime(sec, nsec) {}
+      Time(uint32_t sec, uint32_t nsec) : RosTime(sec, nsec) {}
 
-      explicit Time(double t)
-        : RosTime((uint32_t)t, (uint32_t)((t - std::floor(t)) * 1'000'000'000.)) {}
+      explicit Time(double t) : RosTime((uint32_t)t, (uint32_t)((t - std::floor(t)) * 1'000'000'000.)) {}
 
-      Time(const RosTime& time)
-        : RosTime(time) {} // do not put it as explicit
+      explicit Time(const RosTime& time) : RosTime(time) {} // do not put it as explicit
 
       uint32_t seconds() const
       {

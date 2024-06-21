@@ -31,7 +31,7 @@ namespace mementar {
     {
       mut_.lock();
       compat::StampedFact ros_msg;
-      for(const auto& message : echo_messages_)
+      for(auto* message : echo_messages_)
       {
         const auto ros_time = compat::onto_ros::Time(message->getTime());
 
@@ -41,7 +41,7 @@ namespace mementar {
         ros_msg.subject = message->subject_;
         ros_msg.predicat = message->predicat_;
         ros_msg.object = message->object_;
-        ros_msg.added = message->add_;
+        ros_msg.added = message->add_ ? 1 : 0;
         feeder_echo_pub_.publish(ros_msg);
       }
       echo_messages_.clear();

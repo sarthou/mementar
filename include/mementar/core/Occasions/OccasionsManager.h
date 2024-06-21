@@ -15,7 +15,7 @@ namespace mementar {
   {
   public:
     explicit OccasionsManager(std::string name = "");
-    OccasionsManager(onto::OntologyManipulator* onto, std::string name = "");
+    explicit OccasionsManager(onto::OntologyManipulator* onto, std::string name = "");
 
     void run();
 
@@ -36,13 +36,13 @@ namespace mementar {
     std::mutex mutex_;
 
     bool queue_choice_;
-    std::queue<Triplet> fifo_1;
-    std::queue<Triplet> fifo_2;
+    std::queue<Triplet> fifo_1_;
+    std::queue<Triplet> fifo_2_;
 
-    bool SubscribeCallback(compat::onto_ros::ServiceWrapper<compat::MementarOccasionSubscription::Request>& req,
+    bool subscribeCallback(compat::onto_ros::ServiceWrapper<compat::MementarOccasionSubscription::Request>& req,
                            compat::onto_ros::ServiceWrapper<compat::MementarOccasionSubscription::Response>& res);
 
-    bool UnsubscribeCallback(compat::onto_ros::ServiceWrapper<compat::MementarOccasionUnsubscription::Request>& req,
+    bool unsubscribeCallback(compat::onto_ros::ServiceWrapper<compat::MementarOccasionUnsubscription::Request>& req,
                              compat::onto_ros::ServiceWrapper<compat::MementarOccasionUnsubscription::Response>& res);
 
     Triplet get();

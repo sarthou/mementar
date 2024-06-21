@@ -13,7 +13,7 @@ namespace mementar {
   {
   public:
     TimelinesManipulator();
-    ~TimelinesManipulator();
+    ~TimelinesManipulator() = default;
 
     bool waitInit(int32_t timeout = -1);
 

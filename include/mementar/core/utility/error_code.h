@@ -17,9 +17,9 @@ namespace mementar {
     {}
   } // namespace reserved
 
-  struct ServiceCode
+  struct ServiceCode // NOLINT
   {
-    enum Enum : int16_t
+    enum Enum : int16_t // NOLINT
     {
       service_no_error = 0,
       service_request_error = 1,

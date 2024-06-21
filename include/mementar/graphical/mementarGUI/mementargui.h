@@ -62,15 +62,15 @@ public slots:
   void factButtonClickedSlot();
 
   void nameEditingFinishedSlot();
-  void currentTabChangedSlot(int);
+  void currentTabChangedSlot(int tab_id);
 
   void displayInstancesListSlot();
   void addInstanceSlot();
   void deleteInstanceSlot();
   void saveInstanceSlot();
   void drawInstanceSlot();
-  void instanceNameAddDelChangedSlot(const QString&);
-  void instanceNameChangedSlot(const QString&);
+  void instanceNameAddDelChangedSlot(const QString& text);
+  void instanceNameChangedSlot(const QString& text);
   void timesourceChangedSlot(int index);
   void currentTimeEditingFinishedSlot();
 

@@ -16,7 +16,7 @@ namespace mementar {
       client_cancel_(name.empty() ? "mementar/unsubscribe" : "mementar/unsubscribe/" + name),
       callback_(callback)
   {
-    (spin_thread);
+    (void)spin_thread;
 
     /*if (spin_thread) {
         need_to_terminate_ = false;
@@ -103,7 +103,7 @@ namespace mementar {
     if(it != ids_.end())
     {
       callback_(Fact(msg.data));
-      if(msg.last == true)
+      if(msg.last != 0)
         ids_.erase(it);
     }
   }

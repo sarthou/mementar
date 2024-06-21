@@ -1,5 +1,8 @@
 #include "mementar/API/mementar/clients/InstanceManagerClient.h"
 
+#include <cstdint>
+#include <string>
+
 namespace mementar {
   int16_t InstanceManagerClient::save(const std::string& name)
   {

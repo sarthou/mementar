@@ -319,9 +319,9 @@ void mementarGUI::updateTime()
   setTimeSignal(QString::fromStdString(std::to_string(current_time_.seconds)));
 }
 
-void mementarGUI::currentTabChangedSlot(int index)
+void mementarGUI::currentTabChangedSlot(int tab_id)
 {
-  if(index == 3)
+  if(tab_id == 3)
     displayInstancesList();
 }
 

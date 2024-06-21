@@ -1,20 +1,30 @@
 #include "mementar/core/LtManagement/EpisodicTree/ArchivedLeafNode.h"
 
+#include <chrono>
+#include <cstddef>
+#include <ctime>
 #include <filesystem>
+#include <iostream>
+#include <iterator>
+#include <shared_mutex>
 #include <sstream>
+#include <string>
+#include <thread>
+#include <utility>
 
+#include "mementar/core/LtManagement/EpisodicTree/CompressedLeafNode.h"
+#include "mementar/core/LtManagement/EpisodicTree/CompressedLeafNodeSession.h"
+#include "mementar/core/memGraphs/Branchs/types/Fact.h"
 #include "mementar/graphical/Display.h"
 
 namespace mementar {
-
-  ArchivedLeafNode::ArchivedLeafNode(const std::string& directory, size_t order)
+  ArchivedLeafNode::ArchivedLeafNode(const std::string& directory,
+                                     size_t order) : directory_(directory),
+                                                     order_(order),
+                                                     earlier_key_(0),
+                                                     ask_for_new_tree_(false),
+                                                     running_(false)
   {
-    directory_ = directory;
-    order_ = order;
-
-    earlier_key_ = 0;
-    ask_for_new_tree_ = false;
-
     loadStoredData();
 
     running_ = true;
@@ -27,21 +37,17 @@ namespace mementar {
     session_cleaner_.join();
 
     mut_.lock();
-    for(auto tree : compressed_childs_)
-    {
-      if(tree != nullptr)
-        delete tree;
-    }
+    for(auto* tree : compressed_childs_)
+      delete tree;
 
     Display::info("Archive trees:");
     size_t nb_leafs = archived_sessions_tree_.size();
     size_t leafs_cpt = 0;
     Display::percent(0);
 
-    for(auto tree : archived_sessions_tree_)
+    for(auto* tree : archived_sessions_tree_)
     {
-      if(tree != nullptr)
-        delete tree;
+      delete tree;
       Display::percent((++leafs_cpt) * 100 / nb_leafs);
     }
 
@@ -52,7 +58,7 @@ namespace mementar {
   void ArchivedLeafNode::insert(Fact* data)
   {
     mut_.lock_shared();
-    if(keys_.size() == 0)
+    if(keys_.empty())
     {
       mut_.unlock_shared();
       createNewCompressedChild(data->getTime());
@@ -71,7 +77,8 @@ namespace mementar {
 
       if(index < archived_childs_.size())
       {
-        if((index == archived_childs_.size() - 1) && (keys_.size() == archived_childs_.size()) && ((time_t)data->getTime() > earlier_key_))
+        if((index == archived_childs_.size() - 1) && (keys_.size() == archived_childs_.size()) &&
+           ((time_t)data->getTime() > earlier_key_))
         {
           mut_.unlock_shared();
           createNewCompressedChild(data->getTime());
@@ -186,14 +193,14 @@ namespace mementar {
     ArchivedLeafNode::LeafType* res = nullptr;
 
     mut_.lock_shared();
-    if(archived_childs_.size())
+    if(archived_childs_.empty() == false)
     {
       mut_.unlock_shared();
       createSession(0);
       mut_.lock_shared();
       res = archived_sessions_tree_[0]->getFirst();
     }
-    else if(compressed_childs_.size())
+    else if(compressed_childs_.empty() == false)
       res = compressed_childs_[0]->getFirst();
     mut_.unlock_shared();
 
@@ -205,9 +212,9 @@ namespace mementar {
     ArchivedLeafNode::LeafType* res = nullptr;
 
     mut_.lock_shared();
-    if(compressed_childs_.size())
+    if(compressed_childs_.empty() == false)
       res = compressed_childs_[compressed_childs_.size() - 1]->getLast();
-    else if(archived_childs_.size())
+    else if(archived_childs_.empty() == false)
     {
       mut_.unlock_shared();
       createSession(archived_childs_.size() - 1);
@@ -236,7 +243,7 @@ namespace mementar {
 
   void ArchivedLeafNode::newSession()
   {
-    if(compressed_childs_.size())
+    if(compressed_childs_.empty() == false)
       compressed_childs_[compressed_childs_.size() - 1]->newSession();
   }
 
@@ -250,7 +257,7 @@ namespace mementar {
 
   bool ArchivedLeafNode::useNewTree()
   {
-    if(compressed_childs_.size() == 0)
+    if(compressed_childs_.empty())
       return false;
     else if(compressed_childs_[0]->size() >= order_)
       return true;
@@ -260,7 +267,7 @@ namespace mementar {
 
   int ArchivedLeafNode::getKeyIndex(const time_t& key)
   {
-    int index = keys_.size() - 1;
+    int index = (int)keys_.size() - 1;
     for(size_t i = 0; i < keys_.size(); i++)
     {
       if(key < keys_[i])
@@ -275,7 +282,8 @@ namespace mementar {
   void ArchivedLeafNode::loadStoredData()
   {
     Display::info("Load archived files:");
-    size_t nb_file = std::distance(std::filesystem::directory_iterator(directory_), std::filesystem::directory_iterator{});
+    size_t nb_file =
+      std::distance(std::filesystem::directory_iterator(directory_), std::filesystem::directory_iterator{});
     size_t cpt_file = 0;
     Display::percent(0);
 
@@ -285,14 +293,14 @@ namespace mementar {
       std::string dir = complete_dir.substr(directory_.size());
       if(dir[0] == '/')
         dir.erase(dir.begin());
-      size_t dot_pose = dir.find(".");
+      size_t dot_pose = dir.find('.');
       if(dot_pose != std::string::npos)
       {
         std::string ext = dir.substr(dot_pose + 1);
         std::string str_key = dir.substr(0, dot_pose);
         if(ext == "mar")
         {
-          time_t key;
+          time_t key = 0;
           std::istringstream iss(str_key);
           iss >> key;
           insert(key, ArchivedLeaf(key, complete_dir));
@@ -319,7 +327,7 @@ namespace mementar {
     else
       Display::warning("No compressed data loaded");
 
-    if(archived_childs_.size())
+    if(archived_childs_.empty() == false)
     {
       createSession(archived_childs_.size() - 1);
       earlier_key_ = archived_sessions_tree_[archived_childs_.size() - 1]->getLast()->getKey();
@@ -329,7 +337,7 @@ namespace mementar {
   void ArchivedLeafNode::insert(const time_t& key, const ArchivedLeaf& leaf)
   {
     mut_.lock();
-    if((keys_.size() == 0) || (key > keys_[keys_.size() - 1]))
+    if((keys_.empty()) || (key > keys_[keys_.size() - 1]))
     {
       keys_.push_back(key);
       archived_childs_.push_back(leaf);
@@ -339,7 +347,7 @@ namespace mementar {
     }
     else
     {
-      for(size_t i = 0; i < keys_.size(); i++)
+      for(int i = 0; i < (int)keys_.size(); i++)
       {
         if(key < keys_[i])
         {
@@ -357,7 +365,7 @@ namespace mementar {
 
   void ArchivedLeafNode::archiveFirst()
   {
-    if(compressed_childs_.size() == 0)
+    if(compressed_childs_.empty())
       return;
 
     ArchivedLeaf tmp(compressed_childs_[0], order_ / 2, directory_);
@@ -378,7 +386,7 @@ namespace mementar {
     if(archived_sessions_tree_[index] == nullptr)
       archived_sessions_tree_[index] = new CompressedLeafNodeSession(archived_childs_[index].getDirectory());
 
-    archived_sessions_timeout_[index] = std::time(0);
+    archived_sessions_timeout_[index] = std::time(nullptr);
     mut_.unlock();
   }
 

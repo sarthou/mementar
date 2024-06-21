@@ -1,11 +1,14 @@
 #include "mementar/compat/ros.h"
 
+#include <string>
+
 namespace mementar::compat::onto_ros {
-  std::string node_name__ = "OntoRos";
+
+  std::string ros_node_name = "OntoRos";
 
   Node& Node::get()
   {
-    static Node node(node_name__);
+    static Node node(ros_node_name);
     return node;
   }
 
@@ -20,10 +23,10 @@ namespace mementar::compat::onto_ros {
 
   void Node::init(int argc, char** argv, const std::string& node_name)
   {
-    node_name__ = node_name;
+    ros_node_name = node_name;
 
 #if ONTO_ROS_VERSION == 1
-    ros::init(argc, argv, node_name__);
+    ros::init(argc, argv, ros_node_name);
 #elif ONTO_ROS_VERSION == 2
     rclcpp::init(argc, argv);
 #endif
@@ -56,12 +59,11 @@ namespace mementar::compat::onto_ros {
 #endif
   }
 
-  Node::Node(const std::string& node_name)
-    : name_(node_name),
+  Node::Node(const std::string& node_name) : name_(node_name),
 #if ONTO_ROS_VERSION == 2
-      handle_(std::make_shared<rclcpp::Node>(node_name)),
+                                             handle_(std::make_shared<rclcpp::Node>(node_name)),
 #endif
-      running_(true)
+                                             running_(true)
   {
 #if ONTO_ROS_VERSION == 2
     ros_thread_ = std::thread([this]() { rclcpp::spin(handle_); });

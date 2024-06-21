@@ -1,13 +1,17 @@
 #ifndef MEMENTER_FEEDSTORAGE_H
 #define MEMENTER_FEEDSTORAGE_H
 
+#include <cstddef>
+#include <iostream>
 #include <mutex>
+#include <optional>
 #include <queue>
 #include <regex>
 #include <string>
 #include <vector>
 
 #include "mementar/core/memGraphs/Branchs/types/Fact.h"
+#include "mementar/core/memGraphs/Branchs/types/SoftPoint.h"
 
 namespace mementar {
 

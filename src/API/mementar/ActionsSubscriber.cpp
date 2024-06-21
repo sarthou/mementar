@@ -1,25 +1,26 @@
-#include "include/mementar/API/mementar/ActionsSubscriber.h"
+#include "mementar/API/mementar/ActionsSubscriber.h"
+
+#include <cstddef>
+#include <functional>
+#include <string>
+
+#include "mementar/API/mementar/Fact.h"
+#include "mementar/API/mementar/OccasionsSubscriber.h"
 
 namespace mementar {
 
-  ActionsSubscriber::ActionsSubscriber(std::function<void(const std::string&)> callback,
+  ActionsSubscriber::ActionsSubscriber(const std::function<void(const std::string&)>& callback,
                                        const std::string& name,
                                        bool spin_thread)
-    : OccasionsSubscriber([this](const Fact& fact) { this->privateCallback(fact); }, name, spin_thread)
-  {
-    callback_ = callback;
-  }
+    : OccasionsSubscriber([this](const Fact& fact) { this->privateCallback(fact); }, name, spin_thread),
+      callback_(callback)
+  {}
 
-  ActionsSubscriber::ActionsSubscriber(std::function<void(const std::string&)> callback,
+  ActionsSubscriber::ActionsSubscriber(const std::function<void(const std::string&)>& callback,
                                        bool spin_thread)
-    : OccasionsSubscriber([this](const Fact& fact) { this->privateCallback(fact); }, spin_thread)
-  {
-    callback_ = callback;
-  }
-
-  ActionsSubscriber::~ActionsSubscriber()
-  {
-  }
+    : OccasionsSubscriber([this](const Fact& fact) { this->privateCallback(fact); }, spin_thread),
+      callback_(callback)
+  {}
 
   bool ActionsSubscriber::subscribeToStart(const std::string& name, size_t count)
   {
