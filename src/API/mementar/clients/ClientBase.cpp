@@ -1,16 +1,16 @@
 #include "mementar/API/mementar/clients/ClientBase.h"
 
 #include <cstddef>
-#include <cstdint>
 #include <iostream>
 #include <string>
+#include <utility>
 #include <vector>
 
 #include "mementar/compat/ros.h"
 
 namespace mementar {
 
-  mementar::compat::onto_ros::ServiceWrapper<mementar::compat::MementarService::Response> ClientBase::call(const std::string& action, const std::string& param)
+  std::pair<std::vector<std::string>, compat::mem_ros::Time> ClientBase::call(const std::string& action, const std::string& param)
   {
     cpt++;
 
@@ -20,7 +20,7 @@ namespace mementar {
     [action, param](auto&& req) {
       req->action = action;
       req->param = param;
-    }(mementar::compat::onto_ros::getServicePointer(req));
+    }(mementar::compat::mem_ros::getServicePointer(req));
 
     using ResultTy = typename decltype(client_)::RosStatus_e;
 
@@ -28,17 +28,16 @@ namespace mementar {
     {
     case ResultTy::ros_status_successful_with_retries:
     {
-      error_code_ = 0;
-
-      if(verbose_)
-      {
+      if(client_verbose)
         std::cout << COLOR_GREEN << "Restored mementar/" << name_ << COLOR_OFF << std::endl;
-      }
       [[fallthrough]];
     }
     case ResultTy::ros_status_successful:
     {
-      return res;
+      return [&](auto&& res) {
+        error_code_ = res->code;
+        return std::make_pair(res->values, compat::mem_ros::Time(res->time_value.seconds, res->time_value.nanoseconds));
+      }(mementar::compat::mem_ros::getServicePointer(res));
     }
     case ResultTy::ros_status_failure:
       [[fallthrough]];
@@ -46,67 +45,15 @@ namespace mementar {
     {
       error_code_ = -1;
 
-      if(verbose_)
-      {
-        std::cout << COLOR_RED << "Failure to callArray mementar/" << name_ << COLOR_OFF << std::endl;
-      }
+      if(client_verbose)
+        std::cout << COLOR_RED << "Failure to callStrs mementar/" << name_ << COLOR_OFF << std::endl;
 
-      return res;
+      return {{}, compat::mem_ros::Time(0)};
     }
     }
-  }
-
-  std::int16_t ClientBase::callCode(const std::string& action, const std::string& param)
-  {
-    auto res = call(action, param);
-    return compat::onto_ros::getServicePointer(res)->code;
-  }
-
-  std::vector<std::string> ClientBase::callArray(const std::string& action, const std::string& param)
-  {
-    auto res = call(action, param);
-
-    if(error_code_ == -1)
-    {
-      return {"ERR:SERVICE_FAIL"};
-    }
-
-    return compat::onto_ros::getServicePointer(res)->values;
-  }
-
-  std::string ClientBase::callStr(const std::string& action, const std::string& param)
-  {
-    auto res = this->callArray(action, param);
-    return res.empty() ? "" : res[0];
-  }
-
-  bool ClientBase::callBool(const std::string& action, const std::string& param)
-  {
-    int16_t code = 0;
-    auto res = this->callStr(action, param);
-
-    return (res != "ERR:SERVICE_FAIL") && (code == 0);
-  }
-
-  bool ClientBase::callNR(const std::string& action, const std::string& param)
-  {
-    return this->callStr(action, param) != "ERR:SERVICE_FAIL";
-  }
-
-  compat::onto_ros::Time ClientBase::callStamp(const std::string& action, const std::string& param)
-  {
-    auto res = call(action, param);
-    auto res_time = compat::onto_ros::getServicePointer(res)->time_value;
-
-    if(error_code_ == -1)
-    {
-      return compat::onto_ros::Time(0);
-    }
-
-    return compat::onto_ros::Time(res_time.seconds, res_time.nanoseconds);
   }
 
   size_t ClientBase::cpt = 0;
-  bool ClientBase::verbose_ = false;
+  bool ClientBase::client_verbose = false;
 
 } // namespace mementar

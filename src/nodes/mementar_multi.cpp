@@ -73,8 +73,8 @@ bool deleteInterface(const std::string& name)
   return true;
 }
 
-bool managerHandle(mementar::compat::onto_ros::ServiceWrapper<mementar::compat::MementarService::Request>& req,
-                   mementar::compat::onto_ros::ServiceWrapper<mementar::compat::MementarService::Response>& res)
+bool managerHandle(mementar::compat::mem_ros::ServiceWrapper<mementar::compat::MementarService::Request>& req,
+                   mementar::compat::mem_ros::ServiceWrapper<mementar::compat::MementarService::Response>& res)
 {
   return [](auto&& req, auto&& res) {
     res->code = mementar::ServiceCode::service_no_error;
@@ -131,13 +131,13 @@ bool managerHandle(mementar::compat::onto_ros::ServiceWrapper<mementar::compat::
     }
 
     return true;
-  }(mementar::compat::onto_ros::getServicePointer(req), mementar::compat::onto_ros::getServicePointer(res));
+  }(mementar::compat::mem_ros::getServicePointer(req), mementar::compat::mem_ros::getServicePointer(res));
 }
 
 int main(int argc, char** argv)
 {
   signal(SIGSEGV, handler);
-  mementar::compat::onto_ros::Node::init(argc, argv, "mementar_multi");
+  mementar::compat::mem_ros::Node::init(argc, argv, "mementar_multi");
 
   params.insert(mementar::Parameter("directory", {"-d", "--directory"}, {"none"}));
   params.insert(mementar::Parameter("config", {"-c", "--config"}, {"none"}));
@@ -145,10 +145,10 @@ int main(int argc, char** argv)
   params.set(argc, argv);
   params.display();
 
-  mementar::compat::onto_ros::Service<mementar::compat::MementarService> service("/mementar/manage", managerHandle);
-  mementar::compat::onto_ros::Node::get().spin();
+  mementar::compat::mem_ros::Service<mementar::compat::MementarService> service("/mementar/manage", managerHandle);
+  mementar::compat::mem_ros::Node::get().spin();
 
-  while(mementar::compat::onto_ros::Node::ok())
+  while(mementar::compat::mem_ros::Node::ok())
   {
     usleep(1);
   }
@@ -164,7 +164,7 @@ int main(int argc, char** argv)
     deleteInterface(interfaces_names);
   }
 
-  mementar::compat::onto_ros::Node::shutdown();
+  mementar::compat::mem_ros::Node::shutdown();
 
   // ROS_DEBUG("KILL mementar");
 

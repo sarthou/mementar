@@ -7,7 +7,7 @@
 #include <sys/time.h>
 #include <vector>
 
-#include "mementar/compat/ros.h"
+#include "mementar/API/mementar/TimelinesManipulator.h"
 #include "mementar/graphical/mementarGUI/QLineEditExtended.h"
 #include "mementar/graphical/mementarGUI/QPushButtonExtended.h"
 #include "qmainwindow.h"
@@ -105,9 +105,9 @@ void mementarGUI::init()
 {
   timesourceChangedSlot(0);
 
-  facts_publishers_["_"] = std::make_unique<mementar::compat::onto_ros::Publisher<mementar::compat::StampedString>>("/mementar/insert_fact_stamped", QUEU_SIZE);
-  actions_publishers_["_"] = std::make_unique<mementar::compat::onto_ros::Publisher<mementar::compat::MementarAction>>("/mementar/insert_action", QUEU_SIZE);
-  feeder_notifications_subs_["_"] = std::make_unique<mementar::compat::onto_ros::Subscriber<std_msgs_compat::String>>("mementar/feeder_notifications", QUEU_SIZE, &mementarGUI::feederCallback, this);
+  facts_publishers_["_"] = std::make_unique<mementar::compat::mem_ros::Publisher<mementar::compat::StampedString>>("/mementar/insert_fact_stamped", QUEU_SIZE);
+  actions_publishers_["_"] = std::make_unique<mementar::compat::mem_ros::Publisher<mementar::compat::MementarAction>>("/mementar/insert_action", QUEU_SIZE);
+  feeder_notifications_subs_["_"] = std::make_unique<mementar::compat::mem_ros::Subscriber<std_msgs_compat::String>>("mementar/feeder_notifications", QUEU_SIZE, &mementarGUI::feederCallback, this);
 }
 
 void mementarGUI::wait()
@@ -163,31 +163,19 @@ void mementarGUI::actionButtonClickedSlot()
   ui_->action_description_textedit->setText(text);
 
   auto response = client.call(q_text.toStdString(), q_param.toStdString());
-
-  [&](auto response) {
-    if(client.getErrorCode() == -1)
-    {
-      displayErrorInfo(service_name + " client call failed");
-      return;
-    }
-
+  const int err = client.getErrorCode();
+  if(err == -1)
+    displayErrorInfo(service_name + " client call failed");
+  else
+  {
     start();
     std::string res;
-
-    if(response->values.size())
-    {
-      res = vector2string(response->values);
-    }
-    else
-    {
-      if(response->time_value.seconds != 0)
-      {
-        res = std::to_string(response->time_value.seconds);
-      }
-    }
-
+    if(response.first.empty() == false)
+      res = vector2string(response.first);
+    else if(response.second.seconds() != 0)
+      res = std::to_string(response.second.seconds());
     ui_->static_result_editext->setText(QString::fromStdString(res));
-  }(mementar::compat::onto_ros::getServicePointer(response));
+  }
 }
 
 void mementarGUI::factButtonClickedSlot()
@@ -203,31 +191,19 @@ void mementarGUI::factButtonClickedSlot()
   ui_->fact_description_textedit->setText(text);
 
   auto response = client.call(q_text.toStdString(), q_param.toStdString());
-
-  [&](auto response) {
-    if(client.getErrorCode() == -1)
-    {
-      displayErrorInfo(service_name + " client call failed");
-      return;
-    }
-
+  const int err = client.getErrorCode();
+  if(err == -1)
+    displayErrorInfo(service_name + " client call failed");
+  else
+  {
     start();
     std::string res;
-
-    if(response->values.size())
-    {
-      res = vector2string(response->values);
-    }
-    else
-    {
-      if(response->time_value.seconds != 0)
-      {
-        res = std::to_string(response->time_value.seconds);
-      }
-    }
-
+    if(response.first.empty() == false)
+      res = vector2string(response.first);
+    else if(response.second.seconds() != 0)
+      res = std::to_string(response.second.seconds());
     ui_->static_result_editext->setText(QString::fromStdString(res));
-  }(mementar::compat::onto_ros::getServicePointer(response));
+  }
 }
 
 void mementarGUI::nameEditingFinishedSlot()
@@ -299,7 +275,7 @@ void mementarGUI::updateTime()
 {
   if(time_source_ == 0)
   {
-    auto time = mementar::compat::onto_ros::Node::get().current_time();
+    auto time = mementar::compat::mem_ros::Node::get().current_time();
     current_time_.seconds = time.seconds();
     current_time_.nanoseconds = time.nanoseconds();
     // current_time_.store(ros::Time::now(), std::memory_order_release);
@@ -341,15 +317,15 @@ void mementarGUI::addInstanceSlot()
 
       if(facts_publishers_.find(base_match[1].str()) == facts_publishers_.end())
       {
-        facts_publishers_[base_match[1].str()] = std::make_unique<mementar::compat::onto_ros::Publisher<mementar::compat::StampedString>>(
+        facts_publishers_[base_match[1].str()] = std::make_unique<mementar::compat::mem_ros::Publisher<mementar::compat::StampedString>>(
           "mementar/insert_fact_stamped/" + base_match[1].str(), QUEU_SIZE);
 
-        actions_publishers_[base_match[1].str()] = std::make_unique<mementar::compat::onto_ros::Publisher<mementar::compat::MementarAction>>(
+        actions_publishers_[base_match[1].str()] = std::make_unique<mementar::compat::mem_ros::Publisher<mementar::compat::MementarAction>>(
           "mementar/insert_action/" + base_match[1].str(), QUEU_SIZE);
       }
 
       if(feeder_notifications_subs_.find(base_match[1].str()) == feeder_notifications_subs_.end())
-        feeder_notifications_subs_[base_match[1].str()] = std::make_unique<mementar::compat::onto_ros::Subscriber<std_msgs_compat::String>>(
+        feeder_notifications_subs_[base_match[1].str()] = std::make_unique<mementar::compat::mem_ros::Subscriber<std_msgs_compat::String>>(
           "mementar/feeder_notifications", QUEU_SIZE, &mementarGUI::feederCallback, this);
     }
   }
@@ -357,26 +333,31 @@ void mementarGUI::addInstanceSlot()
   {
     if(facts_publishers_.find(param) == facts_publishers_.end())
     {
-      facts_publishers_[param] = std::make_unique<mementar::compat::onto_ros::Publisher<mementar::compat::StampedString>>(
+      facts_publishers_[param] = std::make_unique<mementar::compat::mem_ros::Publisher<mementar::compat::StampedString>>(
         "mementar/insert_fact_stamped/" + param, QUEU_SIZE);
-      actions_publishers_[param] = std::make_unique<mementar::compat::onto_ros::Publisher<mementar::compat::MementarAction>>(
+      actions_publishers_[param] = std::make_unique<mementar::compat::mem_ros::Publisher<mementar::compat::MementarAction>>(
         "mementar/insert_action/" + param, QUEU_SIZE);
     }
 
     if(feeder_notifications_subs_.find(param) == feeder_notifications_subs_.end())
-      feeder_notifications_subs_[param] = std::make_unique<mementar::compat::onto_ros::Subscriber<std_msgs_compat::String>>(
+      feeder_notifications_subs_[param] = std::make_unique<mementar::compat::mem_ros::Subscriber<std_msgs_compat::String>>(
         "mementar/feeder_notifications", QUEU_SIZE, &mementarGUI::feederCallback, this);
   }
 
-  auto code = do_copy ? meme_.manager_.copy(param) : meme_.manager_.add(param);
+  if(do_copy)
+    meme_.manager_.copy(param);
+  else
+    meme_.manager_.add(param);
 
-  if(meme_.manager_.getErrorCode() == -1)
+  auto err = meme_.manager_.getErrorCode();
+
+  if(err == -1)
   {
     displayErrorInfo("mementar/manage client call failed");
     return;
   }
 
-  switch(code)
+  switch(err)
   {
   case 1:
   {
@@ -401,9 +382,11 @@ void mementarGUI::addInstanceSlot()
 void mementarGUI::deleteInstanceSlot()
 {
   auto param = ui_->manager_instance_name_editline->text().toStdString();
-  auto code = meme_.manager_.del(ui_->manager_instance_name_editline->text().toStdString());
+  meme_.manager_.del(ui_->manager_instance_name_editline->text().toStdString());
 
-  if(meme_.manager_.getErrorCode() == -1)
+  auto err = meme_.manager_.getErrorCode();
+
+  if(err == -1)
   {
     displayErrorInfo("mementar/manage client call failed");
     return;
@@ -411,7 +394,7 @@ void mementarGUI::deleteInstanceSlot()
 
   start();
 
-  if(code == 4)
+  if(err == 4)
   {
     ui_->static_result_editext->setText(QString::fromStdString("Instance \'" + param + "\' don't exist"));
   }
@@ -430,15 +413,16 @@ void mementarGUI::saveInstanceSlot()
 
   mementar::InstanceManagerClient client(service_name);
 
-  auto code = client.save(ui_->manager_save_path_editline->text().toStdString());
+  client.save(ui_->manager_save_path_editline->text().toStdString());
+  auto err = client.getErrorCode();
 
-  if(client.getErrorCode() == -1)
+  if(err == -1)
   {
     displayErrorInfo("mementar/manage_instance client call failed");
     return;
   }
 
-  if(code == 4)
+  if(err == 4)
   {
     ui_->static_result_editext->setText(QString::fromStdString("path \'" + param + "\' don't exist"));
   }
@@ -455,15 +439,16 @@ void mementarGUI::drawInstanceSlot()
 
   mementar::InstanceManagerClient client(service_name);
 
-  auto code = client.draw(ui_->manager_save_path_editline->text().toStdString());
+  client.draw(ui_->manager_save_path_editline->text().toStdString());
+  auto err = client.getErrorCode();
 
-  if(client.getErrorCode() == -1)
+  if(err == -1)
   {
     displayErrorInfo("mementar/manage_instance client call failed");
     return;
   }
 
-  if(code == 4)
+  if(err == 4)
   {
     ui_->static_result_editext->setText(QString::fromStdString("path \'" + param + "\' don't exist"));
   }
@@ -518,7 +503,7 @@ void mementarGUI::currentTimeEditingFinishedSlot()
     {
       current_time_.seconds = time_int;
       current_time_.nanoseconds = 0;
-      // current_time_.store(mementar::compat::onto_ros::Time(time_int, 0), std::memory_order_release);
+      // current_time_.store(mementar::compat::mem_ros::Time(time_int, 0), std::memory_order_release);
 
       ui_->static_result_editext->setText(QString::fromStdString(""));
     }
@@ -643,10 +628,10 @@ void mementarGUI::createPublisher(const std::string& instance_ns)
 {
   if(facts_publishers_.find(instance_ns) == facts_publishers_.end())
   {
-    facts_publishers_[instance_ns] = std::make_unique<mementar::compat::onto_ros::Publisher<mementar::compat::StampedString>>(
+    facts_publishers_[instance_ns] = std::make_unique<mementar::compat::mem_ros::Publisher<mementar::compat::StampedString>>(
       "mementar/insert_fact_stamped/" + instance_ns, QUEU_SIZE);
 
-    while(mementar::compat::onto_ros::Node::ok() && (facts_publishers_[instance_ns]->getNumSubscribers() == 0))
+    while(mementar::compat::mem_ros::Node::ok() && (facts_publishers_[instance_ns]->getNumSubscribers() == 0))
     {
       // todo
       // ros::spinOnce();
@@ -655,10 +640,10 @@ void mementarGUI::createPublisher(const std::string& instance_ns)
 
   if(actions_publishers_.find(instance_ns) == actions_publishers_.end())
   {
-    actions_publishers_[instance_ns] = std::make_unique<mementar::compat::onto_ros::Publisher<mementar::compat::MementarAction>>(
+    actions_publishers_[instance_ns] = std::make_unique<mementar::compat::mem_ros::Publisher<mementar::compat::MementarAction>>(
       "mementar/insert_action/" + instance_ns, QUEU_SIZE);
 
-    while(mementar::compat::onto_ros::Node::ok() && (actions_publishers_[instance_ns]->getNumSubscribers() == 0))
+    while(mementar::compat::mem_ros::Node::ok() && (actions_publishers_[instance_ns]->getNumSubscribers() == 0))
     {
       // todo
       // ros::spinOnce();

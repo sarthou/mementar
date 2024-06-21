@@ -26,7 +26,7 @@ namespace mementar {
     return callStr("getData", fact_id);
   }
 
-  compat::onto_ros::Time FactClient::getStamp(const std::string& fact_id)
+  compat::mem_ros::Time FactClient::getStamp(const std::string& fact_id)
   {
     return callStamp("getStamp", fact_id);
   }

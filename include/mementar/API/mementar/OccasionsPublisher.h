@@ -17,7 +17,7 @@ namespace mementar {
     void insert(const Fact& fact, time_t stamp = time(nullptr));
 
   private:
-    compat::onto_ros::Publisher<compat::StampedString> pub_;
+    compat::mem_ros::Publisher<compat::StampedString> pub_;
 
     void publish(const std::string& str, time_t stamp = time(nullptr));
   };

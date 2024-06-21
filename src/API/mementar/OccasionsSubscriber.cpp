@@ -49,13 +49,13 @@ namespace mementar {
     [&](auto&& req) {
       req->data = pattern();
       req->count = count;
-    }(mementar::compat::onto_ros::getServicePointer(req));
+    }(mementar::compat::mem_ros::getServicePointer(req));
 
     using ResultTy = typename decltype(client_subscribe_)::RosStatus_e;
 
     if(client_subscribe_.call(req, res) != ResultTy::ros_status_failure)
     {
-      ids_.push_back(mementar::compat::onto_ros::getServicePointer(res)->id);
+      ids_.push_back(mementar::compat::mem_ros::getServicePointer(res)->id);
       return true;
     }
     else
@@ -72,13 +72,13 @@ namespace mementar {
 
       [&](auto&& req) {
         req->id = ids_[i];
-      }(mementar::compat::onto_ros::getServicePointer(req));
+      }(mementar::compat::mem_ros::getServicePointer(req));
 
       using ResultTy = typename decltype(client_cancel_)::RosStatus_e;
 
       if(client_cancel_.call(req, res) != ResultTy::ros_status_failure)
       {
-        if(mementar::compat::onto_ros::getServicePointer(res)->id != (int)ids_[i])
+        if(mementar::compat::mem_ros::getServicePointer(res)->id != (int)ids_[i])
         {
           done = false;
         }
@@ -110,7 +110,7 @@ namespace mementar {
 
   void OccasionsSubscriber::spinThread()
   {
-    while(compat::onto_ros::Node::ok())
+    while(compat::mem_ros::Node::ok())
     {
       if(need_to_terminate_)
       {

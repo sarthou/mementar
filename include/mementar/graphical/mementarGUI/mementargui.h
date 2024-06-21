@@ -32,9 +32,9 @@ private:
 
   mementar::TimelineManipulator meme_;
 
-  std::map<std::string, std::unique_ptr<mementar::compat::onto_ros::Publisher<mementar::compat::StampedString>>> facts_publishers_;
-  std::map<std::string, std::unique_ptr<mementar::compat::onto_ros::Publisher<mementar::compat::MementarAction>>> actions_publishers_;
-  std::map<std::string, std::unique_ptr<mementar::compat::onto_ros::Subscriber<std_msgs_compat::String>>> feeder_notifications_subs_;
+  std::map<std::string, std::unique_ptr<mementar::compat::mem_ros::Publisher<mementar::compat::StampedString>>> facts_publishers_;
+  std::map<std::string, std::unique_ptr<mementar::compat::mem_ros::Publisher<mementar::compat::MementarAction>>> actions_publishers_;
+  std::map<std::string, std::unique_ptr<mementar::compat::mem_ros::Subscriber<std_msgs_compat::String>>> feeder_notifications_subs_;
   std::string feeder_notifications_;
 
   int time_source_;

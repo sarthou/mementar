@@ -14,7 +14,7 @@ namespace mementar {
 
   std::vector<std::string> ActionClient::getPending()
   {
-    return callArray("getPending", "");
+    return callStrs("getPending", "");
   }
 
   bool ActionClient::isPending(const std::string& action_name)
@@ -22,17 +22,17 @@ namespace mementar {
     return (callStr("isPending", action_name).empty() == false);
   }
 
-  compat::onto_ros::Time ActionClient::getStartStamp(const std::string& action_name)
+  compat::mem_ros::Time ActionClient::getStartStamp(const std::string& action_name)
   {
     return callStamp("getStartStamp", action_name);
   }
 
-  compat::onto_ros::Time ActionClient::getEndStamp(const std::string& action_name)
+  compat::mem_ros::Time ActionClient::getEndStamp(const std::string& action_name)
   {
     return callStamp("getEndStamp", action_name);
   }
 
-  compat::onto_ros::Time ActionClient::getDuration(const std::string& action_name)
+  compat::mem_ros::Time ActionClient::getDuration(const std::string& action_name)
   {
     return callStamp("getDuration", action_name);
   }
@@ -49,7 +49,7 @@ namespace mementar {
 
   std::vector<std::string> ActionClient::getFactsDuring(const std::string& action_name)
   {
-    return callArray("getFactsDuring", action_name);
+    return callStrs("getFactsDuring", action_name);
   }
 
 } // namespace mementar

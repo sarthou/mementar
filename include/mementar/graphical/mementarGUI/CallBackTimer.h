@@ -24,7 +24,7 @@ public:
       th_.join();
   }
 
-  void start(int interval, std::function<void(void)> func)
+  void start(int interval, const std::function<void(void)>& func)
   {
     if(execute_.load(std::memory_order_acquire))
       stop();

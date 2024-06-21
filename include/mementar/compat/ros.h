@@ -107,7 +107,7 @@ namespace mementar::compat {
 // template <typename T, typename Result_ = typename T::>
 #endif
 
-  namespace onto_ros {
+  namespace mem_ros {
 
 #if MEME_ROS_VERSION == 1
     template<typename T>
@@ -169,7 +169,7 @@ namespace mementar::compat {
 
       explicit Time(double t) : RosTime((uint32_t)t, (uint32_t)((t - std::floor(t)) * 1'000'000'000.)) {}
 
-      explicit Time(const RosTime& time) : RosTime(time) {} // do not put it as explicit
+      Time(const RosTime& time) : RosTime(time) {} // do not put it as explicit
 
       uint32_t seconds() const
       {
@@ -338,8 +338,8 @@ namespace mementar::compat {
 #elif MEME_ROS_VERSION == 2
         handle_ = node.handle_->create_service<T>(service_name,
                                                   [&](
-                                                    compat::onto_ros::ServiceWrapper<typename T::Request> req,
-                                                    compat::onto_ros::ServiceWrapper<typename T::Response> res) {
+                                                    compat::mem_ros::ServiceWrapper<typename T::Request> req,
+                                                    compat::mem_ros::ServiceWrapper<typename T::Response> res) {
                                                     callback(req, res);
                                                   });
 
@@ -358,8 +358,8 @@ namespace mementar::compat {
         handle_ = node.handle_.advertiseService(service_name, callback, ptr);
 #elif MEME_ROS_VERSION == 2
         handle_ = node.handle_->create_service<T>(service_name, [ptr, callback](
-                                                                  compat::onto_ros::ServiceWrapper<typename T::Request> req,
-                                                                  compat::onto_ros::ServiceWrapper<typename T::Response> res) { (ptr->*callback)(req, res); });
+                                                                  compat::mem_ros::ServiceWrapper<typename T::Request> req,
+                                                                  compat::mem_ros::ServiceWrapper<typename T::Response> res) { (ptr->*callback)(req, res); });
         // handle_ = node.handle_->create_service<T>(service_name, std::bind(std::forward<Ta>(callback), ptr, std::placeholders::_1, std::placeholders::_2));
 #endif
       }
@@ -459,7 +459,7 @@ namespace mementar::compat {
 #endif
     };
 
-  } // namespace onto_ros
+  } // namespace mem_ros
 
 } // namespace mementar::compat
 

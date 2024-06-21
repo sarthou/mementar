@@ -5,10 +5,9 @@
 
 include(cmake/Sanitizers.cmake)
 
-################################################
-## Declare ROS messages, services and actions ##
-################################################
-
+# ###############################################
+# # Declare ROS messages, services and actions ##
+# ###############################################
 meme_queue_messages_generation(
     MementarAction.msg
     MementarExplanation.msg
@@ -24,21 +23,18 @@ meme_queue_services_generation(
 
 meme_generate_interfaces()
 
-###################################
-##      Compatibility layer      ##
-###################################
-
+# ##################################
+# #      Compatibility layer      ##
+# ##################################
 meme_add_ros_library(mementar_compat
     src/compat/ros.cpp)
 
-###################################
-
+# ##################################
 meme_add_ros_library(mementar_events_lib
     src/core/Occasions/Subscription.cpp
     src/core/Occasions/OccasionsManager.cpp)
 
-###################################
-
+# ##################################
 meme_add_ros_library(mementar_compression_lib
     src/core/LtManagement/archiving_compressing/binaryManagement/BitFileGenerator.cpp
     src/core/LtManagement/archiving_compressing/binaryManagement/BitFileGetter.cpp
@@ -68,9 +64,9 @@ meme_add_ros_library(mementar_lt_lib
 
 target_link_libraries(mementar_lt_lib
     PUBLIC
-        mementar_compression_lib
-        mementar_memGraphs_lib
-        pthread)
+    mementar_compression_lib
+    mementar_memGraphs_lib
+    pthread)
 
 meme_add_ros_library(mementar_core_lib
     src/core/feeder/FeedStorage.cpp
@@ -79,10 +75,9 @@ meme_add_ros_library(mementar_core_lib
 
 target_link_libraries(mementar_core_lib
     PUBLIC
-        mementar_lt_lib)
+    mementar_lt_lib)
 
-###################################
-
+# ##################################
 meme_add_ros_library(mementar_drawer_lib
     src/graphical/timeline/ActionReader.cpp
     src/graphical/timeline/FactReader.cpp
@@ -90,15 +85,14 @@ meme_add_ros_library(mementar_drawer_lib
 
 target_include_directories(mementar_drawer_lib
     PUBLIC
-        ${OpenCV_INCLUDE_DIRS})
+    ${OpenCV_INCLUDE_DIRS})
 
 target_link_libraries(mementar_drawer_lib
     PUBLIC
-        ${OpenCV_LIBS}
-        mementar_memGraphs_lib)
+    ${OpenCV_LIBS}
+    mementar_memGraphs_lib)
 
-###################################
-
+# ##################################
 meme_add_ros_library(mementar_lib
     src/API/mementar/ActionsPublisher.cpp
     src/API/mementar/ActionsSubscriber.cpp
@@ -111,21 +105,23 @@ meme_add_ros_library(mementar_lib
     src/API/mementar/clients/InstanceManagerClient.cpp
     src/API/mementar/OccasionsPublisher.cpp
     src/API/mementar/OccasionsSubscriber.cpp)
+target_include_directories(mementar_lib PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/mementar/API>
+    $<INSTALL_INTERFACE:include/mementar/API>)
+target_link_libraries(mementar_lib PUBLIC mementar_compat
+)
 
-###################################
-
+# ##################################
 meme_add_ros_library(mementar_interface
     src/RosInterface.cpp
     src/graphical/timeline/CsvSaver.cpp)
 
 target_link_libraries(mementar_interface
     PUBLIC
-        mementar_core_lib
-        mementar_events_lib
-        mementar_drawer_lib)
+    mementar_core_lib
+    mementar_events_lib
+    mementar_drawer_lib)
 
-###################################
-
+# ##################################
 meme_add_ros_executable(mementar_single src/nodes/mementar_single.cpp)
 target_link_libraries(mementar_single PUBLIC mementar_interface mementar_compat)
 
@@ -135,30 +131,26 @@ target_link_libraries(mementar_multi PUBLIC mementar_interface mementar_compat)
 meme_add_ros_executable(mementar_timeline src/graphical/timeline/main.cpp)
 target_link_libraries(mementar_timeline PUBLIC mementar_core_lib mementar_drawer_lib)
 
-###################################
+# ##################################
 
-
-##############################################################################
+# #############################################################################
 # Qt Environment
-##############################################################################
-
+# #############################################################################
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOMOC ON)
 
-##############################################################################
+# #############################################################################
 # Sections
-##############################################################################
-
+# #############################################################################
 file(GLOB QT_FORMS RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} ui/*.ui)
-file(GLOB QT_RESOURCES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}  resources/*.qrc)
+file(GLOB QT_RESOURCES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} resources/*.qrc)
 
 QT5_ADD_RESOURCES(QT_RESOURCES_CPP ${QT_RESOURCES})
 QT5_WRAP_UI(QT_FORMS_HPP ${QT_FORMS})
 
-##############################################################################
+# #############################################################################
 # Sources
-##############################################################################
-
+# #############################################################################
 set(QT_SOURCES
     src/graphical/mementarGUI/main.cpp
     src/graphical/mementarGUI/mementargui.cpp
@@ -172,25 +164,17 @@ set(QT_SOURCES
     include/mementar/graphical/mementarGUI/QCheckBoxExtended.h
     include/mementar/graphical/mementarGUI/QLineEditExtended.h)
 
-##############################################################################
+# #############################################################################
 # Binaries
-##############################################################################
-
-meme_add_ros_executable(mementarGUI ${QT_SOURCES} ${QT_RESOURCES_CPP} ${QT_FORMS_HPP} ${QT_MOC_HPP})
-
-set_target_properties(mementarGUI
-    PROPERTIES
-        CXX_STANDARD 17
-        CXX_STANDARD_REQUIRED ON)
-
+# #############################################################################
+add_executable(mementarGUI ${QT_SOURCES} ${QT_RESOURCES_CPP} ${QT_FORMS_HPP} ${QT_MOC_HPP})
+set_target_properties(mementarGUI PROPERTIES CXX_STANDARD 17 CXX_STANDARD_REQUIRED ON)
+target_compile_options(mementarGUI PUBLIC -DMEME_ROS_VERSION=$ENV{ROS_VERSION})
 target_link_libraries(mementarGUI
-    PUBLIC
-        mementar_compat
-        mementar_lib
-        Qt5::Core
-        Qt5::Widgets
-        Qt5::PrintSupport)
-
+    mementar_lib
+    Qt5::Core
+    Qt5::Widgets
+    Qt5::PrintSupport)
 target_include_directories(mementarGUI PUBLIC include)
 
 meme_install_executables(
@@ -199,4 +183,4 @@ meme_install_executables(
     mementar_timeline
     mementarGUI)
 
-###################################
+# ##################################

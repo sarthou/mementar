@@ -2,7 +2,7 @@
 
 #include <string>
 
-namespace mementar::compat::onto_ros {
+namespace mementar::compat::mem_ros {
 
   std::string ros_node_name = "OntoRos";
 
@@ -70,4 +70,4 @@ namespace mementar::compat::onto_ros {
 #endif
   }
 
-} // namespace mementar::compat::onto_ros
+} // namespace mementar::compat::mem_ros

@@ -26,9 +26,9 @@ void handler(int sig)
 int main(int argc, char** argv)
 {
   signal(SIGSEGV, handler);
-  mementar::compat::onto_ros::Node::init(argc, argv, "mementar_single");
+  mementar::compat::mem_ros::Node::init(argc, argv, "mementar_single");
 
-  std::thread th([]() { mementar::compat::onto_ros::Node::get().spin(); });
+  std::thread th([]() { mementar::compat::mem_ros::Node::get().spin(); });
 
   mementar::Parameters params;
   params.insert(mementar::Parameter("directory", {"-d", "--directory"}, {"none"}));
@@ -42,7 +42,7 @@ int main(int argc, char** argv)
     params.parameters_.at("config").getFirst());
   interface.run();
 
-  mementar::compat::onto_ros::Node::shutdown();
+  mementar::compat::mem_ros::Node::shutdown();
   th.join();
 
   return 0;

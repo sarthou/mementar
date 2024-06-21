@@ -14,7 +14,7 @@ namespace mementar {
     publish(name, start_stamp, end_stamp);
   }
 
-  void ActionsPublisher::insert(const std::string& name, compat::onto_ros::Time start_stamp, compat::onto_ros::Time end_stamp)
+  void ActionsPublisher::insert(const std::string& name, compat::mem_ros::Time start_stamp, compat::mem_ros::Time end_stamp)
   {
     publish(name, start_stamp, end_stamp);
   }
@@ -24,9 +24,9 @@ namespace mementar {
     publish(name, 0, end_stamp);
   }
 
-  void ActionsPublisher::insertEnd(const std::string& name, compat::onto_ros::Time end_stamp)
+  void ActionsPublisher::insertEnd(const std::string& name, compat::mem_ros::Time end_stamp)
   {
-    publish(name, compat::onto_ros::Time(0), end_stamp);
+    publish(name, compat::mem_ros::Time(0), end_stamp);
   }
 
   void ActionsPublisher::publish(const std::string& name, time_t start_stamp, time_t end_stamp)
@@ -38,7 +38,7 @@ namespace mementar {
     pub_.publish(msg);
   }
 
-  void ActionsPublisher::publish(const std::string& name, compat::onto_ros::Time start_stamp, compat::onto_ros::Time end_stamp)
+  void ActionsPublisher::publish(const std::string& name, compat::mem_ros::Time start_stamp, compat::mem_ros::Time end_stamp)
   {
     compat::MementarAction msg;
     msg.name = name;

@@ -24,9 +24,9 @@ namespace mementar {
     bool end() const { return ids_.empty(); }
 
   private:
-    compat::onto_ros::Subscriber<compat::MementarOccasion> sub_;
-    compat::onto_ros::Client<compat::MementarOccasionSubscription> client_subscribe_;
-    compat::onto_ros::Client<compat::MementarOccasionUnsubscription> client_cancel_;
+    compat::mem_ros::Subscriber<compat::MementarOccasion> sub_;
+    compat::mem_ros::Client<compat::MementarOccasionSubscription> client_subscribe_;
+    compat::mem_ros::Client<compat::MementarOccasionUnsubscription> client_cancel_;
 
     std::atomic<bool> need_to_terminate_;
 

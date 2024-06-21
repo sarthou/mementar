@@ -55,22 +55,22 @@ namespace mementar {
 
     void reset();
 
-    void knowledgeCallback(compat::onto_ros::MessageWrapper<compat::StampedString> msg);
-    void stampedKnowledgeCallback(compat::onto_ros::MessageWrapper<compat::StampedString> msg);
-    void explanationKnowledgeCallback(compat::onto_ros::MessageWrapper<compat::MementarExplanation> msg);
-    void actionKnowledgeCallback(compat::onto_ros::MessageWrapper<compat::MementarAction> msg);
-    void ontoStampedKnowledgeCallback(compat::onto_ros::MessageWrapper<ontologenius::compat::OntologeniusStampedString> msg);
-    void ontoExplanationKnowledgeCallback(compat::onto_ros::MessageWrapper<ontologenius::compat::OntologeniusExplanation> msg);
+    void knowledgeCallback(compat::mem_ros::MessageWrapper<compat::StampedString> msg);
+    void stampedKnowledgeCallback(compat::mem_ros::MessageWrapper<compat::StampedString> msg);
+    void explanationKnowledgeCallback(compat::mem_ros::MessageWrapper<compat::MementarExplanation> msg);
+    void actionKnowledgeCallback(compat::mem_ros::MessageWrapper<compat::MementarAction> msg);
+    void ontoStampedKnowledgeCallback(compat::mem_ros::MessageWrapper<ontologenius::compat::OntologeniusStampedString> msg);
+    void ontoExplanationKnowledgeCallback(compat::mem_ros::MessageWrapper<ontologenius::compat::OntologeniusExplanation> msg);
 
     // todo: do not return bool
-    bool managerInstanceHandle(compat::onto_ros::ServiceWrapper<compat::MementarService::Request>& req,
-                               compat::onto_ros::ServiceWrapper<compat::MementarService::Response>& res);
+    bool managerInstanceHandle(compat::mem_ros::ServiceWrapper<compat::MementarService::Request>& req,
+                               compat::mem_ros::ServiceWrapper<compat::MementarService::Response>& res);
 
-    bool actionHandle(compat::onto_ros::ServiceWrapper<compat::MementarService::Request>& req,
-                      compat::onto_ros::ServiceWrapper<compat::MementarService::Response>& res);
+    bool actionHandle(compat::mem_ros::ServiceWrapper<compat::MementarService::Request>& req,
+                      compat::mem_ros::ServiceWrapper<compat::MementarService::Response>& res);
 
-    bool factHandle(compat::onto_ros::ServiceWrapper<compat::MementarService::Request>& req,
-                    compat::onto_ros::ServiceWrapper<compat::MementarService::Response>& res);
+    bool factHandle(compat::mem_ros::ServiceWrapper<compat::MementarService::Request>& req,
+                    compat::mem_ros::ServiceWrapper<compat::MementarService::Response>& res);
 
     void feedThread();
 

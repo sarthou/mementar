@@ -11,9 +11,9 @@ namespace mementar {
 
     std::vector<std::string> list();
 
-    int16_t add(const std::string& name);
-    int16_t copy(const std::string& name);
-    int16_t del(const std::string& name); // maybe name this to something like "remove"??
+    bool add(const std::string& name);
+    bool copy(const std::string& name);
+    bool del(const std::string& name); // maybe name this to something like "remove"??
 
   private:
   };

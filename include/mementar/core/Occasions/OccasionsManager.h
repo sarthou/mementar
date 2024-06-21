@@ -29,9 +29,9 @@ namespace mementar {
     Subscription subscription_;
     std::atomic<bool> run_;
 
-    compat::onto_ros::Publisher<compat::MementarOccasion> pub_;
-    compat::onto_ros::Service<compat::MementarOccasionSubscription> sub_service_;
-    compat::onto_ros::Service<compat::MementarOccasionUnsubscription> unsub_service_;
+    compat::mem_ros::Publisher<compat::MementarOccasion> pub_;
+    compat::mem_ros::Service<compat::MementarOccasionSubscription> sub_service_;
+    compat::mem_ros::Service<compat::MementarOccasionUnsubscription> unsub_service_;
 
     std::mutex mutex_;
 
@@ -39,11 +39,11 @@ namespace mementar {
     std::queue<Triplet> fifo_1_;
     std::queue<Triplet> fifo_2_;
 
-    bool subscribeCallback(compat::onto_ros::ServiceWrapper<compat::MementarOccasionSubscription::Request>& req,
-                           compat::onto_ros::ServiceWrapper<compat::MementarOccasionSubscription::Response>& res);
+    bool subscribeCallback(compat::mem_ros::ServiceWrapper<compat::MementarOccasionSubscription::Request>& req,
+                           compat::mem_ros::ServiceWrapper<compat::MementarOccasionSubscription::Response>& res);
 
-    bool unsubscribeCallback(compat::onto_ros::ServiceWrapper<compat::MementarOccasionUnsubscription::Request>& req,
-                             compat::onto_ros::ServiceWrapper<compat::MementarOccasionUnsubscription::Response>& res);
+    bool unsubscribeCallback(compat::mem_ros::ServiceWrapper<compat::MementarOccasionUnsubscription::Request>& req,
+                             compat::mem_ros::ServiceWrapper<compat::MementarOccasionUnsubscription::Response>& res);
 
     Triplet get();
     bool empty();

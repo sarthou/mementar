@@ -9,8 +9,8 @@ namespace mementar {
   public:
     explicit InstanceManagerClient(const std::string& name) : ClientBase(name.empty() ? "manage_instance" : "manage_instance/" + name) {}
 
-    int16_t save(const std::string& name);
-    int16_t draw(const std::string& name);
+    bool save(const std::string& name);
+    bool draw(const std::string& name);
 
   private:
     std::string name_;

@@ -8,22 +8,22 @@ namespace mementar {
 
   std::vector<std::string> ManagerClient::list()
   {
-    return callArray("list", "");
+    return callStrs("list", "");
   }
 
-  int16_t ManagerClient::add(const std::string& name)
+  bool ManagerClient::add(const std::string& name)
   {
-    return callCode("add", name);
+    return callBool("add", name);
   }
 
-  int16_t ManagerClient::copy(const std::string& name)
+  bool ManagerClient::copy(const std::string& name)
   {
-    return callCode("copy", name);
+    return callBool("copy", name);
   }
 
-  int16_t ManagerClient::del(const std::string& name)
+  bool ManagerClient::del(const std::string& name)
   {
-    return callCode("delete", name);
+    return callBool("delete", name);
   }
 
 } // namespace mementar

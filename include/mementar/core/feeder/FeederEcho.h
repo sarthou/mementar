@@ -33,7 +33,7 @@ namespace mementar {
       compat::StampedFact ros_msg;
       for(auto* message : echo_messages_)
       {
-        const auto ros_time = compat::onto_ros::Time(message->getTime());
+        const auto ros_time = compat::mem_ros::Time(message->getTime());
 
         ros_msg.id = message->getId();
         ros_msg.stamp.seconds = ros_time.seconds();
@@ -50,7 +50,7 @@ namespace mementar {
 
   private:
     std::mutex mut_;
-    compat::onto_ros::Publisher<compat::StampedFact> feeder_echo_pub_;
+    compat::mem_ros::Publisher<compat::StampedFact> feeder_echo_pub_;
     std::vector<ContextualizedFact*> echo_messages_;
   };
 

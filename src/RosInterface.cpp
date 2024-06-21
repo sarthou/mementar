@@ -81,28 +81,28 @@ namespace mementar {
 
   void RosInterface::run()
   {
-    std::vector<compat::onto_ros::Subscriber<compat::StampedString>> str_subscribers;
+    std::vector<compat::mem_ros::Subscriber<compat::StampedString>> str_subscribers;
     str_subscribers.emplace_back(getTopicName("insert_fact"), 1000, &RosInterface::knowledgeCallback, this);
     str_subscribers.emplace_back(getTopicName("insert_fact_stamped"), 1000, &RosInterface::stampedKnowledgeCallback,
                                  this);
 
-    compat::onto_ros::Subscriber<compat::MementarExplanation> explanation_knowledge_subscriber(
+    compat::mem_ros::Subscriber<compat::MementarExplanation> explanation_knowledge_subscriber(
       getTopicName("insert_fact_explanations"), 1000, &RosInterface::explanationKnowledgeCallback, this);
-    compat::onto_ros::Subscriber<compat::MementarAction> action_knowledge_subscriber(getTopicName("insert_action"),
-                                                                                     1000,
-                                                                                     &RosInterface::actionKnowledgeCallback,
-                                                                                     this);
+    compat::mem_ros::Subscriber<compat::MementarAction> action_knowledge_subscriber(getTopicName("insert_action"),
+                                                                                    1000,
+                                                                                    &RosInterface::actionKnowledgeCallback,
+                                                                                    this);
 
-    compat::onto_ros::Subscriber<ontologenius::compat::OntologeniusStampedString>
+    compat::mem_ros::Subscriber<ontologenius::compat::OntologeniusStampedString>
       onto_stamped_knowledge_subscriber(getOntoTopicName("insert_echo"), 1000,
                                         &RosInterface::ontoStampedKnowledgeCallback, this);
-    compat::onto_ros::Subscriber<ontologenius::compat::OntologeniusExplanation>
+    compat::mem_ros::Subscriber<ontologenius::compat::OntologeniusExplanation>
       onto_explanation_knowledge_subscriber(getOntoTopicName("insert_explanations"), 1000,
                                             &RosInterface::ontoExplanationKnowledgeCallback, this);
 
     // Start up ROS service with callbacks
 
-    std::vector<compat::onto_ros::Service<compat::MementarService>> services;
+    std::vector<compat::mem_ros::Service<compat::MementarService>> services;
     services.emplace_back(getTopicName("manage_instance"), &RosInterface::managerInstanceHandle, this);
     services.emplace_back(getTopicName("action"), &RosInterface::actionHandle, this);
     services.emplace_back(getTopicName("fact"), &RosInterface::factHandle, this);
@@ -116,7 +116,7 @@ namespace mementar {
 
     // ROS_DEBUG("%s mementar ready", name_.c_str());
 
-    while(compat::onto_ros::Node::ok() && isRunning())
+    while(compat::mem_ros::Node::ok() && isRunning())
     {
       // todo
       // ros::getGlobalCallbackQueue()->callAvailable(ros::WallDuration(0.1));
@@ -176,22 +176,22 @@ namespace mementar {
       return s + 0.75;
   }
 
-  void RosInterface::knowledgeCallback(compat::onto_ros::MessageWrapper<compat::StampedString> msg)
+  void RosInterface::knowledgeCallback(compat::mem_ros::MessageWrapper<compat::StampedString> msg)
   {
     feeder_.storeFact(msg->data, std::time(nullptr));
   }
 
-  void RosInterface::stampedKnowledgeCallback(compat::onto_ros::MessageWrapper<compat::StampedString> msg)
+  void RosInterface::stampedKnowledgeCallback(compat::mem_ros::MessageWrapper<compat::StampedString> msg)
   {
     feeder_.storeFact(msg->data, rosTime2Float(msg->stamp.seconds, msg->stamp.nanoseconds));
   }
 
-  void RosInterface::explanationKnowledgeCallback(compat::onto_ros::MessageWrapper<compat::MementarExplanation> msg)
+  void RosInterface::explanationKnowledgeCallback(compat::mem_ros::MessageWrapper<compat::MementarExplanation> msg)
   {
     feeder_.storeFact(msg->fact, msg->cause);
   }
 
-  void RosInterface::actionKnowledgeCallback(compat::onto_ros::MessageWrapper<compat::MementarAction> msg)
+  void RosInterface::actionKnowledgeCallback(compat::mem_ros::MessageWrapper<compat::MementarAction> msg)
   {
     feeder_.storeAction(msg->name,
                         (msg->start_stamp.seconds != 0) ? rosTime2Float(msg->start_stamp.seconds,
@@ -203,13 +203,13 @@ namespace mementar {
   }
 
   void RosInterface::ontoStampedKnowledgeCallback(
-    compat::onto_ros::MessageWrapper<ontologenius::compat::OntologeniusStampedString> msg)
+    compat::mem_ros::MessageWrapper<ontologenius::compat::OntologeniusStampedString> msg)
   {
     feeder_.storeFact(msg->data, rosTime2Float(msg->stamp.seconds, msg->stamp.nanoseconds));
   }
 
   void RosInterface::ontoExplanationKnowledgeCallback(
-    compat::onto_ros::MessageWrapper<ontologenius::compat::OntologeniusExplanation> msg)
+    compat::mem_ros::MessageWrapper<ontologenius::compat::OntologeniusExplanation> msg)
   {
     feeder_.storeFact(msg->fact, msg->cause);
   }
@@ -220,8 +220,8 @@ namespace mementar {
    *
    ****************/
 
-  bool RosInterface::managerInstanceHandle(compat::onto_ros::ServiceWrapper<compat::MementarService::Request>& req,
-                                           compat::onto_ros::ServiceWrapper<compat::MementarService::Response>& res)
+  bool RosInterface::managerInstanceHandle(compat::mem_ros::ServiceWrapper<compat::MementarService::Request>& req,
+                                           compat::mem_ros::ServiceWrapper<compat::MementarService::Response>& res)
   {
     return [this](auto&& req, auto&& res) {
       res->code = ServiceCode::service_no_error;
@@ -255,11 +255,11 @@ namespace mementar {
         res->code = ServiceCode::service_unknown_action;
 
       return true;
-    }(compat::onto_ros::getServicePointer(req), compat::onto_ros::getServicePointer(res));
+    }(compat::mem_ros::getServicePointer(req), compat::mem_ros::getServicePointer(res));
   }
 
-  bool RosInterface::actionHandle(compat::onto_ros::ServiceWrapper<compat::MementarService::Request>& req,
-                                  compat::onto_ros::ServiceWrapper<compat::MementarService::Response>& res)
+  bool RosInterface::actionHandle(compat::mem_ros::ServiceWrapper<compat::MementarService::Request>& req,
+                                  compat::mem_ros::ServiceWrapper<compat::MementarService::Response>& res)
   {
     return [this](auto&& req, auto&& res) {
       res->code = 0;
@@ -290,19 +290,19 @@ namespace mementar {
       }
       else if(req->action == "getStartStamp")
       {
-        const auto time = compat::onto_ros::Time(timeline_->actions.getStartStamp(params()));
+        const auto time = compat::mem_ros::Time(timeline_->actions.getStartStamp(params()));
         res->time_value.seconds = time.seconds();
         res->time_value.nanoseconds = time.nanoseconds();
       }
       else if(req->action == "getEndStamp")
       {
-        const auto time = compat::onto_ros::Time(timeline_->actions.getEndStamp(params()));
+        const auto time = compat::mem_ros::Time(timeline_->actions.getEndStamp(params()));
         res->time_value.seconds = time.seconds();
         res->time_value.nanoseconds = time.nanoseconds();
       }
       else if(req->action == "getDuration")
       {
-        const auto time = compat::onto_ros::Time(timeline_->actions.getDuration(params()));
+        const auto time = compat::mem_ros::Time(timeline_->actions.getDuration(params()));
         res->time_value.seconds = time.seconds();
         res->time_value.nanoseconds = time.nanoseconds();
       }
@@ -338,11 +338,11 @@ namespace mementar {
         set2vector(set_res, res->values);
 
       return true;
-    }(compat::onto_ros::getServicePointer(req), compat::onto_ros::getServicePointer(res));
+    }(compat::mem_ros::getServicePointer(req), compat::mem_ros::getServicePointer(res));
   }
 
-  bool RosInterface::factHandle(compat::onto_ros::ServiceWrapper<compat::MementarService::Request>& req,
-                                compat::onto_ros::ServiceWrapper<compat::MementarService::Response>& res)
+  bool RosInterface::factHandle(compat::mem_ros::ServiceWrapper<compat::MementarService::Request>& req,
+                                compat::mem_ros::ServiceWrapper<compat::MementarService::Response>& res)
   {
     return [this](auto&& req, auto&& res) {
       res->code = 0;
@@ -377,7 +377,7 @@ namespace mementar {
       }
       else if(req->action == "getStamp")
       {
-        const auto time = compat::onto_ros::Time(timeline_->facts.getStamp(params()));
+        const auto time = compat::mem_ros::Time(timeline_->facts.getStamp(params()));
         res->time_value.seconds = time.seconds();
         res->time_value.nanoseconds = time.nanoseconds();
       }
@@ -390,7 +390,7 @@ namespace mementar {
         set2vector(set_res, res->values);
 
       return true;
-    }(compat::onto_ros::getServicePointer(req), compat::onto_ros::getServicePointer(res));
+    }(compat::mem_ros::getServicePointer(req), compat::mem_ros::getServicePointer(res));
   }
 
   /***************
@@ -401,17 +401,17 @@ namespace mementar {
 
   void RosInterface::feedThread()
   {
-    compat::onto_ros::Publisher<std_msgs_compat::String> feeder_publisher(getTopicName("feeder_notifications"),
-                                                                          1000);
-    compat::onto_ros::Rate wait(100);
+    compat::mem_ros::Publisher<std_msgs_compat::String> feeder_publisher(getTopicName("feeder_notifications"),
+                                                                         1000);
+    compat::mem_ros::Rate wait(100);
 
-    while((compat::onto_ros::Node::ok()) && (timeline_->isInit() == false) && (run_ == true))
+    while((compat::mem_ros::Node::ok()) && (timeline_->isInit() == false) && (run_ == true))
     {
       wait.sleep();
     }
 
     std_msgs_compat::String msg;
-    while(compat::onto_ros::Node::ok() && (run_ == true))
+    while(compat::mem_ros::Node::ok() && (run_ == true))
     {
       feeder_mutex_.lock();
       bool run = feeder_.run();
@@ -430,7 +430,7 @@ namespace mementar {
       }
       feeder_mutex_.unlock();
 
-      if(compat::onto_ros::Node::ok() && (run_ == true))
+      if(compat::mem_ros::Node::ok() && (run_ == true))
         wait.sleep();
     }
   }

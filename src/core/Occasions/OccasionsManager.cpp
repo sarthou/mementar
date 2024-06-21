@@ -35,9 +35,9 @@ namespace mementar {
   void OccasionsManager::run()
   {
     run_ = true;
-    compat::onto_ros::Rate r(50);
+    compat::mem_ros::Rate r(50);
 
-    while(compat::onto_ros::Node::ok() && isRunning())
+    while(compat::mem_ros::Node::ok() && isRunning())
     {
       while(!empty())
       {
@@ -69,8 +69,8 @@ namespace mementar {
     mutex_.unlock();
   }
 
-  bool OccasionsManager::subscribeCallback(compat::onto_ros::ServiceWrapper<compat::MementarOccasionSubscription::Request>& req,
-                                           compat::onto_ros::ServiceWrapper<compat::MementarOccasionSubscription::Response>& res)
+  bool OccasionsManager::subscribeCallback(compat::mem_ros::ServiceWrapper<compat::MementarOccasionSubscription::Request>& req,
+                                           compat::mem_ros::ServiceWrapper<compat::MementarOccasionSubscription::Response>& res)
   {
     return [this](auto&& req, auto&& res) {
       auto triplet_patern = TripletPattern::deserialize(req->data);
@@ -81,11 +81,11 @@ namespace mementar {
       res->id = subscription_.subscribe(triplet_patern, req->count);
 
       return true;
-    }(compat::onto_ros::getServicePointer(req), compat::onto_ros::getServicePointer(res));
+    }(compat::mem_ros::getServicePointer(req), compat::mem_ros::getServicePointer(res));
   }
 
-  bool OccasionsManager::unsubscribeCallback(compat::onto_ros::ServiceWrapper<compat::MementarOccasionUnsubscription::Request>& req,
-                                             compat::onto_ros::ServiceWrapper<compat::MementarOccasionUnsubscription::Response>& res)
+  bool OccasionsManager::unsubscribeCallback(compat::mem_ros::ServiceWrapper<compat::MementarOccasionUnsubscription::Request>& req,
+                                             compat::mem_ros::ServiceWrapper<compat::MementarOccasionUnsubscription::Response>& res)
   {
     return [this](auto&& req, auto&& res) {
       if(subscription_.unsubscribe(req->id))
@@ -94,7 +94,7 @@ namespace mementar {
         res->id = -1;
 
       return true;
-    }(compat::onto_ros::getServicePointer(req), compat::onto_ros::getServicePointer(res));
+    }(compat::mem_ros::getServicePointer(req), compat::mem_ros::getServicePointer(res));
   }
 
   Triplet OccasionsManager::get()

@@ -17,7 +17,7 @@ namespace mementar {
     bool isActionPart(const std::string& fact_id);
     std::string getActionPart(const std::string& fact_id);
     std::string getData(const std::string& fact_id);
-    compat::onto_ros::Time getStamp(const std::string& fact_id);
+    compat::mem_ros::Time getStamp(const std::string& fact_id);
 
   private:
   };

@@ -1,16 +1,15 @@
 #include "mementar/API/mementar/clients/InstanceManagerClient.h"
 
-#include <cstdint>
 #include <string>
 
 namespace mementar {
-  int16_t InstanceManagerClient::save(const std::string& name)
+  bool InstanceManagerClient::save(const std::string& name)
   {
-    return callCode("save", name);
+    return callBool("save", name);
   }
 
-  int16_t InstanceManagerClient::draw(const std::string& name)
+  bool InstanceManagerClient::draw(const std::string& name)
   {
-    return callCode("draw", name);
+    return callBool("draw", name);
   }
 } // namespace mementar

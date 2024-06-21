@@ -13,9 +13,9 @@ namespace mementar {
     bool exist(const std::string& action_name);
     std::vector<std::string> getPending();
     bool isPending(const std::string& action_name);
-    compat::onto_ros::Time getStartStamp(const std::string& action_name);
-    compat::onto_ros::Time getEndStamp(const std::string& action_name);
-    compat::onto_ros::Time getDuration(const std::string& action_name);
+    compat::mem_ros::Time getStartStamp(const std::string& action_name);
+    compat::mem_ros::Time getEndStamp(const std::string& action_name);
+    compat::mem_ros::Time getDuration(const std::string& action_name);
     std::string getStartFact(const std::string& action_name);
     std::string getEndFact(const std::string& action_name);
     std::vector<std::string> getFactsDuring(const std::string& action_name);

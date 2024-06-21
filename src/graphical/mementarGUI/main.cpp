@@ -24,26 +24,24 @@ void handler(int sig)
   exit(1);
 }
 
+void spinThread()
+{
+  mementar::compat::mem_ros::Node::get().spin();
+}
+
 int main(int argc, char* argv[])
 {
   signal(SIGSEGV, handler);
 
-  mementar::compat::onto_ros::Node::init(argc, argv, "mementarGUI");
+  mementar::compat::mem_ros::Node::init(argc, argv, "mementarGUI");
 
-  std::thread th([]() {
-    mementar::compat::onto_ros::Node::get().spin();
-
-    while(mementar::compat::onto_ros::Node::ok())
-    {
-      usleep(5000);
-    }
-  });
+  std::thread spin_thread(spinThread);
 
   QApplication a(argc, argv);
 
   QApplication::setStyle(new DarkStyle);
 
-  std::string path = mementar::compat::onto_ros::getShareDirectory("mementar");
+  std::string path = mementar::compat::mem_ros::getShareDirectory("mementar");
   path = path + "/docs/img/logo/mementar.ico";
 
   QIcon icon(QString::fromStdString(path));
@@ -51,8 +49,6 @@ int main(int argc, char* argv[])
 
   mementarGUI w;
   w.show();
-
-  bool run = true;
 
   w.init();
   w.wait();
@@ -62,10 +58,8 @@ int main(int argc, char* argv[])
   signal(SIGINT, SIG_DFL);
   auto a_exec = QApplication::exec();
 
-  run = false;
-
-  mementar::compat::onto_ros::Node::shutdown();
-  th.join();
+  mementar::compat::mem_ros::Node::shutdown();
+  spin_thread.join();
 
   return a_exec;
 }

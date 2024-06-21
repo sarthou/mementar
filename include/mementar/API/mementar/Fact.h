@@ -14,7 +14,7 @@ namespace mementar {
     Fact(const std::string& fact, bool add = true)
     {
       std::smatch match;
-      std::regex regex("\\[(\\w+)\\]([^|]+)\\|([^|]+)\\|([^|]+)");
+      std::regex regex(R"(\[(\w+)\]([^|]+)\|([^|]+)\|([^|]+))");
       if(std::regex_match(fact, match, regex))
       {
         subject_ = match[2].str();
