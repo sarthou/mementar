@@ -80,7 +80,7 @@ namespace mementar {
     static size_t cpt;
     static bool client_verbose;
 
-  protected:
+  public:
     compat::mem_ros::Client<compat::MementarService> client_;
   };
 

@@ -13,9 +13,7 @@ namespace mementar {
 
   bool TimelinesManipulator::waitInit(int32_t timeout)
   {
-    // todo
-    // return ros::service::waitForService("mementar/manage", timeout);
-    return false;
+    return client_.wait(timeout);
   }
 
   TimelineManipulator* TimelinesManipulator::operator[](const std::string& name)

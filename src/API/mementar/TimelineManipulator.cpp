@@ -11,15 +11,13 @@ namespace mementar {
       actions_(name),
       facts_(name),
       manager_(name),
-      name_(name),
-      inst_manager_(name)
+      inst_manager_(name),
+      name_(name)
   {}
 
   bool TimelineManipulator::waitInit(int32_t timeout)
   {
-    // todo:
-    // std::string servive_name = (name_ == "") ? "mementar/manage_instance" : "mementar/manage_instance/" + name_;
-    // return ros::service::waitForService(servive_name, timeout);
+    return inst_manager_.client_.wait(timeout);
   }
 
 } // namespace mementar
