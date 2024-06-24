@@ -120,9 +120,14 @@ namespace mementar {
     else
       Display::info("Mementar is ready");
 
-    // occasions_.stop(); // todo verify
     occasions_thread.join();
     feed_thread.join();
+  }
+
+  void RosInterface::stop()
+  {
+    occasions_.stop();
+    run_ = false;
   }
 
   void RosInterface::reset()

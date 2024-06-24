@@ -45,7 +45,7 @@ void removeUselessSpace(std::string& text)
   }
 }
 
-std::map<std::string, std::unique_ptr<mementar::RosInterface>> interfaces;
+std::map<std::string, mementar::RosInterface*> interfaces;
 std::map<std::string, std::thread> interfaces_threads;
 
 mementar::Parameters params;
@@ -53,7 +53,7 @@ mementar::Parameters params;
 bool deleteInterface(const std::string& name)
 {
   interfaces[name]->stop();
-  usleep(1000);
+  usleep(200000);
 
   try
   {
@@ -67,6 +67,7 @@ bool deleteInterface(const std::string& name)
   }
 
   interfaces_threads.erase(name);
+  delete interfaces[name];
   interfaces.erase(name);
 
   std::cout << name << " STOPPED" << std::endl;
@@ -91,14 +92,13 @@ bool managerHandle(mementar::compat::mem_ros::ServiceWrapper<mementar::compat::M
       }
       else
       {
-        auto tmp = std::make_unique<mementar::RosInterface>(params.parameters_.at("directory").getFirst(),
-                                                            params.parameters_.at("config").getFirst(),
-                                                            10,
-                                                            req->param);
+        auto tmp = new mementar::RosInterface(params.parameters_.at("directory").getFirst(),
+                                              params.parameters_.at("config").getFirst(),
+                                              10,
+                                              req->param);
+        interfaces[req->param] = tmp;
 
-        std::thread th(&mementar::RosInterface::run, tmp.get());
-
-        interfaces[req->param] = std::move(tmp);
+        std::thread th(&mementar::RosInterface::run, tmp);
         interfaces_threads[req->param] = std::move(th);
 
         std::cout << req->param << " STARTED" << std::endl;
