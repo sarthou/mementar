@@ -2,6 +2,7 @@
 #include <array>
 #include <csignal>
 #include <cstdio>
+#include <cstdlib>
 #include <execinfo.h>
 #include <string>
 #include <thread>

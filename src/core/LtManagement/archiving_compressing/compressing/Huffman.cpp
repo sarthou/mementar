@@ -4,12 +4,14 @@
 #include <array>
 #include <cstddef>
 #include <cstdint>
+#include <functional>
 #include <future>
 #include <iostream>
 #include <queue>
 #include <string>
 #include <vector>
 
+#include "mementar/core/LtManagement/archiving_compressing/binaryManagement/BinaryManager.h"
 #include "mementar/core/LtManagement/archiving_compressing/binaryManagement/BitFileGenerator.h"
 #include "mementar/core/LtManagement/archiving_compressing/binaryManagement/BitFileGetter.h"
 
@@ -23,12 +25,18 @@ struct static_alloc // NOLINT
   using value_type = T;
   static_alloc() = default;
   template<typename U>
-  constexpr static_alloc(const static_alloc<U, N>&) noexcept {};
+  constexpr static_alloc(const static_alloc<U, N>& o) noexcept { (void)o; };
   [[nodiscard]] constexpr value_type* allocate(std::size_t n)
   {
+    (void)n;
     return buffer.data();
   }
-  constexpr void deallocate(value_type* p, std::size_t n) {}
+  constexpr void deallocate(value_type* p, std::size_t n)
+  {
+    (void)p;
+    (void)n;
+  }
+
   template<typename U>
   struct rebind // NOLINT
   {
@@ -37,13 +45,17 @@ struct static_alloc // NOLINT
   std::array<value_type, N> buffer{};
 };
 template<typename T, typename U, std::size_t N>
-bool operator==(const static_alloc<T, N>&, const static_alloc<U, N>&)
+bool operator==(const static_alloc<T, N>& a, const static_alloc<U, N>& b)
 {
+  (void)a;
+  (void)b;
   return true;
 }
 template<typename T, typename U, std::size_t N>
-bool operator!=(const static_alloc<T, N>&, const static_alloc<U, N>&)
+bool operator!=(const static_alloc<T, N>& a, const static_alloc<U, N>& b)
 {
+  (void)a;
+  (void)b;
   return false;
 }
 
@@ -82,7 +94,7 @@ namespace mementar {
     const NodeList& nodes_;
   };
 
-  Huffman::Huffman() : BinaryManager("mhu")
+  Huffman::Huffman() : BinaryManager("mhu"), h_min_(0)
   {
   }
 
@@ -135,7 +147,7 @@ namespace mementar {
     bit.writeType1((in_data.size() >> 16) & 0x000000ff);
     bit.writeType1((in_data.size() >> 24) & 0x000000ff);
 
-    for(const std::uint8_t& c : in_data)
+    for(std::uint8_t c : in_data)
       bit.writeNReverse(nodes_[c].code.size_, nodes_[c].code.value_);
 
     return bit.get();
@@ -204,8 +216,8 @@ namespace mementar {
     const auto out_file_size = toInteger<size_t>({(uint8_t)data[0], (uint8_t)data[1], (uint8_t)data[2], (uint8_t)data[3]});
     out.reserve(out_file_size);
 
-    const auto nodes = nodes_.data();
-    auto node = &nodes_[0];
+    auto* nodes = nodes_.data();
+    auto* node = nodes_.data();
 
     uint8_t mask_index = 8;
     uint8_t bit_data = 0x00;
@@ -228,7 +240,7 @@ namespace mementar {
       }
       node = nodes + subtrees_[h_min_data];
 
-      while(node->right - HuffNode_t::INVALID_INDEX)
+      while((node->right - HuffNode_t::INVALID_INDEX) != 0)
       {
         bit_data >>= 1;
         if((++mask_index) >= 8)
@@ -236,7 +248,7 @@ namespace mementar {
           bit_data = data[++index];
           mask_index = 0;
         }
-        node = ((bit_data & 0x01) ? nodes + node->left : nodes + node->right);
+        node = (((bit_data & 0x01) != 0) ? nodes + node->left : nodes + node->right);
       }
       out += (char)(node - nodes);
       if(out.size() == out_file_size)
@@ -252,7 +264,7 @@ namespace mementar {
                    std::begin(into), std::plus<>{});
   }
 
-  FrequencyMap count_char_impl(const std::string& text)
+  FrequencyMap countCharImpl(const std::string& text)
   {
     FrequencyMap freq{}; // Zero-initialized array
     for(std::uint8_t c : text)
@@ -264,7 +276,7 @@ namespace mementar {
   {
     if(jobs <= 1)
     {
-      sum(count_char_impl(text), frequencies_);
+      sum(countCharImpl(text), frequencies_);
       return;
     }
 
@@ -276,11 +288,11 @@ namespace mementar {
     size_t lower_bound = 0;
     for(auto& unit : counting_units)
     {
-      unit = std::async(std::launch::async, count_char_impl,
+      unit = std::async(std::launch::async, countCharImpl,
                         text.substr(lower_bound, bound));
       lower_bound += bound;
     }
-    sum(count_char_impl(text.substr(lower_bound)), frequencies_);
+    sum(countCharImpl(text.substr(lower_bound)), frequencies_);
 
     for(auto& unit : counting_units)
       sum(unit.get(), frequencies_);
@@ -295,7 +307,7 @@ namespace mementar {
 
     minheap heap{NodeCompare{nodes_}};
 
-    for(HuffNode_t::Index i = 0; i < frequencies_.size(); ++i)
+    for(HuffNode_t::Index i = 0; i < (HuffNode_t::Index)frequencies_.size(); ++i)
     {
       if(frequencies_[i] == 0)
         continue; // Do not set unused characters

@@ -181,7 +181,7 @@ namespace mementar {
 
   bool BitFileGetter::getBit()
   {
-    bool res = (current_data_ >> minor_index_) & 0x01;
+    bool res = (((current_data_ >> minor_index_) & 0x01) != 0);
 
     if(minor_index_ > 6)
     {

@@ -6,9 +6,12 @@
 
 #include "mementar/compat/ros.h"
 #include "mementar/core/memGraphs/Branchs/types/Triplet.h"
+#include "mementar/core/memGraphs/Branchs/types/TripletPattern.h"
+#include "ontologenius/OntologyManipulator.h"
 
 namespace mementar {
-  OccasionsManager::OccasionsManager(std::string name)
+
+  OccasionsManager::OccasionsManager(const std::string& name)
     : onto_(nullptr),
       run_(false),
       pub_((name.empty()) ? "occasions" : "occasions/" + name, 1000),
@@ -17,18 +20,20 @@ namespace mementar {
         &OccasionsManager::subscribeCallback, this),
       unsub_service_(
         name.empty() ? "unsubscribe" : "unsubscribe/" + name,
-        &OccasionsManager::unsubscribeCallback, this)
+        &OccasionsManager::unsubscribeCallback, this),
+      queue_choice_(true)
   {
   }
 
-  OccasionsManager::OccasionsManager(onto::OntologyManipulator* onto, std::string name)
+  OccasionsManager::OccasionsManager(onto::OntologyManipulator* onto, const std::string& name)
     : onto_(onto),
       subscription_(onto),
       run_(false),
       pub_((name.empty()) ? "occasions" : "occasions/" + name, 1000),
       sub_service_(name.empty() ? "subscribe" : "subscribe/" + name, &OccasionsManager::subscribeCallback, this),
       unsub_service_(name.empty() ? "unsubscribe" : "unsubscribe/" + name, &OccasionsManager::unsubscribeCallback,
-                     this)
+                     this),
+      queue_choice_(true)
   {
   }
 
@@ -45,12 +50,12 @@ namespace mementar {
         if(triplet.valid())
         {
           std::vector<size_t> ids = subscription_.evaluate(triplet);
-          for(const auto id : ids)
+          for(auto id : ids)
           {
             compat::MementarOccasion msg;
-            msg.id = id;
+            msg.id = (int)id;
             msg.data = triplet.toString();
-            msg.last = subscription_.isFinished(id);
+            msg.last = subscription_.isFinished(id) ? 1 : 0;
             pub_.publish(msg);
           }
         }

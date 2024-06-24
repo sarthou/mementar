@@ -2,20 +2,21 @@
 #define MEMENTAR_OCCASIONSMANAGER_H
 
 #include <atomic>
-#include <mementar/compat/ros.h>
-#include <mementar/core/Occasions/Subscription.h>
-#include <mementar/core/memGraphs/Branchs/types/Triplet.h>
 #include <mutex>
-#include <ontologenius/OntologyManipulator.h>
 #include <queue>
+
+#include "mementar/compat/ros.h"
+#include "mementar/core/Occasions/Subscription.h"
+#include "mementar/core/memGraphs/Branchs/types/Triplet.h"
+#include "ontologenius/OntologyManipulator.h"
 
 namespace mementar {
 
   class OccasionsManager
   {
   public:
-    explicit OccasionsManager(std::string name = "");
-    explicit OccasionsManager(onto::OntologyManipulator* onto, std::string name = "");
+    explicit OccasionsManager(const std::string& name = "");
+    explicit OccasionsManager(onto::OntologyManipulator* onto, const std::string& name = "");
 
     void run();
 

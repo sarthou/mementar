@@ -13,10 +13,10 @@ namespace mementar {
     explicit ActionsPublisher(const std::string& name = "");
 
     void insert(const std::string& name, time_t start_stamp = time(nullptr), time_t end_stamp = 0);
-    void insert(const std::string& name, compat::mem_ros::Time start_stamp = compat::mem_ros::Node::get().current_time(), compat::mem_ros::Time end_stamp = compat::mem_ros::Time(0));
+    void insert(const std::string& name, compat::mem_ros::Time start_stamp = compat::mem_ros::Node::get().currentTime(), compat::mem_ros::Time end_stamp = compat::mem_ros::Time(0));
 
     void insertEnd(const std::string& name, time_t end_stamp = time(nullptr));
-    void insertEnd(const std::string& name, compat::mem_ros::Time end_stamp = compat::mem_ros::Node::get().current_time());
+    void insertEnd(const std::string& name, compat::mem_ros::Time end_stamp = compat::mem_ros::Node::get().currentTime());
 
   private:
     compat::mem_ros::Publisher<compat::MementarAction> pub_;

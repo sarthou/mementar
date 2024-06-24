@@ -1,12 +1,13 @@
-#include <iostream>
 #include <chrono>
-#include <stdlib.h>     /* srand, rand */
-#include <time.h>       /* time */
-#include <ctime>
+#include <cstdlib> /* srand, rand */
+#include <ctime>   /* time */
+#include <iostream>
+#include <string>
 
-#include "mementar/core/LtManagement/EpisodicTree/CompressedLeaf.h"
-#include "mementar/core/memGraphs/Btree/Btree.h"
 #include "mementar/core/LtManagement/EpisodicTree/CompressedLeafNode.h"
+#include "mementar/core/memGraphs/Branchs/types/Fact.h"
+#include "mementar/core/memGraphs/Branchs/types/SoftPoint.h"
+#include "mementar/core/memGraphs/Branchs/types/Triplet.h"
 
 using namespace std::chrono;
 
@@ -22,11 +23,11 @@ int main()
     std::cout << "took " << time_span.count() << " to load" << std::endl;
 
     std::cout << " *************" << std::endl;
-    for(size_t i = 0; i < 400000; i++)
+    for(mementar::SoftPoint::Ttime i = 0.f; i < 400000.f; i++)
     {
-      //std::cout << i << std::endl;
+      // std::cout << i << std::endl;
       compressed_node.insert(new mementar::Fact(mementar::Triplet("bob", "hasValue", std::to_string(i)), i));
-      //usleep(1);
+      // usleep(1);
     }
     std::cout << " *************" << std::endl;
 
@@ -48,7 +49,6 @@ int main()
   duration<double> time_span = duration_cast<duration<double>>(t5 - t1);
   std::cout << "took " << time_span.count() << " for all process" << std::endl;
 
-
   /*//compressed_node.display(150000);
 
   std::cout << "first key = " << compressed_node.getFirst()->getKey() << std::endl;
@@ -56,7 +56,7 @@ int main()
   std::cout << "find key = " << compressed_node.find(50)->getKey() << std::endl;
   std::cout << "findNear key = " << compressed_node.findNear(102)->getKey() << std::endl;
 */
-  //mementar::CompressedLeaf<size_t> leaf(&tree, "/home/gsarthou/Desktop");
+  // mementar::CompressedLeaf<size_t> leaf(&tree, "/home/gsarthou/Desktop");
 
   return 0;
 }

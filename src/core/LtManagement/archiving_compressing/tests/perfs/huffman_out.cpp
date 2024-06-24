@@ -25,7 +25,7 @@ float testHuffman(size_t nb, const std::string& input_file)
 #ifdef NEW_V
     mementar::Huffman huff;
 #else
-    mementar::Huffman_ huff;
+    mementar::HuffmanOld huff;
 #endif
     std::vector<char> data;
     if(huff.readBinaryFile(data, input_file))

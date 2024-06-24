@@ -13,6 +13,8 @@ namespace mementar {
   {
     uint32_t value_;
     uint8_t size_;
+
+    HuffCode_t() : value_(0), size_(0) {}
   };
 
   struct HuffNode_t

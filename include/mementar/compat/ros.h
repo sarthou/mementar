@@ -227,7 +227,7 @@ namespace mementar::compat {
 
       void spin();
 
-      Time current_time();
+      Time currentTime();
 
     private:
       explicit Node(const std::string& node_name);

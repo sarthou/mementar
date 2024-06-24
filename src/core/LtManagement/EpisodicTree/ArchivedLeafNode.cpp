@@ -399,7 +399,7 @@ namespace mementar {
       if(cpt-- == 0)
       {
         cpt = rate;
-        time_t now = std::time(0);
+        time_t now = std::time(nullptr);
         for(size_t i = 0; i < archived_sessions_timeout_.size(); i++)
         {
           if((archived_sessions_tree_[i] != nullptr) &&

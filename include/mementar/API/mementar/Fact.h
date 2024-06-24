@@ -49,7 +49,7 @@ namespace mementar {
     std::string getObject() const { return object_; }
     bool getAdd() const { return add_; }
     std::string operator()() const { return (add_ ? "[add]" : "[del]") + subject_ + "|" + predicat_ + "|" + object_; }
-    std::string to_string() const { return (add_ ? "[add]" : "[del]") + subject_ + "|" + predicat_ + "|" + object_; }
+    std::string toString() const { return (add_ ? "[add]" : "[del]") + subject_ + "|" + predicat_ + "|" + object_; }
 
     void setSubject(const std::string& subject) { subject_ = subject; }
     void setPredicat(const std::string& predicat) { predicat_ = predicat; }

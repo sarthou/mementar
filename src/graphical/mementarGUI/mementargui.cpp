@@ -276,7 +276,7 @@ void mementarGUI::updateTime()
 {
   if(time_source_ == 0)
   {
-    auto time = mementar::compat::mem_ros::Node::get().current_time();
+    auto time = mementar::compat::mem_ros::Node::get().currentTime();
     current_time_.seconds = time.seconds();
     current_time_.nanoseconds = time.nanoseconds();
     // current_time_.store(ros::Time::now(), std::memory_order_release);
