@@ -5,22 +5,23 @@
 #include "mementar/core/LtManagement/archiving_compressing/archiving/Header.h"
 #include "mementar/core/memGraphs/Branchs/types/Fact.h"
 #include "mementar/core/memGraphs/Btree/BplusTree.h"
+#include "mementar/core/memGraphs/Branchs/types/SoftPoint.h"
 
 namespace mementar {
 
   class CompressedLeafSession
   {
   public:
-    CompressedLeafSession(const time_t& key, size_t index);
+    CompressedLeafSession(const SoftPoint::Ttime& key, size_t index);
 
-    time_t getKey() const { return key_; }
+    SoftPoint::Ttime getKey() const { return key_; }
     size_t getIndex() const { return index_; }
 
-    BplusTree<time_t, Fact*>* getTree(Header& header, Archive& arch) const;
-    std::vector<char> getRawData(Header& header, Archive& arch) const;
+    BplusTree<SoftPoint::Ttime, Fact*>* getTree(const Header& header, Archive& arch) const;
+    std::vector<char> getRawData(const Header& header, Archive& arch) const;
 
   private:
-    time_t key_;
+    SoftPoint::Ttime key_;
     size_t index_;
   };
 

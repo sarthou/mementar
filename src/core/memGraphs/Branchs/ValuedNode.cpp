@@ -4,6 +4,6 @@
 
 namespace mementar {
 
-  WordTable ValuedNode::table_;
+  WordTable ValuedNode::table;
 
 } // namespace mementar

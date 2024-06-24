@@ -215,7 +215,7 @@ namespace mementar {
           node->leafs_.erase(node->leafs_.begin() + i);
           node->keys_.erase(node->keys_.begin() + i);
 
-          if(node->leafs_.size() == 0)
+          if(node->leafs_.empty())
             std::cout << "a node is empty but will not be destroyed" << std::endl;
         }
         return true;
@@ -229,7 +229,7 @@ namespace mementar {
   {
     BtreeLeafBase<Tkey, Tleaf>* res = nullptr;
 
-    if(node->leafs_.size() == 0)
+    if(node->leafs_.empty())
     {
       node->keys_.push_back(key);
       res = new BtreeLeafBase<Tkey, Tleaf>(key);
@@ -318,7 +318,7 @@ namespace mementar {
   template<typename Tkey, typename Tleaf, size_t N>
   void Btree<Tkey, Tleaf, N>::insertNode(BtreeNode<Tkey, Tleaf>* node, BtreeNode<Tkey, Tleaf>* new_node, const Tkey& key)
   {
-    if(node->childs_.size() == 0)
+    if(node->childs_.empty())
     {
       node->childs_.push_back(new_node);
       new_node->setMother(node);
@@ -326,7 +326,7 @@ namespace mementar {
     }
     else
     {
-      if(node->keys_.size() == 0)
+      if(node->keys_.empty())
       {
         node->keys_.push_back(key);
         node->childs_.push_back(new_node);

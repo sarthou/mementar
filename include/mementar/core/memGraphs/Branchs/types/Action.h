@@ -2,6 +2,7 @@
 #define MEMENTAR_ACTION_H
 
 #include <optional>
+#include <string>
 
 #include "mementar/core/memGraphs/Branchs/ValuedNode.h"
 #include "mementar/core/memGraphs/Branchs/types/SoftPoint.h"
@@ -21,9 +22,9 @@ namespace mementar {
 
     std::string getName() const { return getValue(); }
 
-    size_t getDuration();
-    size_t getMinDuration();
-    size_t getMaxDuration();
+    SoftPoint::Ttime getDuration();
+    SoftPoint::Ttime getMinDuration();
+    SoftPoint::Ttime getMaxDuration();
 
     bool isSoft();
     bool isPending() const { return end_ == std::nullopt; }

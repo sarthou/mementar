@@ -12,23 +12,23 @@
 #include "mementar/compat/ros.h"
 
 namespace Ui { // NOLINT
-  class mementarGUI;
+  class MementarGUI;
 }
 
-class mementarGUI : public QMainWindow
+class MementarGUI : public QMainWindow
 {
   Q_OBJECT
 
 public:
-  explicit mementarGUI(QWidget* parent = nullptr);
-  ~mementarGUI() override;
+  explicit MementarGUI(QWidget* parent = nullptr);
+  ~MementarGUI() override;
 
   void init();
   void wait();
   void start();
 
 private:
-  Ui::mementarGUI* ui_;
+  Ui::MementarGUI* ui_;
 
   mementar::TimelineManipulator meme_;
 

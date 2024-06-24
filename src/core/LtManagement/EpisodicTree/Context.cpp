@@ -13,6 +13,7 @@
 
 #include "mementar/core/memGraphs/Branchs/types/Triplet.h"
 #include "mementar/graphical/Display.h"
+#include "mementar/core/memGraphs/Branchs/types/SoftPoint.h"
 
 namespace mementar {
 
@@ -223,7 +224,7 @@ namespace mementar {
         pose_start = str.find('{', pose_end) + 1;
         pose_end = str.find('}', pose_start);
         tmp = str.substr(pose_start, pose_end - pose_start);
-        time_t key = 0;
+        SoftPoint::Ttime key = 0;
         iss = std::istringstream(tmp);
         iss >> key;
 
@@ -268,7 +269,7 @@ namespace mementar {
       pose_start = str.find('{', pose_end) + 1;
       pose_end = str.find('}', pose_start);
       tmp = str.substr(pose_start, pose_end - pose_start);
-      time_t key = 0;
+      SoftPoint::Ttime key = 0;
       iss = std::istringstream(tmp);
       iss >> key;
 

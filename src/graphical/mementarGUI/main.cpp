@@ -48,7 +48,7 @@ int main(int argc, char* argv[])
   QIcon icon(QString::fromStdString(path));
   QApplication::setWindowIcon(icon);
 
-  mementarGUI w;
+  MementarGUI w;
   w.show();
 
   w.init();

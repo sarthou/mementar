@@ -20,6 +20,16 @@ namespace mementar {
                                                                           t_(t_start_ + (t_end_.value_or(t_start_) - t_start_) / 2)
     {}
 
+    explicit SoftPoint(const std::string& t_start) : t_start_(std::stod(t_start)),
+                                                     t_end_(std::nullopt),
+                                                     t_(t_start_)
+    {}
+
+    SoftPoint(const std::string& t_start, const std::string& t_end) : t_start_(std::stod(t_start)),
+                                                                      t_end_(std::stod(t_end)),
+                                                                      t_(t_start_ + (t_end_.value() - t_start_) / 2)
+    {}
+
     SoftPoint(const SoftPoint& other) : t_start_(other.t_start_),
                                         t_end_(other.t_end_),
                                         t_(t_start_ + (t_end_.value_or(t_start_) - t_start_) / 2)
@@ -29,6 +39,8 @@ namespace mementar {
                                                  t_end_(other->t_end_),
                                                  t_(t_start_ + (t_end_.value_or(t_start_) - t_start_) / 2)
     {}
+
+    SoftPoint& operator=(const SoftPoint& other) = default;
 
     bool isInstantaneous() const { return t_end_ == std::nullopt; }
     Ttime getTime() const { return t_; }

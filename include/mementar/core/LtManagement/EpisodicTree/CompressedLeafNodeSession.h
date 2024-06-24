@@ -14,12 +14,13 @@
 #include "mementar/core/LtManagement/archiving_compressing/archiving/Header.h"
 #include "mementar/core/memGraphs/Branchs/types/Fact.h"
 #include "mementar/core/memGraphs/Btree/BplusTree.h"
+#include "mementar/core/memGraphs/Branchs/types/SoftPoint.h"
 
 namespace mementar {
 
   class CompressedLeafNodeSession
   {
-    using LeafType = typename BplusLeaf<time_t, Fact*>::LeafType;
+    using LeafType = typename BplusLeaf<SoftPoint::Ttime, Fact*>::LeafType;
 
   public:
     CompressedLeafNodeSession(const std::string& file_name);
@@ -27,12 +28,12 @@ namespace mementar {
 
     void insert(Fact* data);
     bool remove(Fact* data);
-    LeafType* find(const time_t& key);
-    LeafType* findNear(const time_t& key);
+    LeafType* find(const SoftPoint::Ttime& key);
+    LeafType* findNear(const SoftPoint::Ttime& key);
     LeafType* getFirst();
     LeafType* getLast();
 
-    time_t getKey()
+    SoftPoint::Ttime getKey()
     {
       if(contexts_.empty() == false)
         return contexts_[0].getKey();
@@ -51,12 +52,12 @@ namespace mementar {
     // keys_[i] correspond to the first key of child i
     std::vector<Context> contexts_;
     std::vector<CompressedLeafSession> childs_;
-    std::vector<BplusTree<time_t, Fact*>*> sessions_tree_;
+    std::vector<BplusTree<SoftPoint::Ttime, Fact*>*> sessions_tree_;
     std::vector<bool> modified_;
 
-    time_t earlier_key_;
+    SoftPoint::Ttime earlier_key_;
 
-    inline int getKeyIndex(const time_t& key);
+    inline int getKeyIndex(const SoftPoint::Ttime& key);
 
     void loadData();
 

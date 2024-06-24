@@ -9,10 +9,11 @@
 #include "mementar/core/LtManagement/archiving_compressing/compressing/LzUncompress.h"
 #include "mementar/core/memGraphs/Branchs/types/Fact.h"
 #include "mementar/core/memGraphs/Btree/BplusTree.h"
+#include "mementar/core/memGraphs/Branchs/types/SoftPoint.h"
 
 namespace mementar {
 
-  CompressedLeaf::CompressedLeaf(BplusTree<time_t, Fact*>* tree, const std::string& directory)
+  CompressedLeaf::CompressedLeaf(BplusTree<SoftPoint::Ttime, Fact*>* tree, const std::string& directory)
   {
     if(tree == nullptr)
       return;
@@ -28,20 +29,20 @@ namespace mementar {
     lz_comp.saveToFile(out_vect, directory_);
   }
 
-  CompressedLeaf::CompressedLeaf(const time_t& key, const std::string& directory) : key_(key)
+  CompressedLeaf::CompressedLeaf(const SoftPoint::Ttime& key, const std::string& directory) : key_(key)
   {
     size_t dot_pose = directory.find('.');
     directory_ = directory.substr(0, dot_pose);
   }
 
-  BplusTree<time_t, Fact*>* CompressedLeaf::getTree()
+  BplusTree<SoftPoint::Ttime, Fact*>* CompressedLeaf::getTree()
   {
     LzUncompress lz;
     std::vector<char> data;
     if(lz.readBinaryFile(data, directory_ + ".mlz"))
     {
       std::string out = lz.uncompress(data);
-      BplusTree<time_t, Fact*>* tree = new BplusTree<time_t, Fact*>();
+      BplusTree<SoftPoint::Ttime, Fact*>* tree = new BplusTree<SoftPoint::Ttime, Fact*>();
 
       std::istringstream iss(out);
       std::string line;
@@ -58,17 +59,17 @@ namespace mementar {
     return nullptr;
   }
 
-  std::string CompressedLeaf::treeToString(BplusTree<time_t, Fact*>* tree)
+  std::string CompressedLeaf::treeToString(BplusTree<SoftPoint::Ttime, Fact*>* tree)
   {
     std::string res;
     std::vector<Fact*> tmp_data;
-    BplusLeaf<time_t, Fact*>* it = tree->getFirst();
+    BplusLeaf<SoftPoint::Ttime, Fact*>* it = tree->getFirst();
     while(it != nullptr)
     {
       tmp_data = it->getData();
-      for(auto& data : tmp_data)
+      for(auto* data : tmp_data)
         res += Fact::serialize(data) + "\n";
-      it = static_cast<BplusLeaf<time_t, Fact*>*>(it->getNextLeaf());
+      it = static_cast<BplusLeaf<SoftPoint::Ttime, Fact*>*>(it->getNextLeaf());
     }
 
     return res;

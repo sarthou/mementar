@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>mementarGUI</class>
- <widget class="QMainWindow" name="mementarGUI">
+ <class>MementarGUI</class>
+ <widget class="QMainWindow" name="MementarGUI">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>mementarGUI</string>
+   <string>MementarGUI</string>
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QVBoxLayout" name="verticalLayout_2">

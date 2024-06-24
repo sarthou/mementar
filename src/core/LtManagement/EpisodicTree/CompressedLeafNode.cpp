@@ -14,6 +14,7 @@
 #include "mementar/core/LtManagement/EpisodicTree/CompressedLeaf.h"
 #include "mementar/core/LtManagement/EpisodicTree/Context.h"
 #include "mementar/core/memGraphs/Branchs/types/Fact.h"
+#include "mementar/core/memGraphs/Branchs/types/SoftPoint.h"
 #include "mementar/core/memGraphs/Btree/BplusTree.h"
 #include "mementar/graphical/Display.h"
 
@@ -108,7 +109,7 @@ namespace mementar {
     }
     else
     {
-      if((time_t)data->getTime() < keys_[0])
+      if((SoftPoint::Ttime)data->getTime() < keys_[0])
       {
         Display::error("try to insert fact in past that do not exist");
         return;
@@ -118,7 +119,7 @@ namespace mementar {
 
       if(index < compressed_childs_.size())
       {
-        if((index == compressed_childs_.size() - 1) && (keys_.size() == compressed_childs_.size()) && ((time_t)data->getTime() > earlier_key_))
+        if((index == compressed_childs_.size() - 1) && (keys_.size() == compressed_childs_.size()) && ((SoftPoint::Ttime)data->getTime() > earlier_key_))
         {
           mut_.unlock_shared();
           createNewTreeChild(data->getTime());
@@ -165,7 +166,7 @@ namespace mementar {
     }
     mut_.unlock_shared();
 
-    if(earlier_key_ < (time_t)data->getTime())
+    if(earlier_key_ < (SoftPoint::Ttime)data->getTime())
       earlier_key_ = data->getTime();
   }
 
@@ -195,7 +196,7 @@ namespace mementar {
     mut_.unlock_shared();
   }
 
-  CompressedLeafNode::LeafType* CompressedLeafNode::find(const time_t& key)
+  CompressedLeafNode::LeafType* CompressedLeafNode::find(const SoftPoint::Ttime& key)
   {
     CompressedLeafNode::LeafType* res = nullptr;
 
@@ -217,7 +218,7 @@ namespace mementar {
     return res;
   }
 
-  CompressedLeafNode::LeafType* CompressedLeafNode::findNear(const time_t& key)
+  CompressedLeafNode::LeafType* CompressedLeafNode::findNear(const SoftPoint::Ttime& key)
   {
     CompressedLeafNode::LeafType* res = nullptr;
 
@@ -278,7 +279,7 @@ namespace mementar {
     return res;
   }
 
-  void CompressedLeafNode::display(time_t key)
+  void CompressedLeafNode::display(SoftPoint::Ttime key)
   {
     mut_.lock_shared();
     int index = getKeyIndex(key);
@@ -299,10 +300,10 @@ namespace mementar {
     session_cleaner_ = std::move(std::thread(&CompressedLeafNode::clean, this));
   }
 
-  void CompressedLeafNode::createNewTreeChild(const time_t& key)
+  void CompressedLeafNode::createNewTreeChild(const SoftPoint::Ttime& key)
   {
     mut_.lock();
-    btree_childs_.push_back(new BplusTree<time_t, Fact*>());
+    btree_childs_.push_back(new BplusTree<SoftPoint::Ttime, Fact*>());
     keys_.push_back(key);
     contexts_.emplace_back(key);
     mut_.unlock();
@@ -321,7 +322,7 @@ namespace mementar {
       return false;
   }
 
-  int CompressedLeafNode::getKeyIndex(const time_t& key)
+  int CompressedLeafNode::getKeyIndex(const SoftPoint::Ttime& key)
   {
     int index = (int)keys_.size() - 1;
     for(size_t i = 0; i < keys_.size(); i++)
@@ -364,7 +365,7 @@ namespace mementar {
         std::string str_key = dir.substr(0, dot_pose);
         if(ext == "mlz")
         {
-          time_t key = 0;
+          SoftPoint::Ttime key = 0;
           std::istringstream iss(str_key);
           iss >> key;
           insert(key, CompressedLeaf(key, complete_dir));
@@ -391,7 +392,7 @@ namespace mementar {
       return false;
   }
 
-  void CompressedLeafNode::insert(const time_t& key, const CompressedLeaf& leaf)
+  void CompressedLeafNode::insert(const SoftPoint::Ttime& key, const CompressedLeaf& leaf)
   {
     mut_.lock();
     if(keys_.empty() || (key > keys_[keys_.size() - 1]))
@@ -458,7 +459,7 @@ namespace mementar {
       if(cpt-- == 0)
       {
         cpt = rate;
-        time_t now = std::time(nullptr);
+        std::time_t now = std::time(nullptr);
         for(size_t i = 0; i < compressed_sessions_timeout_.size(); i++)
         {
           if((compressed_sessions_tree_[i] != nullptr) &&

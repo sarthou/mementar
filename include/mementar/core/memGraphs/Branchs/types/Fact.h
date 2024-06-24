@@ -23,6 +23,22 @@ namespace mementar {
     Fact(const Triplet& triplet, const SoftPoint& soft_point) : SoftPoint(soft_point), Triplet(triplet)
     {}
 
+    Fact(const Fact& other) = default;
+
+    Fact& operator=(const Fact& other)
+    {
+      this->subject_ = other.subject_;
+      this->predicat_ = other.predicat_;
+      this->object_ = other.object_;
+      this->add_ = other.add_;
+
+      this->t_ = other.t_;
+      this->t_start_ = other.t_start_;
+      this->t_end_ = other.t_end_;
+
+      return *this;
+    }
+
     static std::string serialize(const Fact& fact)
     {
       if(fact.isInstantaneous())
@@ -44,9 +60,9 @@ namespace mementar {
       if(std::regex_match(str, fact_match, fact_regex))
       {
         if(fact_match[3].str().empty())
-          return Fact(Triplet::deserialize(fact_match[4].str()), SoftPoint(std::stoul(fact_match[1].str())));
+          return Fact(Triplet::deserialize(fact_match[4].str()), SoftPoint(fact_match[1].str()));
         else
-          return Fact(Triplet::deserialize(fact_match[4].str()), SoftPoint(std::stoul(fact_match[1].str()), std::stoul(fact_match[3].str())));
+          return Fact(Triplet::deserialize(fact_match[4].str()), SoftPoint(fact_match[1].str(), fact_match[3].str()));
       }
       else
         return Fact("", 0);
@@ -57,9 +73,9 @@ namespace mementar {
       if(std::regex_match(str, fact_match, fact_regex))
       {
         if(fact_match[3].str().empty())
-          return new Fact(Triplet::deserialize(fact_match[4].str()), SoftPoint(std::stoul(fact_match[1].str())));
+          return new Fact(Triplet::deserialize(fact_match[4].str()), SoftPoint(fact_match[1].str()));
         else
-          return new Fact(Triplet::deserialize(fact_match[4].str()), SoftPoint(std::stoul(fact_match[1].str()), std::stoul(fact_match[3].str())));
+          return new Fact(Triplet::deserialize(fact_match[4].str()), SoftPoint(fact_match[1].str(), fact_match[3].str()));
       }
       else
         return nullptr;

@@ -22,7 +22,7 @@
 
 #define QUEU_SIZE 1000
 
-mementarGUI::mementarGUI(QWidget* parent) : QMainWindow(parent), ui_(new Ui::mementarGUI)
+MementarGUI::MementarGUI(QWidget* parent) : QMainWindow(parent), ui_(new Ui::MementarGUI)
 {
   ui_->setupUi(this);
 
@@ -75,11 +75,11 @@ mementarGUI::mementarGUI(QWidget* parent) : QMainWindow(parent), ui_(new Ui::mem
   QObject::connect(ui_->fact_isActionPart_button, SIGNAL(clicked()), this, SLOT(factButtonClickedSlot()));
   QObject::connect(ui_->fact_getStamp_button, SIGNAL(clicked()), this, SLOT(factButtonClickedSlot()));
 
-  QObject::connect(ui_->manager_refresh_button, &QPushButton::clicked, this, &mementarGUI::displayInstancesListSlot);
-  QObject::connect(ui_->manager_add_instance_button, &QPushButton::clicked, this, &mementarGUI::addInstanceSlot);
-  QObject::connect(ui_->manager_delete_instance_button, &QPushButton::clicked, this, &mementarGUI::deleteInstanceSlot);
-  QObject::connect(ui_->manager_save_button, &QPushButton::clicked, this, &mementarGUI::saveInstanceSlot);
-  QObject::connect(ui_->manager_draw_button, &QPushButton::clicked, this, &mementarGUI::drawInstanceSlot);
+  QObject::connect(ui_->manager_refresh_button, &QPushButton::clicked, this, &MementarGUI::displayInstancesListSlot);
+  QObject::connect(ui_->manager_add_instance_button, &QPushButton::clicked, this, &MementarGUI::addInstanceSlot);
+  QObject::connect(ui_->manager_delete_instance_button, &QPushButton::clicked, this, &MementarGUI::deleteInstanceSlot);
+  QObject::connect(ui_->manager_save_button, &QPushButton::clicked, this, &MementarGUI::saveInstanceSlot);
+  QObject::connect(ui_->manager_draw_button, &QPushButton::clicked, this, &MementarGUI::drawInstanceSlot);
 
   QObject::connect(ui_->feeder_add_start_button, SIGNAL(clicked()), this, SLOT(feederAddSlot()));
   QObject::connect(ui_->feeder_remove_end_button, SIGNAL(clicked()), this, SLOT(feederDelSlot()));
@@ -97,21 +97,21 @@ mementarGUI::mementarGUI(QWidget* parent) : QMainWindow(parent), ui_(new Ui::mem
   QObject::connect(ui_->static_current_time_editline, SIGNAL(editingFinished()), this, SLOT(currentTimeEditingFinishedSlot()));
 }
 
-mementarGUI::~mementarGUI()
+MementarGUI::~MementarGUI()
 {
   delete ui_;
 }
 
-void mementarGUI::init()
+void MementarGUI::init()
 {
   timesourceChangedSlot(0);
 
   facts_publishers_["_"] = std::make_unique<mementar::compat::mem_ros::Publisher<mementar::compat::StampedString>>("/mementar/insert_fact_stamped", QUEU_SIZE);
   actions_publishers_["_"] = std::make_unique<mementar::compat::mem_ros::Publisher<mementar::compat::MementarAction>>("/mementar/insert_action", QUEU_SIZE);
-  feeder_notifications_subs_["_"] = std::make_unique<mementar::compat::mem_ros::Subscriber<std_msgs_compat::String>>("mementar/feeder_notifications", QUEU_SIZE, &mementarGUI::feederCallback, this);
+  feeder_notifications_subs_["_"] = std::make_unique<mementar::compat::mem_ros::Subscriber<std_msgs_compat::String>>("mementar/feeder_notifications", QUEU_SIZE, &MementarGUI::feederCallback, this);
 }
 
-void mementarGUI::wait()
+void MementarGUI::wait()
 {
   QString html = "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">"
                  "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">"
@@ -121,7 +121,7 @@ void mementarGUI::wait()
   ui_->static_info_area->setHtml(html);
 }
 
-void mementarGUI::start()
+void MementarGUI::start()
 {
   QString html = "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">"
                  "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">"
@@ -131,27 +131,27 @@ void mementarGUI::start()
   ui_->static_info_area->setHtml(html);
 }
 
-void mementarGUI::actionButtonHoverEnterSlot()
+void MementarGUI::actionButtonHoverEnterSlot()
 {
   ui_->action_description_textedit->setText(dynamic_cast<QWidget*>(sender())->whatsThis());
 }
 
-void mementarGUI::actionButtonHoverLeaveSlot()
+void MementarGUI::actionButtonHoverLeaveSlot()
 {
   ui_->action_description_textedit->setText("");
 }
 
-void mementarGUI::factButtonHoverEnterSlot()
+void MementarGUI::factButtonHoverEnterSlot()
 {
   ui_->fact_description_textedit->setText(dynamic_cast<QWidget*>(sender())->whatsThis());
 }
 
-void mementarGUI::factButtonHoverLeaveSlot()
+void MementarGUI::factButtonHoverLeaveSlot()
 {
   ui_->fact_description_textedit->setText("");
 }
 
-void mementarGUI::actionButtonClickedSlot()
+void MementarGUI::actionButtonClickedSlot()
 {
   auto service_name = ui_->static_instance_name_editline->text().toStdString();
 
@@ -179,7 +179,7 @@ void mementarGUI::actionButtonClickedSlot()
   }
 }
 
-void mementarGUI::factButtonClickedSlot()
+void MementarGUI::factButtonClickedSlot()
 {
   std::string service_name = ui_->static_instance_name_editline->text().toStdString();
 
@@ -207,11 +207,11 @@ void mementarGUI::factButtonClickedSlot()
   }
 }
 
-void mementarGUI::nameEditingFinishedSlot()
+void MementarGUI::nameEditingFinishedSlot()
 {
 }
 
-void mementarGUI::displayErrorInfo(const std::string& text)
+void MementarGUI::displayErrorInfo(const std::string& text)
 {
   std::string html =
     "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">"
@@ -223,7 +223,7 @@ void mementarGUI::displayErrorInfo(const std::string& text)
   ui_->static_info_area->setHtml(QString::fromStdString(html));
 }
 
-void mementarGUI::displayInstancesList()
+void MementarGUI::displayInstancesList()
 {
   auto values = meme_.manager_.list();
 
@@ -251,12 +251,12 @@ void mementarGUI::displayInstancesList()
   ui_->manager_instances_list_edittext->setHtml(QString::fromStdString(html));
 }
 
-void mementarGUI::displayInstancesListSlot()
+void MementarGUI::displayInstancesListSlot()
 {
   displayInstancesList();
 }
 
-std::string mementarGUI::vector2string(const std::vector<std::string>& vect)
+std::string MementarGUI::vector2string(const std::vector<std::string>& vect)
 {
   std::string res;
   for(const auto& v : vect)
@@ -264,7 +264,7 @@ std::string mementarGUI::vector2string(const std::vector<std::string>& vect)
   return res;
 }
 
-std::string mementarGUI::vector2html(const std::vector<std::string>& vect)
+std::string MementarGUI::vector2html(const std::vector<std::string>& vect)
 {
   std::string res;
   for(const auto& v : vect)
@@ -272,7 +272,7 @@ std::string mementarGUI::vector2html(const std::vector<std::string>& vect)
   return res;
 }
 
-void mementarGUI::updateTime()
+void MementarGUI::updateTime()
 {
   if(time_source_ == 0)
   {
@@ -296,13 +296,13 @@ void mementarGUI::updateTime()
   setTimeSignal(QString::fromStdString(std::to_string(current_time_.seconds)));
 }
 
-void mementarGUI::currentTabChangedSlot(int tab_id)
+void MementarGUI::currentTabChangedSlot(int tab_id)
 {
   if(tab_id == 3)
     displayInstancesList();
 }
 
-void mementarGUI::addInstanceSlot()
+void MementarGUI::addInstanceSlot()
 {
   bool do_copy = false;
 
@@ -327,7 +327,7 @@ void mementarGUI::addInstanceSlot()
 
       if(feeder_notifications_subs_.find(base_match[1].str()) == feeder_notifications_subs_.end())
         feeder_notifications_subs_[base_match[1].str()] = std::make_unique<mementar::compat::mem_ros::Subscriber<std_msgs_compat::String>>(
-          "mementar/feeder_notifications", QUEU_SIZE, &mementarGUI::feederCallback, this);
+          "mementar/feeder_notifications", QUEU_SIZE, &MementarGUI::feederCallback, this);
     }
   }
   else
@@ -342,7 +342,7 @@ void mementarGUI::addInstanceSlot()
 
     if(feeder_notifications_subs_.find(param) == feeder_notifications_subs_.end())
       feeder_notifications_subs_[param] = std::make_unique<mementar::compat::mem_ros::Subscriber<std_msgs_compat::String>>(
-        "mementar/feeder_notifications", QUEU_SIZE, &mementarGUI::feederCallback, this);
+        "mementar/feeder_notifications", QUEU_SIZE, &MementarGUI::feederCallback, this);
   }
 
   if(do_copy)
@@ -380,7 +380,7 @@ void mementarGUI::addInstanceSlot()
   displayInstancesList();
 }
 
-void mementarGUI::deleteInstanceSlot()
+void MementarGUI::deleteInstanceSlot()
 {
   auto param = ui_->manager_instance_name_editline->text().toStdString();
   meme_.manager_.del(ui_->manager_instance_name_editline->text().toStdString());
@@ -407,7 +407,7 @@ void mementarGUI::deleteInstanceSlot()
   displayInstancesList();
 }
 
-void mementarGUI::saveInstanceSlot()
+void MementarGUI::saveInstanceSlot()
 {
   auto service_name = ui_->manager_instance_name_editline->text().toStdString();
   auto param = ui_->manager_save_path_editline->text().toStdString();
@@ -433,7 +433,7 @@ void mementarGUI::saveInstanceSlot()
   }
 }
 
-void mementarGUI::drawInstanceSlot()
+void MementarGUI::drawInstanceSlot()
 {
   auto service_name = ui_->manager_instance_name_editline->text().toStdString();
   auto param = ui_->manager_draw_path_editline->text().toStdString();
@@ -459,19 +459,19 @@ void mementarGUI::drawInstanceSlot()
   }
 }
 
-void mementarGUI::instanceNameAddDelChangedSlot(const QString& text)
+void MementarGUI::instanceNameAddDelChangedSlot(const QString& text)
 {
   if(ui_->static_instance_name_editline->text() != text)
     ui_->static_instance_name_editline->setText(text);
 }
 
-void mementarGUI::instanceNameChangedSlot(const QString& text)
+void MementarGUI::instanceNameChangedSlot(const QString& text)
 {
   if(ui_->manager_instance_name_editline->text() != text)
     ui_->manager_instance_name_editline->setText(text);
 }
 
-void mementarGUI::timesourceChangedSlot(int index)
+void MementarGUI::timesourceChangedSlot(int index)
 {
   time_source_ = index;
   if(index == 2) // manual
@@ -494,7 +494,7 @@ void mementarGUI::timesourceChangedSlot(int index)
   }
 }
 
-void mementarGUI::currentTimeEditingFinishedSlot()
+void MementarGUI::currentTimeEditingFinishedSlot()
 {
   if(time_source_ == 2)
   {
@@ -516,7 +516,7 @@ void mementarGUI::currentTimeEditingFinishedSlot()
   }
 }
 
-void mementarGUI::feederCallback(const std_msgs_compat::String& msg)
+void MementarGUI::feederCallback(const std_msgs_compat::String& msg)
 {
   feeder_notifications_ += "<p>-" + msg.data + "</p>";
 
@@ -533,7 +533,7 @@ void mementarGUI::feederCallback(const std_msgs_compat::String& msg)
   ui_->feeder_info_edittext->ensureCursorVisible();
 }
 
-void mementarGUI::feederAddSlot()
+void MementarGUI::feederAddSlot()
 {
   std::string subject = ui_->feeder_subject_editline->text().toStdString();
   std::string predicat = ui_->feeder_property_editline->text().toStdString();
@@ -568,7 +568,7 @@ void mementarGUI::feederAddSlot()
   }
 }
 
-void mementarGUI::feederDelSlot()
+void MementarGUI::feederDelSlot()
 {
   std::string subject = ui_->feeder_subject_editline->text().toStdString();
   std::string predicat = ui_->feeder_property_editline->text().toStdString();
@@ -603,7 +603,7 @@ void mementarGUI::feederDelSlot()
   }
 }
 
-void mementarGUI::feederCommitSlot()
+void MementarGUI::feederCommitSlot()
 {
   mementar::compat::StampedString msg;
   msg.data = "[commit]" + ui_->feeder_commit_name_editline->text().toStdString() + "|";
@@ -614,7 +614,7 @@ void mementarGUI::feederCommitSlot()
   facts_publishers_[instance_ns]->publish(msg);
 }
 
-void mementarGUI::feederCheckoutSlot()
+void MementarGUI::feederCheckoutSlot()
 {
   mementar::compat::StampedString msg;
   msg.data = "[checkout]" + ui_->feeder_commit_name_editline->text().toStdString() + "|";
@@ -625,7 +625,7 @@ void mementarGUI::feederCheckoutSlot()
   facts_publishers_[instance_ns]->publish(msg);
 }
 
-void mementarGUI::createPublisher(const std::string& instance_ns)
+void MementarGUI::createPublisher(const std::string& instance_ns)
 {
   if(facts_publishers_.find(instance_ns) == facts_publishers_.end())
   {

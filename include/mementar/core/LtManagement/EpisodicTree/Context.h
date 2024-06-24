@@ -6,13 +6,14 @@
 #include <string>
 
 #include "mementar/core/memGraphs/Branchs/types/Triplet.h"
+#include "mementar/core/memGraphs/Branchs/types/SoftPoint.h"
 
 namespace mementar {
 
   class Context
   {
   public:
-    Context(time_t key) : key_(key) {}
+    Context(SoftPoint::Ttime key) : key_(key) {}
 
     void insert(const Triplet* triplet);
     void remove(const Triplet* triplet);
@@ -25,8 +26,8 @@ namespace mementar {
     std::string toString();
     void fromString(const std::string& string);
 
-    time_t getKey() const { return key_; }
-    void setKey(time_t key) { key_ = key; }
+    SoftPoint::Ttime getKey() const { return key_; }
+    void setKey(SoftPoint::Ttime key) { key_ = key; }
 
     static void storeContexts(std::vector<Context>& contexts, const std::string& directory);
     static std::string contextsToString(std::vector<Context>& contexts);
@@ -34,7 +35,7 @@ namespace mementar {
     static std::vector<Context> stringToContext(const std::string& str);
 
   private:
-    time_t key_;
+    SoftPoint::Ttime key_;
     std::map<std::string, size_t> subjects_;
     std::map<std::string, size_t> predicats_;
     std::map<std::string, size_t> objects_;

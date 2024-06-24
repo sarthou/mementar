@@ -97,7 +97,7 @@ namespace mementar {
     return done;
   }
 
-  void OccasionsSubscriber::occasionCallback(compat::MementarOccasion msg)
+  void OccasionsSubscriber::occasionCallback(const compat::MementarOccasion& msg)
   {
     auto it = std::find(ids_.begin(), ids_.end(), msg.id);
     if(it != ids_.end())

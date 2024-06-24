@@ -15,6 +15,7 @@
 #include "mementar/core/LtManagement/EpisodicTree/CompressedLeafNode.h"
 #include "mementar/core/LtManagement/EpisodicTree/CompressedLeafNodeSession.h"
 #include "mementar/core/memGraphs/Branchs/types/Fact.h"
+#include "mementar/core/memGraphs/Branchs/types/SoftPoint.h"
 #include "mementar/graphical/Display.h"
 
 namespace mementar {
@@ -67,7 +68,7 @@ namespace mementar {
     }
     else
     {
-      if((time_t)data->getTime() < keys_[0])
+      if(data->getTime() < keys_[0])
       {
         Display::error("try to insert fact in past that do not exist");
         return;
@@ -78,7 +79,7 @@ namespace mementar {
       if(index < archived_childs_.size())
       {
         if((index == archived_childs_.size() - 1) && (keys_.size() == archived_childs_.size()) &&
-           ((time_t)data->getTime() > earlier_key_))
+           (data->getTime() > earlier_key_))
         {
           mut_.unlock_shared();
           createNewCompressedChild(data->getTime());
@@ -119,7 +120,7 @@ namespace mementar {
     }
     mut_.unlock_shared();
 
-    if(earlier_key_ < (time_t)data->getTime())
+    if(earlier_key_ < data->getTime())
       earlier_key_ = data->getTime();
   }
 
@@ -143,7 +144,7 @@ namespace mementar {
     mut_.unlock_shared();
   }
 
-  ArchivedLeafNode::LeafType* ArchivedLeafNode::find(const time_t& key)
+  ArchivedLeafNode::LeafType* ArchivedLeafNode::find(SoftPoint::Ttime key)
   {
     ArchivedLeafNode::LeafType* res = nullptr;
 
@@ -165,7 +166,7 @@ namespace mementar {
     return res;
   }
 
-  ArchivedLeafNode::LeafType* ArchivedLeafNode::findNear(const time_t& key)
+  ArchivedLeafNode::LeafType* ArchivedLeafNode::findNear(SoftPoint::Ttime key)
   {
     ArchivedLeafNode::LeafType* res = nullptr;
 
@@ -226,7 +227,7 @@ namespace mementar {
     return res;
   }
 
-  void ArchivedLeafNode::display(time_t key)
+  void ArchivedLeafNode::display(SoftPoint::Ttime key)
   {
     mut_.lock_shared();
     int index = getKeyIndex(key);
@@ -247,7 +248,7 @@ namespace mementar {
       compressed_childs_[compressed_childs_.size() - 1]->newSession();
   }
 
-  void ArchivedLeafNode::createNewCompressedChild(const time_t& key)
+  void ArchivedLeafNode::createNewCompressedChild(SoftPoint::Ttime key)
   {
     mut_.lock();
     compressed_childs_.push_back(new CompressedLeafNode(directory_));
@@ -265,10 +266,10 @@ namespace mementar {
       return false;
   }
 
-  int ArchivedLeafNode::getKeyIndex(const time_t& key)
+  int ArchivedLeafNode::getKeyIndex(SoftPoint::Ttime key)
   {
     int index = (int)keys_.size() - 1;
-    for(size_t i = 0; i < keys_.size(); i++)
+    for(int i = 0; i < (int)keys_.size(); i++)
     {
       if(key < keys_[i])
       {
@@ -300,7 +301,7 @@ namespace mementar {
         std::string str_key = dir.substr(0, dot_pose);
         if(ext == "mar")
         {
-          time_t key = 0;
+          SoftPoint::Ttime key = 0;
           std::istringstream iss(str_key);
           iss >> key;
           insert(key, ArchivedLeaf(key, complete_dir));
@@ -316,7 +317,7 @@ namespace mementar {
     Display::debug("");
 
     CompressedLeafNode* comp = new CompressedLeafNode(directory_);
-    if(comp->getKey() != time_t(-1))
+    if(comp->getKey() != SoftPoint::Ttime(-1))
     {
       compressed_childs_.push_back(comp);
       keys_.push_back(comp->getKey());
@@ -334,7 +335,7 @@ namespace mementar {
     }
   }
 
-  void ArchivedLeafNode::insert(const time_t& key, const ArchivedLeaf& leaf)
+  void ArchivedLeafNode::insert(SoftPoint::Ttime key, const ArchivedLeaf& leaf)
   {
     mut_.lock();
     if((keys_.empty()) || (key > keys_[keys_.size() - 1]))
@@ -399,7 +400,7 @@ namespace mementar {
       if(cpt-- == 0)
       {
         cpt = rate;
-        time_t now = std::time(nullptr);
+        SoftPoint::Ttime now = std::time(nullptr);
         for(size_t i = 0; i < archived_sessions_timeout_.size(); i++)
         {
           if((archived_sessions_tree_[i] != nullptr) &&

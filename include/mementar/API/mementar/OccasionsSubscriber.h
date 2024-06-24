@@ -32,7 +32,7 @@ namespace mementar {
 
     std::vector<size_t> ids_;
 
-    void occasionCallback(compat::MementarOccasion msg);
+    void occasionCallback(const compat::MementarOccasion& msg);
 
     std::function<void(const Fact&)> callback_;
 

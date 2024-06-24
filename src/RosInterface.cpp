@@ -139,7 +139,7 @@ namespace mementar {
       std::filesystem::create_directories(directory_);
     }
 
-    ValuedNode::table_.reset();
+    ValuedNode::table.reset();
     timeline_ = new Timeline();
     feeder_.link(timeline_);
     mut_.unlock();
@@ -163,7 +163,7 @@ namespace mementar {
    *
    ****************/
 
-  double RosInterface::rosTime2Float(double s, int ns)
+  double RosInterface::rosTime2Double(double s, int ns)
   {
     ns = ns / 100000000;
     double res = (double)ns / 10.;
@@ -177,40 +177,38 @@ namespace mementar {
       return s + 0.75;
   }
 
-  void RosInterface::knowledgeCallback(compat::mem_ros::MessageWrapper<compat::StampedString> msg)
+  void RosInterface::knowledgeCallback(const compat::mem_ros::MessageWrapper<compat::StampedString>& msg)
   {
     feeder_.storeFact(msg->data, std::time(nullptr));
   }
 
-  void RosInterface::stampedKnowledgeCallback(compat::mem_ros::MessageWrapper<compat::StampedString> msg)
+  void RosInterface::stampedKnowledgeCallback(const compat::mem_ros::MessageWrapper<compat::StampedString>& msg)
   {
-    feeder_.storeFact(msg->data, rosTime2Float(msg->stamp.seconds, msg->stamp.nanoseconds));
+    feeder_.storeFact(msg->data, rosTime2Double(msg->stamp.seconds, msg->stamp.nanoseconds));
   }
 
-  void RosInterface::explanationKnowledgeCallback(compat::mem_ros::MessageWrapper<compat::MementarExplanation> msg)
+  void RosInterface::explanationKnowledgeCallback(const compat::mem_ros::MessageWrapper<compat::MementarExplanation>& msg)
   {
     feeder_.storeFact(msg->fact, msg->cause);
   }
 
-  void RosInterface::actionKnowledgeCallback(compat::mem_ros::MessageWrapper<compat::MementarAction> msg)
+  void RosInterface::actionKnowledgeCallback(const compat::mem_ros::MessageWrapper<compat::MementarAction>& msg)
   {
     feeder_.storeAction(msg->name,
-                        (msg->start_stamp.seconds != 0) ? rosTime2Float(msg->start_stamp.seconds,
-                                                                        msg->start_stamp.nanoseconds) :
+                        (msg->start_stamp.seconds != 0) ? rosTime2Double(msg->start_stamp.seconds,
+                                                                         msg->start_stamp.nanoseconds) :
                                                           SoftPoint::default_time,
-                        (msg->end_stamp.seconds != 0) ? rosTime2Float(msg->end_stamp.seconds,
-                                                                      msg->end_stamp.nanoseconds) :
+                        (msg->end_stamp.seconds != 0) ? rosTime2Double(msg->end_stamp.seconds,
+                                                                       msg->end_stamp.nanoseconds) :
                                                         SoftPoint::default_time);
   }
 
-  void RosInterface::ontoStampedKnowledgeCallback(
-    compat::mem_ros::MessageWrapper<ontologenius::compat::OntologeniusStampedString> msg)
+  void RosInterface::ontoStampedKnowledgeCallback(const compat::mem_ros::MessageWrapper<ontologenius::compat::OntologeniusStampedString>& msg)
   {
-    feeder_.storeFact(msg->data, rosTime2Float(msg->stamp.seconds, msg->stamp.nanoseconds));
+    feeder_.storeFact(msg->data, rosTime2Double(msg->stamp.seconds, msg->stamp.nanoseconds));
   }
 
-  void RosInterface::ontoExplanationKnowledgeCallback(
-    compat::mem_ros::MessageWrapper<ontologenius::compat::OntologeniusExplanation> msg)
+  void RosInterface::ontoExplanationKnowledgeCallback(const compat::mem_ros::MessageWrapper<ontologenius::compat::OntologeniusExplanation>& msg)
   {
     feeder_.storeFact(msg->fact, msg->cause);
   }
@@ -335,7 +333,7 @@ namespace mementar {
       else
         res->code = ServiceCode::service_unknown_action;
 
-      if(res->values.size() == 0)
+      if(res->values.empty())
         set2vector(set_res, res->values);
 
       return true;
@@ -387,7 +385,7 @@ namespace mementar {
         res->code = ServiceCode::service_unknown_action;
       }
 
-      if(res->values.size() == 0)
+      if(res->values.empty())
         set2vector(set_res, res->values);
 
       return true;

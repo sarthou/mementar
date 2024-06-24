@@ -41,7 +41,8 @@ namespace mementar {
       init();
     }
 
-    explicit TripletPattern(const Triplet& triplet) : Triplet(triplet)
+    explicit TripletPattern(const Triplet& triplet) : Triplet(triplet),
+                                                      operator_is_undefined_(false)
     {
       init();
     }

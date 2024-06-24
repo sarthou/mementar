@@ -11,6 +11,7 @@
 #include "mementar/core/memGraphs/Branchs/types/Fact.h"
 #include "mementar/core/memGraphs/Btree/BplusTree.h"
 #include "mementar/graphical/Display.h"
+#include "mementar/core/memGraphs/Branchs/types/SoftPoint.h"
 
 namespace mementar {
 
@@ -57,7 +58,7 @@ namespace mementar {
     mut_.unlock();
   }
 
-  int CompressedLeafNodeSession::getKeyIndex(const time_t& key)
+  int CompressedLeafNodeSession::getKeyIndex(const SoftPoint::Ttime& key)
   {
     int index = (int)contexts_.size() - 1;
     for(size_t i = 0; i < contexts_.size(); i++)
@@ -80,7 +81,7 @@ namespace mementar {
     }
     else
     {
-      if((time_t)data->getTime() < contexts_[0].getKey())
+      if((SoftPoint::Ttime)data->getTime() < contexts_[0].getKey())
       {
         Display::error("try to insert fact in past that do not exist");
         return;
@@ -119,7 +120,7 @@ namespace mementar {
     return res;
   }
 
-  CompressedLeafNodeSession::LeafType* CompressedLeafNodeSession::find(const time_t& key)
+  CompressedLeafNodeSession::LeafType* CompressedLeafNodeSession::find(const SoftPoint::Ttime& key)
   {
     CompressedLeafNodeSession::LeafType* res = nullptr;
 
@@ -136,7 +137,7 @@ namespace mementar {
     return res;
   }
 
-  CompressedLeafNodeSession::LeafType* CompressedLeafNodeSession::findNear(const time_t& key)
+  CompressedLeafNodeSession::LeafType* CompressedLeafNodeSession::findNear(const SoftPoint::Ttime& key)
   {
     CompressedLeafNodeSession::LeafType* res = nullptr;
 
@@ -214,13 +215,13 @@ namespace mementar {
     std::string res;
 
     std::vector<Fact*> tmp_data;
-    BplusLeaf<time_t, Fact*>* it = sessions_tree_[index]->getFirst();
+    BplusLeaf<SoftPoint::Ttime, Fact*>* it = sessions_tree_[index]->getFirst();
     while(it != nullptr)
     {
       tmp_data = it->getData();
       for(auto& data : tmp_data)
         res += Fact::serialize(data) + "\n";
-      it = static_cast<BplusLeaf<time_t, Fact*>*>(it->getNextLeaf());
+      it = static_cast<BplusLeaf<SoftPoint::Ttime, Fact*>*>(it->getNextLeaf());
     }
 
     mementar::LzCompress lz_comp;

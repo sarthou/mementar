@@ -55,12 +55,12 @@ namespace mementar {
 
     void reset();
 
-    void knowledgeCallback(compat::mem_ros::MessageWrapper<compat::StampedString> msg);
-    void stampedKnowledgeCallback(compat::mem_ros::MessageWrapper<compat::StampedString> msg);
-    void explanationKnowledgeCallback(compat::mem_ros::MessageWrapper<compat::MementarExplanation> msg);
-    void actionKnowledgeCallback(compat::mem_ros::MessageWrapper<compat::MementarAction> msg);
-    void ontoStampedKnowledgeCallback(compat::mem_ros::MessageWrapper<ontologenius::compat::OntologeniusStampedString> msg);
-    void ontoExplanationKnowledgeCallback(compat::mem_ros::MessageWrapper<ontologenius::compat::OntologeniusExplanation> msg);
+    void knowledgeCallback(const compat::mem_ros::MessageWrapper<compat::StampedString>& msg);
+    void stampedKnowledgeCallback(const compat::mem_ros::MessageWrapper<compat::StampedString>& msg);
+    void explanationKnowledgeCallback(const compat::mem_ros::MessageWrapper<compat::MementarExplanation>& msg);
+    void actionKnowledgeCallback(const compat::mem_ros::MessageWrapper<compat::MementarAction>& msg);
+    void ontoStampedKnowledgeCallback(const compat::mem_ros::MessageWrapper<ontologenius::compat::OntologeniusStampedString>& msg);
+    void ontoExplanationKnowledgeCallback(const compat::mem_ros::MessageWrapper<ontologenius::compat::OntologeniusExplanation>& msg);
 
     // todo: do not return bool
     bool managerInstanceHandle(compat::mem_ros::ServiceWrapper<compat::MementarService::Request>& req,
@@ -99,7 +99,7 @@ namespace mementar {
       return (onto_name.empty()) ? "/ontologenius/" + topic_name : "/ontologenius/" + topic_name + "/" + onto_name;
     }
 
-    double rosTime2Float(double s, int ns);
+    double rosTime2Double(double s, int ns);
   };
 
 } // namespace mementar

@@ -1,5 +1,5 @@
-#ifndef MEMENTAR_HUFFMAN__H
-#define MEMENTAR_HUFFMAN__H
+#ifndef MEMENTAR_HUFFMAN_OLD_H
+#define MEMENTAR_HUFFMAN_OLD_H
 
 #include <map>
 #include <set>
@@ -32,10 +32,10 @@ namespace mementar {
                    right_(nullptr)
     {}
 
-    HuffNode_t(char data) : freq_(1),
-                            data_(data),
-                            left_(nullptr),
-                            right_(nullptr)
+    explicit HuffNode_t(char data) : freq_(1),
+                                     data_(data),
+                                     left_(nullptr),
+                                     right_(nullptr)
     {}
 
     ~HuffNode_t()
@@ -68,4 +68,4 @@ namespace mementar {
 
 } // namespace mementar
 
-#endif // MEMENTAR_HUFFMAN__H
+#endif // MEMENTAR_HUFFMAN_OLD_H

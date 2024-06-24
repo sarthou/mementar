@@ -15,6 +15,7 @@
 #include "mementar/core/LtManagement/archiving_compressing/compressing/LzUncompress.h"
 #include "mementar/core/memGraphs/Branchs/types/Fact.h"
 #include "mementar/core/memGraphs/Btree/BplusTree.h"
+#include "mementar/core/memGraphs/Branchs/types/SoftPoint.h"
 
 namespace mementar {
 
@@ -26,7 +27,7 @@ namespace mementar {
     key_ = tree->getFirst()->getKey();
     directory_ = directory + '/' + std::to_string(key_);
 
-    std::vector<time_t> keys;
+    std::vector<SoftPoint::Ttime> keys;
     std::vector<Context> contexts;
     std::vector<std::string> input_files;
 
@@ -57,13 +58,13 @@ namespace mementar {
     }
   }
 
-  ArchivedLeaf::ArchivedLeaf(const time_t& key, const std::string& directory) : key_(key)
+  ArchivedLeaf::ArchivedLeaf(const SoftPoint::Ttime& key, const std::string& directory) : key_(key)
   {
     size_t dot_pose = directory.find('.');
     directory_ = directory.substr(0, dot_pose);
   }
 
-  BplusTree<time_t, Fact*>* ArchivedLeaf::getTree(size_t i)
+  BplusTree<SoftPoint::Ttime, Fact*>* ArchivedLeaf::getTree(size_t i)
   {
     mementar::Archive arch;
     std::cout << "ArchivedLeaf::getTree READ BINARY FILE " << directory_ << ".mar" << std::endl;
@@ -75,7 +76,7 @@ namespace mementar {
     LzUncompress lz;
     std::vector<char> comp_data(comp.begin(), comp.end());
     std::string out = lz.uncompress(comp_data);
-    BplusTree<time_t, Fact*>* tree = new BplusTree<time_t, Fact*>();
+    BplusTree<SoftPoint::Ttime, Fact*>* tree = new BplusTree<SoftPoint::Ttime, Fact*>();
 
     std::istringstream iss(out);
     std::string line;

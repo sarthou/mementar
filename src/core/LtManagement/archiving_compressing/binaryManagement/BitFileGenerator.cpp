@@ -24,8 +24,8 @@ namespace mementar {
 
       const uint8_t added = 8 - minor_index_;
 
-      value >>= added;
-      to_add -= added;
+      value >>= (uint8_t)added;
+      to_add -= (int8_t)added;
       if(to_add >= 0)
       {
         if(data_.size() <= ++major_index_)
@@ -49,8 +49,8 @@ namespace mementar {
 
       const uint8_t added = 8 - minor_index_;
 
-      value >>= added;
-      to_add -= added;
+      value >>= (uint8_t)added;
+      to_add -= (int8_t)added;
       if(to_add >= 0)
       {
         if(data_.size() <= ++major_index_)
@@ -74,8 +74,8 @@ namespace mementar {
 
       const uint8_t added = 8 - minor_index_;
 
-      value >>= added;
-      to_add -= added;
+      value >>= (uint8_t)added;
+      to_add -= (int8_t)added;
       if(to_add >= 0)
       {
         if(data_.size() <= ++major_index_)
@@ -99,8 +99,8 @@ namespace mementar {
 
       const uint8_t added = 8 - minor_index_;
 
-      value >>= added;
-      to_add -= added;
+      value >>= (uint8_t)added;
+      to_add -= (int8_t)added;
       if(to_add >= 0)
       {
         if(data_.size() <= ++major_index_)
@@ -124,8 +124,8 @@ namespace mementar {
 
       const uint8_t added = 8 - minor_index_;
 
-      value >>= added;
-      to_add -= added;
+      value >>= (uint8_t)added;
+      to_add -= (int8_t)added;
       if(to_add >= 0)
       {
         if(data_.size() <= ++major_index_)
@@ -166,8 +166,8 @@ namespace mementar {
 
       const uint8_t added = 8 - minor_index_;
 
-      value >>= added;
-      to_add -= added;
+      value >>= added; // NOLINT
+      to_add -= (int8_t)added;
       if(to_add >= 0)
       {
         if(data_.size() <= ++major_index_)

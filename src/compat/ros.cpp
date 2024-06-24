@@ -8,8 +8,8 @@ namespace mementar::compat::mem_ros {
 
   Node& Node::get()
   {
-    static Node node(ros_node_name);
-    return node;
+    static Node node_(ros_node_name);
+    return node_;
   }
 
   bool Node::ok()

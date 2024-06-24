@@ -85,7 +85,7 @@ namespace mementar {
            cvPoint(pose, IMAGE_MARGIN + (end - start) * UNIT_SPACE),
            cvScalar(50, 50, 50), 2);
 
-    for(size_t i = 0; i < (end - start) + 1; i++)
+    for(int i = 0; i < (end - start) + 1; i++)
     {
       cvLine(image_, cvPoint(pose - MARK_WIDTH / 2, IMAGE_MARGIN + i * UNIT_SPACE),
              cvPoint(pose + MARK_WIDTH / 2, IMAGE_MARGIN + i * UNIT_SPACE),

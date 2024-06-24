@@ -38,7 +38,7 @@ namespace mementar {
         return {};
     }
 
-    void push_back(const std::string& value)
+    void pushBack(const std::string& value)
     {
       data.value().push_back(value);
     }

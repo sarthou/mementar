@@ -244,7 +244,7 @@ namespace mementar {
     {
       current->prev_elem_ = prev;
       prev->next_elem_ = current;
-      if(prev->to_link_next.size())
+      if(prev->to_link_next.empty() == false)
       {
         for(auto& d : prev->to_link_next)
           d->next_elem_ = current;
@@ -273,7 +273,7 @@ namespace mementar {
     {
       current->next_elem_ = next;
       next->prev_elem_ = current;
-      if(next->to_link_prev.size())
+      if(next->to_link_prev.empty() == false)
       {
         for(auto& d : next->to_link_prev)
           d->prev_elem_ = current;

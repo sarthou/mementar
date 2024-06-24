@@ -209,7 +209,7 @@ namespace mementar::compat {
 
       Node(Node&& other) = delete;
 
-      ~Node()
+      ~Node() // NOLINT
       {
 #if MEME_ROS_VERSION == 2
         if(ros_thread_.joinable())

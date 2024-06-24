@@ -1,9 +1,9 @@
 #ifndef MEMENTAR_BRANCHCONTAINERDYN_H
 #define MEMENTAR_BRANCHCONTAINERDYN_H
 
+#include <cmath>
 #include <iostream>
 #include <map>
-#include <math.h>
 
 #include "mementar/core/memGraphs/BranchContainer/BranchContainerBase.h"
 
@@ -36,17 +36,18 @@ namespace mementar {
                            nodes_end_(nodes_),
                            buffer_size_(0), nb_elem_(0)
     {}
+
     BranchContainerDyn(const BranchContainerDyn& base);
 
-    virtual ~BranchContainerDyn()
+    ~BranchContainerDyn() override
     {
       delete nodes_;
     }
 
-    virtual B* find(const std::string& word);
-    virtual void load(std::vector<B*>& vect);
-    virtual void insert(B* branch);
-    virtual void erase(B* branch);
+    B* find(const std::string& word) override;
+    void load(std::vector<B*>& vect) override;
+    void insert(B* branch) override;
+    void erase(B* branch) override;
 
   private:
     BranchNode_t<B>* nodes_;
