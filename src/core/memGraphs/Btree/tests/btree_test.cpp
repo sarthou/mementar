@@ -1,9 +1,11 @@
-#include <iostream>
 #include <chrono>
-#include <stdlib.h>     /* srand, rand */
-#include <time.h>       /* time */
+#include <cstdlib> /* srand, rand */
+#include <ctime>   /* time */
+#include <iostream>
+#include <vector>
 
 #include "mementar/core/memGraphs/Btree/BplusTree.h"
+#include "mementar/core/memGraphs/Btree/BtreeLeafBase.h"
 
 using namespace std::chrono;
 
@@ -17,27 +19,27 @@ int main()
   else
     std::cout << "sup" << std::endl;
 
-  std::vector<size_t> sizes = {10,100,1000,10000,100000,1000000,10000000};
+  std::vector<int> sizes = {10, 100, 1000, 10000, 100000, 1000000, 10000000};
   std::vector<double> insert;
   std::vector<double> removed;
   std::vector<double> find;
   for(auto nb : sizes)
-  //size_t nb = 0;
+  // size_t nb = 0;
   {
     high_resolution_clock::time_point t1 = high_resolution_clock::now();
 
     mementar::BplusTree<int, int, 3> tree;
-    for(size_t i = 0; i < nb; i++)
+    for(int i = 0; i < nb; i++)
       tree.insert(i, i);
 
     high_resolution_clock::time_point t2 = high_resolution_clock::now();
 
-    for(size_t i = 0; i < nb; i++)
+    for(int i = 0; i < nb; i++)
       tree.find(i);
 
     high_resolution_clock::time_point t3 = high_resolution_clock::now();
 
-    for(size_t i = 0; i < nb; i+=2)
+    for(int i = 0; i < nb; i += 2)
       tree.remove(i, i);
 
     high_resolution_clock::time_point t4 = high_resolution_clock::now();
@@ -49,39 +51,57 @@ int main()
     time_span = duration_cast<duration<double>>(t4 - t3);
     removed.push_back(time_span.count());
 
-    for(size_t i = 0; i < sizes.size(); i++)
-      std::cout << sizes[i] << ";";
+    for(auto& size : sizes)
+      std::cout << size << ";";
     std::cout << std::endl;
-    for(size_t i = 0; i < insert.size(); i++)
-      std::cout << insert[i] << ";";
+    for(const auto& ist : insert)
+      std::cout << ist << ";";
     std::cout << std::endl;
-    for(size_t i = 0; i < find.size(); i++)
-      std::cout << find[i] << ";";
+    for(const auto& fd : find)
+      std::cout << fd << ";";
     std::cout << std::endl;
-    for(size_t i = 0; i < removed.size(); i++)
-      std::cout << removed[i] << ";";
+    for(const auto& rm : removed)
+      std::cout << rm << ";";
     std::cout << std::endl;
   }
 
   {
     mementar::BplusTree<int, int> tree;
-    for(size_t i = 0; i < 50; i++)
+    for(int i = 0; i < 50; i++)
       tree.insert(i, i);
 
-    //tree.displayTree();
+    // tree.displayTree();
 
-    auto res = tree.find(10);
-    if(res) std::cout << res->getKey() << std::endl; else std::cout << "-" << std::endl;
+    auto* res = tree.find(10);
+    if(res != nullptr)
+      std::cout << res->getKey() << std::endl;
+    else
+      std::cout << "-" << std::endl;
     res = tree.find(28);
-    if(res) std::cout << res->getKey() << std::endl; else std::cout << "-" << std::endl;
+    if(res != nullptr)
+      std::cout << res->getKey() << std::endl;
+    else
+      std::cout << "-" << std::endl;
     res = tree.find(74);
-    if(res) std::cout << res->getKey() << std::endl; else std::cout << "-" << std::endl;
+    if(res != nullptr)
+      std::cout << res->getKey() << std::endl;
+    else
+      std::cout << "-" << std::endl;
     res = tree.find(53);
-    if(res) std::cout << res->getKey() << std::endl; else std::cout << "-" << std::endl;
+    if(res != nullptr)
+      std::cout << res->getKey() << std::endl;
+    else
+      std::cout << "-" << std::endl;
     res = tree.findNear(59);
-    if(res) std::cout << res->getKey() << std::endl; else std::cout << "-" << std::endl;
+    if(res != nullptr)
+      std::cout << res->getKey() << std::endl;
+    else
+      std::cout << "-" << std::endl;
     res = tree.getFirst();
-    if(res) std::cout << res->getKey() << std::endl; else std::cout << "-" << std::endl;
+    if(res != nullptr)
+      std::cout << res->getKey() << std::endl;
+    else
+      std::cout << "-" << std::endl;
 
     tree.remove(49, 49);
     tree.insert(50, 0);

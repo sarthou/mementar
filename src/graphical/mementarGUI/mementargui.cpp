@@ -8,6 +8,7 @@
 #include <vector>
 
 #include "mementar/API/mementar/TimelinesManipulator.h"
+#include "mementar/compat/ros.h"
 #include "mementar/graphical/mementarGUI/QLineEditExtended.h"
 #include "mementar/graphical/mementarGUI/QPushButtonExtended.h"
 #include "qmainwindow.h"

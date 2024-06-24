@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <cstddef>
+#include <ctime>
 #include <filesystem>
 #include <iterator>
 #include <string>

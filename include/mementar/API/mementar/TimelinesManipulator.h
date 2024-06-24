@@ -17,7 +17,6 @@ namespace mementar {
 
     bool waitInit(int32_t timeout = -1);
 
-    // todo: it would be wiser to return references instead
     TimelineManipulator* operator[](const std::string& name);
     TimelineManipulator* get(const std::string& name);
 
