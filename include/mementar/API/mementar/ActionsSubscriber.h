@@ -15,10 +15,7 @@ namespace mementar {
   {
   public:
     ActionsSubscriber(const std::function<void(const std::string&)>& callback,
-                      const std::string& name = "",
-                      bool spin_thread = true);
-    ActionsSubscriber(const std::function<void(const std::string&)>& callback,
-                      bool spin_thread);
+                      const std::string& name = "");
 
     bool subscribeToStart(const std::string& name, size_t count = -1);
     bool subscribeToEnd(const std::string& name, size_t count = -1);

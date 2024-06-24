@@ -93,6 +93,7 @@ MementarGUI::MementarGUI(QWidget* parent) : QMainWindow(parent), ui_(new Ui::Mem
   QObject::connect(ui_->static_tab_widget, SIGNAL(currentChanged(int)), this, SLOT(currentTabChangedSlot(int)));
 
   QObject::connect(this, SIGNAL(feederSetHtmlSignal(QString)), ui_->feeder_info_edittext, SLOT(setHtml(QString)), Qt::BlockingQueuedConnection);
+  QObject::connect(this, SIGNAL(feederScrollSignal(QString)), ui_->feeder_info_edittext, SLOT(scrollToAnchor(QString)), Qt::BlockingQueuedConnection);
   QObject::connect(this, SIGNAL(setTimeSignal(QString)), ui_->static_current_time_editline, SLOT(setText(QString)), Qt::BlockingQueuedConnection);
   QObject::connect(ui_->static_current_time_editline, SIGNAL(editingFinished()), this, SLOT(currentTimeEditingFinishedSlot()));
 }
@@ -106,9 +107,18 @@ void MementarGUI::init()
 {
   timesourceChangedSlot(0);
 
-  facts_publishers_["_"] = std::make_unique<mementar::compat::mem_ros::Publisher<mementar::compat::StampedString>>("/mementar/insert_fact_stamped", QUEU_SIZE);
-  actions_publishers_["_"] = std::make_unique<mementar::compat::mem_ros::Publisher<mementar::compat::MementarAction>>("/mementar/insert_action", QUEU_SIZE);
-  feeder_notifications_subs_["_"] = std::make_unique<mementar::compat::mem_ros::Subscriber<std_msgs_compat::String>>("mementar/feeder_notifications", QUEU_SIZE, &MementarGUI::feederCallback, this);
+  if(timelines_.waitInit(1) == false)
+  {
+    timeline_ = new mementar::TimelineManipulator();
+    timeline_->action_feeder_.registerFeederNotificationCallback([this](auto msg) { this->feederCallback(msg); });
+    timeline_->fact_feeder_.registerFeederNotificationCallback([this](auto msg) { this->feederCallback(msg); });
+    multi_usage_ = false;
+  }
+  else
+  {
+    timeline_ = nullptr;
+    multi_usage_ = true;
+  }
 }
 
 void MementarGUI::wait()
@@ -153,20 +163,24 @@ void MementarGUI::factButtonHoverLeaveSlot()
 
 void MementarGUI::actionButtonClickedSlot()
 {
-  auto service_name = ui_->static_instance_name_editline->text().toStdString();
+  if(ui_->static_instance_name_editline->text().toStdString().find('=') != std::string::npos)
+  {
+    displayErrorInfo("Instance name cannot have the symbol = : \'" + ui_->static_instance_name_editline->text().toStdString() + "\'\n Once an instance copy has been performed, use the new instance name.");
+    return;
+  }
 
-  mementar::ActionClient client(service_name);
+  const std::string action = dynamic_cast<QPushButtonExtended*>(sender())->text().toStdString();
+  const std::string param = ui_->action_parameter_editline->text().toStdString();
+  if(updateTimelinePtr() == false)
+    return;
 
-  auto q_text = dynamic_cast<QPushButtonExtended*>(sender())->text();
-  auto q_param = ui_->action_parameter_editline->text();
-
-  QString text = q_text + " : " + ui_->action_parameter_editline->text();
+  const QString text = dynamic_cast<QPushButtonExtended*>(sender())->text() + " : " + ui_->action_parameter_editline->text();
   ui_->action_description_textedit->setText(text);
 
-  auto response = client.call(q_text.toStdString(), q_param.toStdString());
-  const int err = client.getErrorCode();
+  auto response = timeline_->actions_.call(action, param);
+  const int err = timeline_->actions_.getErrorCode();
   if(err == -1)
-    displayErrorInfo(service_name + " client call failed");
+    displayErrorInfo("client call failed");
   else
   {
     start();
@@ -181,20 +195,25 @@ void MementarGUI::actionButtonClickedSlot()
 
 void MementarGUI::factButtonClickedSlot()
 {
-  std::string service_name = ui_->static_instance_name_editline->text().toStdString();
+  if(ui_->static_instance_name_editline->text().toStdString().find('=') != std::string::npos)
+  {
+    displayErrorInfo("Instance name cannot have the symbol = : \'" + ui_->static_instance_name_editline->text().toStdString() + "\'\n Once an instance copy has been performed, use the new instance name.");
+    return;
+  }
 
-  mementar::FactClient client(service_name);
+  const std::string action = dynamic_cast<QPushButtonExtended*>(sender())->text().toStdString();
+  const std::string param = ui_->fact_parameter_editline->text().toStdString();
+  if(updateTimelinePtr() == false)
+    return;
 
-  auto q_text = dynamic_cast<QPushButtonExtended*>(sender())->text();
-  auto q_param = ui_->fact_parameter_editline->text();
-
-  QString text = q_text + " : " + ui_->fact_parameter_editline->text();
+  const QString text = dynamic_cast<QPushButtonExtended*>(sender())->text() + " : " + ui_->fact_parameter_editline->text();
   ui_->fact_description_textedit->setText(text);
 
-  auto response = client.call(q_text.toStdString(), q_param.toStdString());
-  const int err = client.getErrorCode();
+  auto response = timeline_->facts_.call(action, param);
+  const int err = timeline_->facts_.getErrorCode();
+
   if(err == -1)
-    displayErrorInfo(service_name + " client call failed");
+    displayErrorInfo("client call failed");
   else
   {
     start();
@@ -209,6 +228,8 @@ void MementarGUI::factButtonClickedSlot()
 
 void MementarGUI::nameEditingFinishedSlot()
 {
+  if(updateTimelinePtr() == false)
+    return;
 }
 
 void MementarGUI::displayErrorInfo(const std::string& text)
@@ -225,11 +246,12 @@ void MementarGUI::displayErrorInfo(const std::string& text)
 
 void MementarGUI::displayInstancesList()
 {
-  auto values = meme_.manager_.list();
+  auto res_vect = timelines_.list();
+  const int err = timelines_.getErrorCode();
 
   std::string html;
 
-  if(meme_.manager_.getErrorCode() == -1)
+  if(err == -1)
   {
     html = "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">"
            "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">"
@@ -239,7 +261,7 @@ void MementarGUI::displayInstancesList()
   }
   else
   {
-    std::string text = vector2html(values);
+    std::string text = vector2html(res_vect);
     html = "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">"
            "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">"
            "p, li { white-space: pre-wrap; }"
@@ -272,7 +294,7 @@ std::string MementarGUI::vector2html(const std::vector<std::string>& vect)
   return res;
 }
 
-void MementarGUI::updateTime()
+void MementarGUI::updateTime() // todo fix time display
 {
   if(time_source_ == 0)
   {
@@ -304,9 +326,8 @@ void MementarGUI::currentTabChangedSlot(int tab_id)
 
 void MementarGUI::addInstanceSlot()
 {
-  bool do_copy = false;
-
   std::string param = ui_->manager_instance_name_editline->text().toStdString();
+  std::string inst_name = param;
 
   std::regex base_regex("(.*)=(.*)");
   std::smatch base_match;
@@ -314,78 +335,41 @@ void MementarGUI::addInstanceSlot()
   {
     if(base_match.size() == 3)
     {
-      do_copy = true;
-
-      if(facts_publishers_.find(base_match[1].str()) == facts_publishers_.end())
-      {
-        facts_publishers_[base_match[1].str()] = std::make_unique<mementar::compat::mem_ros::Publisher<mementar::compat::StampedString>>(
-          "mementar/insert_fact_stamped/" + base_match[1].str(), QUEU_SIZE);
-
-        actions_publishers_[base_match[1].str()] = std::make_unique<mementar::compat::mem_ros::Publisher<mementar::compat::MementarAction>>(
-          "mementar/insert_action/" + base_match[1].str(), QUEU_SIZE);
-      }
-
-      if(feeder_notifications_subs_.find(base_match[1].str()) == feeder_notifications_subs_.end())
-        feeder_notifications_subs_[base_match[1].str()] = std::make_unique<mementar::compat::mem_ros::Subscriber<std_msgs_compat::String>>(
-          "mementar/feeder_notifications", QUEU_SIZE, &MementarGUI::feederCallback, this);
+      ui_->static_result_editext->setText(QString::fromStdString("Copy is not yet supported."));
+      return;
+      // timelines_.copy(base_match[1].str(), base_match[2].str());
+      // inst_name = base_match[1].str();
     }
   }
   else
-  {
-    if(facts_publishers_.find(param) == facts_publishers_.end())
-    {
-      facts_publishers_[param] = std::make_unique<mementar::compat::mem_ros::Publisher<mementar::compat::StampedString>>(
-        "mementar/insert_fact_stamped/" + param, QUEU_SIZE);
-      actions_publishers_[param] = std::make_unique<mementar::compat::mem_ros::Publisher<mementar::compat::MementarAction>>(
-        "mementar/insert_action/" + param, QUEU_SIZE);
-    }
+    timelines_.add(param);
 
-    if(feeder_notifications_subs_.find(param) == feeder_notifications_subs_.end())
-      feeder_notifications_subs_[param] = std::make_unique<mementar::compat::mem_ros::Subscriber<std_msgs_compat::String>>(
-        "mementar/feeder_notifications", QUEU_SIZE, &MementarGUI::feederCallback, this);
-  }
-
-  if(do_copy)
-    meme_.manager_.copy(param);
-  else
-    meme_.manager_.add(param);
-
-  auto err = meme_.manager_.getErrorCode();
-
+  const int err = timelines_.getErrorCode();
   if(err == -1)
-  {
     displayErrorInfo("mementar/manage client call failed");
-    return;
-  }
+  else
+  {
+    start();
+    if(err == 4)
+      ui_->static_result_editext->setText(QString::fromStdString(param + " already created"));
+    else if(err == 1)
+      ui_->static_result_editext->setText(QString::fromStdString("fail to stop " + param + " : please retry"));
+    else
+    {
+      ui_->static_result_editext->setText(QString::fromStdString(""));
+      timelines_.get(inst_name)->action_feeder_.registerFeederNotificationCallback([this](auto msg) { this->feederCallback(msg); });
+      timelines_.get(inst_name)->fact_feeder_.registerFeederNotificationCallback([this](auto msg) { this->feederCallback(msg); });
+    }
 
-  switch(err)
-  {
-  case 1:
-  {
-    ui_->static_result_editext->setText(QString::fromStdString("fail to stop " + param + " : please retry"));
-    break;
+    displayInstancesList();
   }
-  case 4:
-  {
-    ui_->static_result_editext->setText(QString::fromStdString(param + " already created"));
-    break;
-  }
-  default:
-  {
-    ui_->static_result_editext->setText(QString::fromStdString(""));
-    break;
-  }
-  }
-
-  displayInstancesList();
 }
 
 void MementarGUI::deleteInstanceSlot()
 {
   auto param = ui_->manager_instance_name_editline->text().toStdString();
-  meme_.manager_.del(ui_->manager_instance_name_editline->text().toStdString());
-
-  auto err = meme_.manager_.getErrorCode();
+  timelines_.del(param);
+  const int err = timelines_.getErrorCode();
 
   if(err == -1)
   {
@@ -394,75 +378,81 @@ void MementarGUI::deleteInstanceSlot()
   }
 
   start();
-
   if(err == 4)
-  {
     ui_->static_result_editext->setText(QString::fromStdString("Instance \'" + param + "\' don't exist"));
-  }
   else
-  {
     ui_->static_result_editext->setText(QString::fromStdString(""));
-  }
-
   displayInstancesList();
 }
 
 void MementarGUI::saveInstanceSlot()
 {
-  auto service_name = ui_->manager_instance_name_editline->text().toStdString();
+  if(ui_->manager_instance_name_editline->text().toStdString().find('=') != std::string::npos)
+  {
+    displayErrorInfo("Instance name cannot have the symbol = : \'" + ui_->manager_instance_name_editline->text().toStdString() + "\'\n Once an instance copy has been performed, use the new instance name.");
+    return;
+  }
+
+  if(updateTimelinePtr() == false)
+    return;
+
   auto param = ui_->manager_save_path_editline->text().toStdString();
-
-  mementar::InstanceManagerClient client(service_name);
-
-  client.save(ui_->manager_save_path_editline->text().toStdString());
-  auto err = client.getErrorCode();
+  timeline_->inst_manager_.save(param);
+  const int err = timeline_->inst_manager_.getErrorCode();
 
   if(err == -1)
   {
     displayErrorInfo("mementar/manage_instance client call failed");
     return;
   }
-
-  if(err == 4)
-  {
-    ui_->static_result_editext->setText(QString::fromStdString("path \'" + param + "\' don't exist"));
-  }
   else
   {
-    ui_->static_result_editext->setText(QString::fromStdString(""));
+    if(err == 4)
+      ui_->static_result_editext->setText(QString::fromStdString("path \'" + param + "\' don't exist"));
+    else
+      ui_->static_result_editext->setText(QString::fromStdString(""));
   }
 }
 
 void MementarGUI::drawInstanceSlot()
 {
-  auto service_name = ui_->manager_instance_name_editline->text().toStdString();
-  auto param = ui_->manager_draw_path_editline->text().toStdString();
+  if(ui_->manager_instance_name_editline->text().toStdString().find('=') != std::string::npos)
+  {
+    displayErrorInfo("Instance name cannot have the symbol = : \'" + ui_->manager_instance_name_editline->text().toStdString() + "\'\n Once an instance copy has been performed, use the new instance name.");
+    return;
+  }
 
-  mementar::InstanceManagerClient client(service_name);
+  if(updateTimelinePtr() == false)
+    return;
 
-  client.draw(ui_->manager_save_path_editline->text().toStdString());
-  auto err = client.getErrorCode();
+  auto param = ui_->manager_save_path_editline->text().toStdString();
+  timeline_->inst_manager_.draw(param);
+  const int err = timeline_->inst_manager_.getErrorCode();
 
   if(err == -1)
   {
     displayErrorInfo("mementar/manage_instance client call failed");
     return;
   }
-
-  if(err == 4)
-  {
-    ui_->static_result_editext->setText(QString::fromStdString("path \'" + param + "\' don't exist"));
-  }
   else
   {
-    ui_->static_result_editext->setText(QString::fromStdString(""));
+    if(err == 4)
+      ui_->static_result_editext->setText(QString::fromStdString("path \'" + param + "\' don't exist"));
+    else
+      ui_->static_result_editext->setText(QString::fromStdString(""));
   }
 }
 
 void MementarGUI::instanceNameAddDelChangedSlot(const QString& text)
 {
   if(ui_->static_instance_name_editline->text() != text)
-    ui_->static_instance_name_editline->setText(text);
+  {
+    const size_t equal_pose = text.toStdString().find('=');
+    if(equal_pose != std::string::npos)
+      ui_->static_instance_name_editline->setText(text.mid(0, (int)equal_pose));
+    else
+      ui_->static_instance_name_editline->setText(text);
+  }
 }
 
 void MementarGUI::instanceNameChangedSlot(const QString& text)
@@ -516,25 +506,26 @@ void MementarGUI::currentTimeEditingFinishedSlot()
   }
 }
 
-void MementarGUI::feederCallback(const std_msgs_compat::String& msg)
+void MementarGUI::feederCallback(const std::string& msg)
 {
-  feeder_notifications_ += "<p>-" + msg.data + "</p>";
+  feeder_notifications_ += "<p>-" + msg + "</p>";
 
-  std::string html =
-    "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">"
-    "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">"
-    "p, li { whicommitte-space: pre-wrap; }"
-    "</style></head><body style=\" font-family:'Noto Sans'; font-size:9pt; font-weight:400; font-style:normal;\">"
-    "<p align=\"left\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt; \">" +
-    feeder_notifications_ + "<br></span></p></body></html>";
+  const std::string html = "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">"
+                           "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">"
+                           "p, li { whicommitte-space: pre-wrap; }"
+                           "</style></head><body style=\" font-family:'Noto Sans'; font-size:9pt; font-weight:400; font-style:normal;\">"
+                           "<p align=\"left\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt; \">" +
+                           feeder_notifications_ + R"(<a name="scrollToMe" href="#scroll"></a> <br></span></p></body></html>)";
 
-  ui_->feeder_info_edittext->moveCursor(QTextCursor::End);
   feederSetHtmlSignal(QString::fromStdString(html));
-  ui_->feeder_info_edittext->ensureCursorVisible();
+  feederScrollSignal("scrollToMe");
 }
 
 void MementarGUI::feederAddSlot()
 {
+  if(updateTimelinePtr() == false)
+    return;
+
   std::string subject = ui_->feeder_subject_editline->text().toStdString();
   std::string predicat = ui_->feeder_property_editline->text().toStdString();
   std::string object = ui_->feeder_object_editline->text().toStdString();
@@ -545,31 +536,21 @@ void MementarGUI::feederAddSlot()
   }
   else
   {
-    std::string instance_ns = ui_->static_instance_name_editline->text().toStdString();
-    if(instance_ns.empty())
-      instance_ns = "_";
-    createPublisher(instance_ns);
     if((predicat.empty()) && (object.empty()))
-    {
-      mementar::compat::MementarAction msg;
-      msg.name = subject;
-      msg.start_stamp = current_time_;
-      msg.end_stamp.seconds = 0;
-      msg.end_stamp.nanoseconds = 0;
-      actions_publishers_[instance_ns]->publish(msg);
-    }
+      timeline_->action_feeder_.insert(subject, mementar::compat::mem_ros::Time(current_time_.seconds, current_time_.nanoseconds));
     else
     {
-      mementar::compat::StampedString msg;
-      msg.data = "[ADD]" + subject + "|" + predicat + "|" + object;
-      msg.stamp = current_time_;
-      facts_publishers_[instance_ns]->publish(msg);
+      mementar::Fact fact(subject, predicat, object, true);
+      timeline_->fact_feeder_.insert(fact, mementar::compat::mem_ros::Time(current_time_.seconds, current_time_.nanoseconds));
     }
   }
 }
 
 void MementarGUI::feederDelSlot()
 {
+  if(updateTimelinePtr() == false)
+    return;
+
   std::string subject = ui_->feeder_subject_editline->text().toStdString();
   std::string predicat = ui_->feeder_property_editline->text().toStdString();
   std::string object = ui_->feeder_object_editline->text().toStdString();
@@ -580,74 +561,54 @@ void MementarGUI::feederDelSlot()
   }
   else
   {
-    std::string instance_ns = ui_->static_instance_name_editline->text().toStdString();
-    if(instance_ns.empty())
-      instance_ns = "_";
-    createPublisher(instance_ns);
     if((predicat.empty()) && (object.empty()))
-    {
-      mementar::compat::MementarAction msg;
-      msg.name = subject;
-      msg.start_stamp.seconds = 0;
-      msg.start_stamp.nanoseconds = 0;
-      msg.end_stamp = current_time_;
-      actions_publishers_[instance_ns]->publish(msg);
-    }
+      timeline_->action_feeder_.insertEnd(subject, mementar::compat::mem_ros::Time(current_time_.seconds, current_time_.nanoseconds));
     else
     {
-      mementar::compat::StampedString msg;
-      msg.data = "[DEL]" + subject + "|" + predicat + "|" + object;
-      msg.stamp = current_time_;
-      facts_publishers_[instance_ns]->publish(msg);
+      mementar::Fact fact(subject, predicat, object, false);
+      timeline_->fact_feeder_.insert(fact, mementar::compat::mem_ros::Time(current_time_.seconds, current_time_.nanoseconds));
     }
   }
 }
 
 void MementarGUI::feederCommitSlot()
 {
-  mementar::compat::StampedString msg;
-  msg.data = "[commit]" + ui_->feeder_commit_name_editline->text().toStdString() + "|";
-  std::string instance_ns = ui_->static_instance_name_editline->text().toStdString();
-  if(instance_ns.empty())
-    instance_ns = "_";
-  createPublisher(instance_ns);
-  facts_publishers_[instance_ns]->publish(msg);
+  if(updateTimelinePtr() == false)
+    return;
+
+  // timeline_->fact_feeder_.commit(ui_->feeder_commit_name_editline->text().toStdString());
 }
 
 void MementarGUI::feederCheckoutSlot()
 {
-  mementar::compat::StampedString msg;
-  msg.data = "[checkout]" + ui_->feeder_commit_name_editline->text().toStdString() + "|";
-  std::string instance_ns = ui_->static_instance_name_editline->text().toStdString();
-  if(instance_ns.empty())
-    instance_ns = "_";
-  createPublisher(instance_ns);
-  facts_publishers_[instance_ns]->publish(msg);
+  if(updateTimelinePtr() == false)
+    return;
+
+  // timeline_->fact_feeder_.checkout(ui_->feeder_commit_name_editline->text().toStdString());
 }
 
-void MementarGUI::createPublisher(const std::string& instance_ns)
+bool MementarGUI::updateTimelinePtr()
 {
-  if(facts_publishers_.find(instance_ns) == facts_publishers_.end())
+  if(multi_usage_ == false)
+    return true;
+
+  const std::string instance_name = ui_->static_instance_name_editline->text().toStdString();
+  timeline_ = timelines_.get(instance_name);
+  if(timeline_ == nullptr)
   {
-    facts_publishers_[instance_ns] = std::make_unique<mementar::compat::mem_ros::Publisher<mementar::compat::StampedString>>(
-      "mementar/insert_fact_stamped/" + instance_ns, QUEU_SIZE);
-
-    while(mementar::compat::mem_ros::Node::ok() && (facts_publishers_[instance_ns]->getNumSubscribers() == 0))
+    auto intances_name = timelines_.list();
+    if(std::find(intances_name.begin(), intances_name.end(), instance_name) != intances_name.end())
     {
-      // todo
-      // ros::spinOnce();
+      timelines_.add(instance_name);
+      timeline_ = timelines_.get(instance_name);
+      if(timeline_ != nullptr)
+        return true;
     }
-  }
 
-  if(actions_publishers_.find(instance_ns) == actions_publishers_.end())
-  {
-    actions_publishers_[instance_ns] = std::make_unique<mementar::compat::mem_ros::Publisher<mementar::compat::MementarAction>>(
-      "mementar/insert_action/" + instance_ns, QUEU_SIZE);
-
-    while(mementar::compat::mem_ros::Node::ok() && (actions_publishers_[instance_ns]->getNumSubscribers() == 0))
-    {
-      // todo
-      // ros::spinOnce();
-    }
+    if(instance_name.empty() == false)
+      displayErrorInfo("Instance " + instance_name + " does not exist");
+    return false;
   }
+  else
+    return true;
 }

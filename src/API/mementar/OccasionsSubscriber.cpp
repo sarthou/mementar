@@ -10,35 +10,16 @@
 
 namespace mementar {
 
-  OccasionsSubscriber::OccasionsSubscriber(const std::function<void(const Fact&)>& callback, const std::string& name, bool spin_thread)
+  OccasionsSubscriber::OccasionsSubscriber(const std::function<void(const Fact&)>& callback, const std::string& name)
     : sub_(name.empty() ? "mementar/occasions" : "mementar/occasions/" + name, 1000, &OccasionsSubscriber::occasionCallback, this),
       client_subscribe_(name.empty() ? "mementar/subscribe" : "mementar/subscribe/" + name),
       client_cancel_(name.empty() ? "mementar/unsubscribe" : "mementar/unsubscribe/" + name),
       callback_(callback)
-  {
-    (void)spin_thread;
-
-    /*if (spin_thread) {
-        need_to_terminate_ = false;
-        spin_thread_ = std::thread(std::bind(&OccasionsSubscriber::spinThread, this));
-    } else {
-        spin_thread_ = {};
-    }*/
-  }
-
-  OccasionsSubscriber::OccasionsSubscriber(const std::function<void(const Fact&)>& callback, bool spin_thread)
-    : OccasionsSubscriber(callback, "", spin_thread) {}
+  {}
 
   OccasionsSubscriber::~OccasionsSubscriber()
   {
     cancel();
-    // todo
-    // sub_.shutdown();
-    /*if (spin_thread_) {
-        need_to_terminate_ = true;
-        spin_thread_->join();
-        delete spin_thread_;
-    }*/
   }
 
   bool OccasionsSubscriber::subscribe(const Fact& pattern, size_t count)

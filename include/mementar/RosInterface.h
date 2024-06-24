@@ -62,7 +62,6 @@ namespace mementar {
     void ontoStampedKnowledgeCallback(const compat::mem_ros::MessageWrapper<ontologenius::compat::OntologeniusStampedString>& msg);
     void ontoExplanationKnowledgeCallback(const compat::mem_ros::MessageWrapper<ontologenius::compat::OntologeniusExplanation>& msg);
 
-    // todo: do not return bool
     bool managerInstanceHandle(compat::mem_ros::ServiceWrapper<compat::MementarService::Request>& req,
                                compat::mem_ros::ServiceWrapper<compat::MementarService::Response>& res);
 

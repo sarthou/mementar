@@ -14,8 +14,7 @@ namespace mementar {
   class OccasionsSubscriber
   {
   public:
-    OccasionsSubscriber(const std::function<void(const Fact&)>& callback, const std::string& name = "", bool spin_thread = true);
-    OccasionsSubscriber(const std::function<void(const Fact&)>& callback, bool spin_thread);
+    OccasionsSubscriber(const std::function<void(const Fact&)>& callback, const std::string& name = "");
     ~OccasionsSubscriber();
 
     bool subscribe(const Fact& pattern, size_t count = -1);

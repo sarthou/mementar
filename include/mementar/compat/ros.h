@@ -80,8 +80,6 @@ namespace mementar::compat {
   template<typename T, typename Response_ = typename T::Response>
   inline auto makeResponse() { return Response_(); }
 
-  // todo: RequestType, ResponseType
-
 #elif MEME_ROS_VERSION == 2
   using namespace ::mementar::msg;
   using namespace ::mementar::srv;
@@ -253,8 +251,6 @@ namespace mementar::compat {
       {
         auto& node = Node::get();
 
-        printf("[Publisher '%s'] Create\n", topic_name.c_str());
-
 #if MEME_ROS_VERSION == 1
         handle_ = node.handle_.advertise<T>(topic_name, queue_size);
 #elif MEME_ROS_VERSION == 2
@@ -265,8 +261,6 @@ namespace mementar::compat {
 
       void publish(const T& message)
       {
-        printf("[Publisher '%s'] Create\n", name_.c_str());
-
 #if MEME_ROS_VERSION == 1
         handle_.publish(message);
 #elif MEME_ROS_VERSION == 2
@@ -302,8 +296,6 @@ namespace mementar::compat {
       {
         auto& node = Node::get();
 
-        printf("[Subscriber '%s'] Create\n", topic_name.c_str());
-
 #if MEME_ROS_VERSION == 1
         handle_ = node.handle_.subscribe(topic_name, queue_size, callback, ptr);
 #elif MEME_ROS_VERSION == 2
@@ -331,8 +323,6 @@ namespace mementar::compat {
       {
         auto& node = Node::get();
 
-        printf("[Service '%s'] Create\n", service_name.c_str());
-
 #if MEME_ROS_VERSION == 1
         handle_ = node.handle_.advertiseService(service_name, callback);
 #elif MEME_ROS_VERSION == 2
@@ -351,8 +341,6 @@ namespace mementar::compat {
       Service(const std::string& service_name, Ta&& callback, Tb&& ptr)
       {
         auto& node = Node::get();
-
-        printf("[Service '%s'] Create\n", service_name.c_str());
 
 #if MEME_ROS_VERSION == 1
         handle_ = node.handle_.advertiseService(service_name, callback, ptr);
@@ -388,8 +376,6 @@ namespace mementar::compat {
       {
         auto& node = Node::get();
 
-        printf("[Client '%s'] Create\n", service_name.c_str());
-
 #if MEME_ROS_VERSION == 1
         handle_ = node.handle_.serviceClient<T>(service_name, true);
 #elif MEME_ROS_VERSION == 2
@@ -399,8 +385,6 @@ namespace mementar::compat {
 
       RosStatus_e call(const mementar::compat::RequestType<T>& req, mementar::compat::ResponseType<T>& res)
       {
-        printf("[Client '%s'] Call\n", name_.c_str());
-
         using namespace std::chrono_literals;
         auto status = RosStatus_e::ros_status_failure;
 
@@ -442,7 +426,6 @@ namespace mementar::compat {
 
       bool wait(double timeout)
       {
-        printf("[Client '%s'] Wait\n", name_.c_str());
 #if MEME_ROS_VERSION == 1
         return handle_.waitForExistence(ros::Duration(timeout));
 #elif MEME_ROS_VERSION == 2

@@ -115,15 +115,12 @@ namespace mementar {
     std::thread occasions_thread(&OccasionsManager::run, &occasions_);
     std::thread feed_thread(&RosInterface::feedThread, this);
 
-    // ROS_DEBUG("%s mementar ready", name_.c_str());
+    if(name_.empty() == false)
+      Display::info("Mementar " + name_ + " is ready");
+    else
+      Display::info("Mementar is ready");
 
-    while(compat::mem_ros::Node::ok() && isRunning())
-    {
-      // todo
-      // ros::getGlobalCallbackQueue()->callAvailable(ros::WallDuration(0.1));
-    }
-
-    occasions_.stop();
+    // occasions_.stop(); // todo verify
     occasions_thread.join();
     feed_thread.join();
   }

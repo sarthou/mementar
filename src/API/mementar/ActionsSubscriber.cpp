@@ -10,15 +10,8 @@
 namespace mementar {
 
   ActionsSubscriber::ActionsSubscriber(const std::function<void(const std::string&)>& callback,
-                                       const std::string& name,
-                                       bool spin_thread)
-    : OccasionsSubscriber([this](const Fact& fact) { this->privateCallback(fact); }, name, spin_thread),
-      callback_(callback)
-  {}
-
-  ActionsSubscriber::ActionsSubscriber(const std::function<void(const std::string&)>& callback,
-                                       bool spin_thread)
-    : OccasionsSubscriber([this](const Fact& fact) { this->privateCallback(fact); }, spin_thread),
+                                       const std::string& name)
+    : OccasionsSubscriber([this](const Fact& fact) { this->privateCallback(fact); }, name),
       callback_(callback)
   {}
 

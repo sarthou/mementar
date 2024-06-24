@@ -8,7 +8,7 @@
 
 #include "include/mementar/graphical/mementarGUI/CallBackTimer.h"
 #include "include/mementar/graphical/mementarGUI/QCheckBoxExtended.h"
-#include "mementar/API/mementar/TimelineManipulator.h"
+#include "mementar/API/mementar/TimelinesManipulator.h"
 #include "mementar/compat/ros.h"
 
 namespace Ui { // NOLINT
@@ -30,11 +30,10 @@ public:
 private:
   Ui::MementarGUI* ui_;
 
-  mementar::TimelineManipulator meme_;
+  mementar::TimelinesManipulator timelines_;
+  mementar::TimelineManipulator* timeline_;
+  bool multi_usage_;
 
-  std::map<std::string, std::unique_ptr<mementar::compat::mem_ros::Publisher<mementar::compat::StampedString>>> facts_publishers_;
-  std::map<std::string, std::unique_ptr<mementar::compat::mem_ros::Publisher<mementar::compat::MementarAction>>> actions_publishers_;
-  std::map<std::string, std::unique_ptr<mementar::compat::mem_ros::Subscriber<std_msgs_compat::String>>> feeder_notifications_subs_;
   std::string feeder_notifications_;
 
   int time_source_;
@@ -74,15 +73,17 @@ public slots:
   void timesourceChangedSlot(int index);
   void currentTimeEditingFinishedSlot();
 
-  void feederCallback(const std_msgs_compat::String& msg);
+  void feederCallback(const std::string& msg);
   void feederAddSlot();
   void feederDelSlot();
   void feederCommitSlot();
   void feederCheckoutSlot();
-  void createPublisher(const std::string& instance_ns);
+
+  bool updateTimelinePtr();
 
 signals:
-  void feederSetHtmlSignal(QString);
+  void feederSetHtmlSignal(QString t1);
+  void feederScrollSignal(QString t1);
   void setTimeSignal(QString);
 };
 
