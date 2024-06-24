@@ -31,7 +31,7 @@ namespace mementar {
     ~RosInterface();
 
     void run();
-    void stop() { run_ = false; }
+    void stop();
     bool isRunning() const { return run_; }
 
     void lock();
