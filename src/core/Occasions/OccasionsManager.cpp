@@ -54,6 +54,8 @@ namespace mementar {
             msg.id = (int)id;
             msg.data = triplet.toString();
             msg.last = subscription_.isFinished(id);
+            if(msg.last)
+              subscription_.unsubscribe(id);
             pub_.publish(msg);
           }
         }
