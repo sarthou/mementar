@@ -5,7 +5,7 @@
 
 namespace mementar::compat::mem_ros {
 
-  std::string ros_node_name = "OntoRos";
+  std::string ros_node_name = "MemRos";
 
   Node& Node::get()
   {
