@@ -1,12 +1,10 @@
+#include <atomic>
+#include <gtest/gtest.h>
 #include <ros/ros.h>
 
-#include <gtest/gtest.h>
-
-#include <atomic>
-
+#include "include/mementar/API/mementar/OccasionsSubscriber.h"
+#include "include/mementar/API/mementar/TimelineManipulator.h"
 #include "ontologenius/OntologyManipulator.h"
-#include "mementar/API/mementar/TimelineManipulator.h"
-#include "mementar/API/mementar/OccasionsSubscriber.h"
 
 onto::OntologyManipulator* onto_ptr;
 mementar::TimelineManipulator* time_ptr;
@@ -42,12 +40,13 @@ TEST(fact_pub_sub_tests, TimelineManipulator_one_subscriber)
   r.sleep();
   for(size_t i = 0; i < 5; i++)
   {
-    time_ptr->fact_feeder.insert(mementar::Fact("a", "b", "c"));
-    time_ptr->fact_feeder.insert(mementar::Fact("d", "e", "f"));
+    time_ptr->fact_feeder_.insert(mementar::Fact("a", "b", "c"));
+    time_ptr->fact_feeder_.insert(mementar::Fact("d", "e", "f"));
   }
   r.sleep();
 
-  EXPECT_TRUE((cpt_abc == 3) && (cpt_def == 0));
+  EXPECT_EQ(cpt_abc, 3);
+  EXPECT_EQ(cpt_def, 0);
 }
 
 TEST(fact_pub_sub_tests, TimelineManipulator_two_subscriber)
@@ -63,12 +62,13 @@ TEST(fact_pub_sub_tests, TimelineManipulator_two_subscriber)
   r.sleep();
   for(size_t i = 0; i < 5; i++)
   {
-    time_ptr->fact_feeder.insert(mementar::Fact("a", "b", "c"));
-    time_ptr->fact_feeder.insert(mementar::Fact("d", "e", "f"));
+    time_ptr->fact_feeder_.insert(mementar::Fact("a", "b", "c"));
+    time_ptr->fact_feeder_.insert(mementar::Fact("d", "e", "f"));
   }
   r.sleep();
 
-  EXPECT_TRUE((cpt_abc == 4) && (cpt_def == 1));
+  EXPECT_EQ(cpt_abc, 4);
+  EXPECT_EQ(cpt_def, 1);
 }
 
 TEST(fact_pub_sub_tests, TimelineManipulator_three_subscriber)
@@ -85,12 +85,13 @@ TEST(fact_pub_sub_tests, TimelineManipulator_three_subscriber)
   r.sleep();
   for(size_t i = 0; i < 5; i++)
   {
-    time_ptr->fact_feeder.insert(mementar::Fact("a", "b", "c"));
-    time_ptr->fact_feeder.insert(mementar::Fact("d", "e", "f"));
+    time_ptr->fact_feeder_.insert(mementar::Fact("a", "b", "c"));
+    time_ptr->fact_feeder_.insert(mementar::Fact("d", "e", "f"));
   }
   r.sleep();
 
-  EXPECT_TRUE((cpt_abc == 6) && (cpt_def == 1));
+  EXPECT_EQ(cpt_abc, 6);
+  EXPECT_EQ(cpt_def, 1);
 }
 
 TEST(fact_pub_sub_tests, TimelineManipulator_pattern_subscriber)
@@ -104,12 +105,13 @@ TEST(fact_pub_sub_tests, TimelineManipulator_pattern_subscriber)
   r.sleep();
   for(size_t i = 0; i < 5; i++)
   {
-    time_ptr->fact_feeder.insert(mementar::Fact("a", "b", "c"));
-    time_ptr->fact_feeder.insert(mementar::Fact("a", "b", "d"));
+    time_ptr->fact_feeder_.insert(mementar::Fact("a", "b", "c"));
+    time_ptr->fact_feeder_.insert(mementar::Fact("a", "b", "d"));
   }
   r.sleep();
 
-  EXPECT_TRUE((cpt_abc == 10) && (cpt_def == 0));
+  EXPECT_EQ(cpt_abc, 10);
+  EXPECT_EQ(cpt_def, 0);
 }
 
 TEST(fact_pub_sub_tests, OntologyManipulator_one_subscriber)
@@ -117,6 +119,7 @@ TEST(fact_pub_sub_tests, OntologyManipulator_one_subscriber)
   ros::Rate r(0.9);
   onto_ptr->feeder.addInheritage("a", "cube");
   onto_ptr->feeder.removeProperty("a", "b", "c");
+  onto_ptr->feeder.waitUpdate(1500);
 
   mementar::OccasionsSubscriber sub1(&factCallbackABC);
   sub1.subscribe(mementar::Fact("a", "b", "c"), 1);
@@ -127,7 +130,8 @@ TEST(fact_pub_sub_tests, OntologyManipulator_one_subscriber)
   onto_ptr->feeder.addProperty("a", "b", "c");
   r.sleep();
 
-  EXPECT_TRUE((cpt_abc == 1) && (cpt_def == 0));
+  EXPECT_EQ(cpt_abc, 1);
+  EXPECT_EQ(cpt_def, 0);
 }
 
 TEST(fact_pub_sub_tests, OntologyManipulator_inv_subscriber)
@@ -135,6 +139,7 @@ TEST(fact_pub_sub_tests, OntologyManipulator_inv_subscriber)
   ros::Rate r(0.9);
   onto_ptr->feeder.addInheritage("a", "cube");
   onto_ptr->feeder.removeProperty("a", "isOn", "c");
+  onto_ptr->feeder.waitUpdate(1500);
 
   mementar::OccasionsSubscriber sub1(&factCallbackCisUnderA);
   sub1.subscribe(mementar::Fact("c", "isUnder", "a"), 1);
@@ -144,23 +149,28 @@ TEST(fact_pub_sub_tests, OntologyManipulator_inv_subscriber)
   onto_ptr->feeder.addProperty("a", "isOn", "c");
   r.sleep();
 
-  EXPECT_TRUE(cpt_cIsUndera == 1);
+  EXPECT_EQ(cpt_cIsUndera, 1);
 }
 
 int main(int argc, char** argv)
 {
   ros::init(argc, argv, "fact_pub_sub_tests");
 
-  ros::NodeHandle n;
+  // std::thread th([]() { mementar::compat::mem_ros::Node::get().spin(); });
+  std::thread th([]() { ros::spin(); });
+
   onto::OntologyManipulator onto;
   onto_ptr = &onto;
-  mementar::TimelineManipulator timeline(&n);
+  mementar::TimelineManipulator timeline;
+  timeline.waitInit();
   time_ptr = &timeline;
 
   onto.close();
 
   testing::InitGoogleTest(&argc, argv);
-  return RUN_ALL_TESTS();
 
-  return 0;
+  // mementar::compat::mem_ros::Node::shutdown();
+  // th.join();
+
+  return RUN_ALL_TESTS();
 }

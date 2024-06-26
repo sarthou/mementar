@@ -1,32 +1,28 @@
 #include "mementar/API/mementar/clients/ManagerClient.h"
 
-namespace mementar
-{
+#include <string>
+#include <vector>
 
-std::vector<std::string> ManagerClient::list()
-{
-  mementar::MementarService srv;
-  srv.request.action = "list";
+namespace mementar {
 
-  return call(srv);
-}
+  std::vector<std::string> ManagerClient::list()
+  {
+    return callStrs("list", "");
+  }
 
-bool ManagerClient::add(const std::string& name)
-{
-  mementar::MementarService srv;
-  srv.request.action = "add";
-  srv.request.param = name;
+  bool ManagerClient::add(const std::string& name)
+  {
+    return callBool("add", name);
+  }
 
-  return callNR(srv);
-}
+  bool ManagerClient::copy(const std::string& name)
+  {
+    return callBool("copy", name);
+  }
 
-bool ManagerClient::del(const std::string& name)
-{
-  mementar::MementarService srv;
-  srv.request.action = "delete";
-  srv.request.param = name;
-
-  return callNR(srv);
-}
+  bool ManagerClient::del(const std::string& name)
+  {
+    return callBool("delete", name);
+  }
 
 } // namespace mementar

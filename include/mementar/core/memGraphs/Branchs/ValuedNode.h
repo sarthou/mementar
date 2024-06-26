@@ -7,22 +7,20 @@
 
 namespace mementar {
 
-class ValuedNode
-{
-public:
-  explicit ValuedNode(const std::string& value)
+  class ValuedNode
   {
-    index_ = table_.add(value);
-  }
+  public:
+    explicit ValuedNode(const std::string& value) : index_(table.add(value))
+    {}
 
-  uint32_t get() const {return index_; }
-  std::string getValue() const {return table_[index_]; }
+    uint32_t get() const { return index_; }
+    std::string getValue() const { return table[index_]; }
 
-  static WordTable table_;
+    static WordTable table;
 
-private:
-  uint32_t index_;
-};
+  private:
+    uint32_t index_;
+  };
 
 } // namespace mementar
 

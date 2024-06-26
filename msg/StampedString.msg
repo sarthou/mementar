@@ -1,2 +1,2 @@
 string data
-time stamp
+MementarTimestamp stamp

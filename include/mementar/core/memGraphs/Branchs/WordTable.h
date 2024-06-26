@@ -1,52 +1,51 @@
 #ifndef MEMENTAR_WORDTABLE_H
 #define MEMENTAR_WORDTABLE_H
 
-#include <vector>
+#include <cstdint>
 #include <string>
 #include <unordered_set>
-#include <cstdint>
+#include <vector>
 
 namespace mementar {
 
-class WordTable
-{
-public:
-
-  inline uint32_t add(const std::string& value)
+  class WordTable
   {
-    table_.push_back(value);
-    return table_.size() - 1;
-  }
+  public:
+    uint32_t add(const std::string& value)
+    {
+      table_.push_back(value);
+      return table_.size() - 1;
+    }
 
-  inline std::string& get(uint32_t index)
-  {
-    return table_[index];
-  }
+    std::string& get(uint32_t index)
+    {
+      return table_[index];
+    }
 
-  inline std::string& operator[] (uint32_t index)
-  {
-    return table_[index];
-  }
+    std::string& operator[](uint32_t index)
+    {
+      return table_[index];
+    }
 
-  inline const std::string& operator[] (uint32_t index) const
-  {
-    return table_[index];
-  }
+    const std::string& operator[](uint32_t index) const
+    {
+      return table_[index];
+    }
 
-  inline void index2string(std::unordered_set<std::string>& res, const std::unordered_set<uint32_t>& base)
-  {
-    for(uint32_t i : base)
-      res.insert(table_[i]);
-  }
+    void index2string(std::unordered_set<std::string>& res, const std::unordered_set<uint32_t>& base)
+    {
+      for(uint32_t i : base)
+        res.insert(table_[i]);
+    }
 
-  inline void reset()
-  {
-    table_.clear();
-  }
-  
-private:
-  std::vector<std::string> table_;
-};
+    void reset()
+    {
+      table_.clear();
+    }
+
+  private:
+    std::vector<std::string> table_;
+  };
 
 } // namespace mementar
 

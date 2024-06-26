@@ -1,26 +1,22 @@
 #ifndef MEMENTAR_MANAGERCLIENT_H
 #define MEMENTAR_MANAGERCLIENT_H
 
-#include "mementar/API/mementar/clients/ClientBase.h"
+#include "ClientBase.h"
 
-namespace mementar
-{
-
-class ManagerClient : public ClientBase
-{
-public:
-  ManagerClient(ros::NodeHandle* n) : ClientBase(n, "manage")
+namespace mementar {
+  class ManagerClient : public ClientBase
   {
-  }
+  public:
+    explicit ManagerClient(const std::string& name) : ClientBase(name.empty() ? "manage" : "manage/" + name) {}
 
-  std::vector<std::string> list();
-  bool add(const std::string& name);
-  bool del(const std::string& name);
+    std::vector<std::string> list();
 
-private:
+    bool add(const std::string& name);
+    bool copy(const std::string& name);
+    bool del(const std::string& name); // maybe name this to something like "remove"??
 
-};
-
+  private:
+  };
 } // namespace mementar
 
 #endif // MEMENTAR_MANAGERCLIENT_H

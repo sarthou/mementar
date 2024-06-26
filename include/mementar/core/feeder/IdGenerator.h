@@ -6,35 +6,35 @@
 
 namespace mementar {
 
-class IdGenerator
-{
-public:
-  IdGenerator() : id_(0) {}
-
-  void inspect(const std::string& str_id)
+  class IdGenerator
   {
-    std::stringstream convertor;
-    size_t id;
-    convertor << str_id;
-    convertor >> id;
+  public:
+    IdGenerator() : id_(0) {}
 
-    if(convertor.fail() == false)
+    void inspect(const std::string& str_id)
     {
-      if(id >= id_)
-        id_ = id + 1;
+      std::stringstream convertor;
+      size_t id = 0;
+      convertor << str_id;
+      convertor >> id;
+
+      if(convertor.fail() == false)
+      {
+        if(id >= id_)
+          id_ = id + 1;
+      }
     }
-  }
 
-  void reset() { id_ = 0; }
+    void reset() { id_ = 0; }
 
-  std::string get()
-  {
-    return std::to_string(id_++);
-  }
+    std::string get()
+    {
+      return std::to_string(id_++);
+    }
 
-private:
-  size_t id_;
-};
+  private:
+    size_t id_;
+  };
 
 } // namespace mementar
 

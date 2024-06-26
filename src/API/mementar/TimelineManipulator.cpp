@@ -1,21 +1,23 @@
-#include "mementar/API/mementar/TimelineManipulator.h"
+#include "include/mementar/API/mementar/TimelineManipulator.h"
 
-namespace mementar
-{
+#include <cstdint>
+#include <string>
 
-TimelineManipulator::TimelineManipulator(ros::NodeHandle* n, const std::string& name) : fact_feeder(n, name),
-                                                                                        action_feeder(n, name),
-                                                                                        actions(n, name),
-                                                                                        facts(n, name)
-{
-  n_ = n;
-  name_ = name;
-}
+namespace mementar {
 
-bool TimelineManipulator::waitInit(int32_t timeout)
-{
-  std::string servive_name = (name_ == "") ? "mementar/manage_instance" : "mementar/manage_instance/" + name_;
-  return ros::service::waitForService(servive_name, timeout);
-}
+  TimelineManipulator::TimelineManipulator(const std::string& name)
+    : fact_feeder_(name),
+      action_feeder_(name),
+      actions_(name),
+      facts_(name),
+      manager_(name),
+      inst_manager_(name),
+      name_(name)
+  {}
+
+  bool TimelineManipulator::waitInit(int32_t timeout)
+  {
+    return inst_manager_.client_.wait(timeout);
+  }
 
 } // namespace mementar

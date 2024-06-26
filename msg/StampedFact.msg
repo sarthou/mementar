@@ -1,4 +1,4 @@
-time stamp
+MementarTimestamp stamp
 string id
 string subject
 string predicat

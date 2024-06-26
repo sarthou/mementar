@@ -13,16 +13,20 @@
   <div class="header" id="header">
     <header class="fixed" id="navbar">
       <div class="container">
-          <div class="navbar-header">
-            <div id="header-buttons">
-                <ul id="header-ul" data-event="hover_intent" data-effect="fade" data-effect-speed="500">
-                    <li class="header-item"><a class="header-link" href="https://github.com/sarthou/mementar/wiki" tabindex="0">Wiki</a></li>
-                    <li class="header-item"><a class="header-link" href="https://github.com/sarthou/mementar" tabindex="0"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Octicons-mark-github.svg/1200px-Octicons-mark-github.svg.png" alt="github" width="40px" height="40px"/></a></li>
-                </ul>
-            </div>
-            <a class="navbar-icon" href="../index.html">
-              <img src="../img/logo/mementar.png " alt="mementar" width="65px" height="65px"/>
-            </a>
+        <div class="navbar-header">
+          <div id="header-buttons">
+            <ul id="header-ul" data-event="hover_intent" data-effect="fade" data-effect-speed="500">
+              <li class="header-item"><a class="header-link" href="https://github.com/sarthou/mementar/wiki"
+                  tabindex="0">Wiki</a></li>
+              <li class="header-item"><a class="header-link" href="https://github.com/sarthou/mementar"
+                  tabindex="0"><img
+                    src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Octicons-mark-github.svg/1200px-Octicons-mark-github.svg.png"
+                    alt="github" width="40px" height="40px" /></a></li>
+            </ul>
+          </div>
+          <a class="navbar-icon" href="../index.html">
+            <img src="../img/logo/mementar_light.png " alt="mementar" width="65px" height="65px" />
+          </a>
         </div>
       </div>
     </header>
@@ -37,7 +41,6 @@
         <li><a href="https://gitlab.com/sarthou/mementar/pipelines">Pipelines</a></li>
       </ul>
       <h1>Mementar API Documentation</h1>
-      <h2>Mementar 0.0.3</h2>
     </div>
 
     <div class="content">
@@ -80,12 +83,19 @@
 
       <div class="context">
         <h1 class="title">TimelineManipulator Class</h1>
-        <p>The TimelineManipulator class is an object with instances of all classes needed to manipulate a mementar instance.<a href="#details">More...</a></p>
+        <p>The TimelineManipulator class is an object with instances of all classes needed to manipulate a mementar
+          instance.<a href="#details">More...</a></p>
         <div class="table">
           <table class="alignedsummary">
             <tbody>
-              <tr><td class="memItemLeft rightAlign topAlign"> Header:</td><td class="memItemRight bottomAlign"> <span class="preprocessor">#include &quot;mementar/TimelineManipulator.h&quot;</span>
-              <tr><td class="memItemLeft rightAlign topAlign"> Inherits:</td><td class="memItemRight bottomAlign"> <a href="OccasionsPublisher.html">OccasionsPublisher</a></td></tr>
+              <tr>
+                <td class="memItemLeft rightAlign topAlign"> Header:</td>
+                <td class="memItemRight bottomAlign"> <span class="preprocessor">#include
+                    &quot;mementar/TimelineManipulator.h&quot;</span>
+              <tr>
+                <td class="memItemLeft rightAlign topAlign"> Inherits:</td>
+                <td class="memItemRight bottomAlign"> <a href="OccasionsPublisher.html">OccasionsPublisher</a></td>
+              </tr>
             </tbody>
           </table>
         </div>
@@ -103,11 +113,32 @@
         <div class="table">
           <table class="alignedsummary">
             <tbody>
-              <tr><td class="memItemLeft rightAlign topAlign"> </td><td class="memItemRight bottomAlign"><b><a href="TimelineManipulator.html#TimelineManipulator">TimelineManipulator</a></b>(ros::NodeHandle* <i>n</i>, const std::string&amp; <i>name</i> = &quot;&quot;)</td></tr>
-              <tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="TimelineManipulator.html#waitInit">waitInit</a></b>(int32_t <i>timeout</i> = -1)</td></tr>
-              <tr><td class="memItemLeft rightAlign topAlign"> size_t </td><td class="memItemRight bottomAlign"><b><a href="TimelineManipulator.html#nb">nb</a></b>()</td></tr>
-              <tr><td class="memItemLeft rightAlign topAlign"> void </td><td class="memItemRight bottomAlign"><b><a href="TimelineManipulator.html#resetNb">resetNb</a></b>()</td></tr>
-              <tr><td class="memItemLeft rightAlign topAlign"> void </td><td class="memItemRight bottomAlign"><b><a href="TimelineManipulator.html#verbose">verbose</a></b>(bool verbose)</td></tr>
+              <tr>
+                <td class="memItemLeft rightAlign topAlign"> </td>
+                <td class="memItemRight bottomAlign"><b><a
+                      href="TimelineManipulator.html#TimelineManipulator">TimelineManipulator</a></b>(ros::NodeHandle*
+                  <i>n</i>, const std::string&amp; <i>name</i> = &quot;&quot;)
+                </td>
+              </tr>
+              <tr>
+                <td class="memItemLeft rightAlign topAlign"> bool </td>
+                <td class="memItemRight bottomAlign"><b><a
+                      href="TimelineManipulator.html#waitInit">waitInit</a></b>(int32_t <i>timeout</i> = -1)</td>
+              </tr>
+              <tr>
+                <td class="memItemLeft rightAlign topAlign"> size_t </td>
+                <td class="memItemRight bottomAlign"><b><a href="TimelineManipulator.html#nb">nb</a></b>()</td>
+              </tr>
+              <tr>
+                <td class="memItemLeft rightAlign topAlign"> void </td>
+                <td class="memItemRight bottomAlign"><b><a href="TimelineManipulator.html#resetNb">resetNb</a></b>()
+                </td>
+              </tr>
+              <tr>
+                <td class="memItemLeft rightAlign topAlign"> void </td>
+                <td class="memItemRight bottomAlign"><b><a href="TimelineManipulator.html#verbose">verbose</a></b>(bool
+                  verbose)</td>
+              </tr>
             </tbody>
           </table>
         </div>
@@ -115,7 +146,8 @@
         <a name="details"></a>
         <div class="descr">
           <h2 id="details">Detailed Description</h2>
-          <p>The TimelineManipulator class is just an object to access all API ROS abstraction classes so that you can query and manage mementar.</p>
+          <p>The TimelineManipulator class is just an object to access all API ROS abstraction classes so that you can
+            query and manage mementar.</p>
         </div>
 
         <p><b>See also </b><a href="TimelinesManipulator.html">TimelinesManipulator</a>.</p>
@@ -123,7 +155,8 @@
         <div class="attr">
           <h2>Public Attribute Documentation</h2>
 
-          <h3 class="fn" id="actions"><a name="actions"></a><span class="name">actions</span> : <span class="type"><a href="ActionClient.html">ActionClient</a></span></h3>
+          <h3 class="fn" id="actions"><a name="actions"></a><span class="name">actions</span> : <span class="type"><a
+                href="ActionClient.html">ActionClient</a></span></h3>
           <p>ROS service client to manage the mementar instance.</p>
 
         </div>
@@ -131,22 +164,33 @@
         <div class="func">
           <h2>Public Functions Documentation</h2>
 
-          <h3 class="fn" id="TimelineManipulator"><a name="TimelineManipulator"></a>mementar::TimelineManipulator::<span class="name">TimelineManipulator</span>(<span class="type">ros::NodeHandle</span>*<i> n</i>, const <span class="type">std::string</span>&amp; <i>name</i> = &quot;&quot;)</h3>
+          <h3 class="fn" id="TimelineManipulator"><a name="TimelineManipulator"></a>mementar::TimelineManipulator::<span
+              class="name">TimelineManipulator</span>(<span class="type">ros::NodeHandle</span>*<i> n</i>, const <span
+              class="type">std::string</span>&amp; <i>name</i> = &quot;&quot;)</h3>
           <p>Constructs a manipulator for a mementar instance with a pointer to a NodeHandle <i>n</i>.</p>
-          <p>Can be used in a multi-instances mode by specifying the name of the mementar instance <i>name</i>. For classic use, do not specify any name <i>name</i>.</p>
+          <p>Can be used in a multi-instances mode by specifying the name of the mementar instance <i>name</i>. For
+            classic use, do not specify any name <i>name</i>.</p>
 
-          <h3 class="fn" id="waitInit"><a name="waitInit"></a><span class="type">bool</span> mementar::TimelineManipulator::<span class="name">waitInit</span>(<span class="type">int32_t</span><i> timeout</i> = -1)</h3>
+          <h3 class="fn" id="waitInit"><a name="waitInit"></a><span class="type">bool</span>
+            mementar::TimelineManipulator::<span class="name">waitInit</span>(<span class="type">int32_t</span><i>
+              timeout</i> = -1)</h3>
           <p>Wait for mementar services to be advertised and available for. Blocks until it is.</p>
-          <p><i>timeout</i> is the amount of time to wait for before timing out. If timeout is -1 (default), waits until the node is shutdown.</p>
+          <p><i>timeout</i> is the amount of time to wait for before timing out. If timeout is -1 (default), waits until
+            the node is shutdown.</p>
 
-          <h3 class="fn" id="nb"><a name="nb"></a><span class="type">size_t</span> mementar::TimelineManipulator::<span class="name">nb</span>()</h3>
+          <h3 class="fn" id="nb"><a name="nb"></a><span class="type">size_t</span> mementar::TimelineManipulator::<span
+              class="name">nb</span>()</h3>
           <p>Gives the total number of service calls from all ROS clients instances since the last reset.</p>
 
-          <h3 class="fn" id="resetNb"><a name="resetNb"></a><span class="type">void</span> mementar::TimelineManipulator::<span class="name">resetNb</span>()</h3>
+          <h3 class="fn" id="resetNb"><a name="resetNb"></a><span class="type">void</span>
+            mementar::TimelineManipulator::<span class="name">resetNb</span>()</h3>
           <p>Reset Call Counter for all instances of ROS clients.</p>
 
-          <h3 class="fn" id="verbose"><a name="verbose"></a><span class="type">void</span> mementar::TimelineManipulator::<span class="name">verbose</span>(<span class="type">bool</span> verbose)</h3>
-          <p>If verbose is set to true, the clients will post messages about the failure to call the services and about their restoration.</p>
+          <h3 class="fn" id="verbose"><a name="verbose"></a><span class="type">void</span>
+            mementar::TimelineManipulator::<span class="name">verbose</span>(<span class="type">bool</span> verbose)
+          </h3>
+          <p>If verbose is set to true, the clients will post messages about the failure to call the services and about
+            their restoration.</p>
 
         </div>
       </div>
@@ -160,7 +204,7 @@
     <p>
       Brought to you by:
       <a class="laas_logo" href="https://www.laas.fr/public/">
-        <img src="../img/LogoLAAS-2016_BW.png " alt="LAAS-CNRS" height="60px"/>
+        <img src="../img/LogoLAAS-2016_BW.png " alt="LAAS-CNRS" height="60px" />
       </a>
     </p>
   </div>

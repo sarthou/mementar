@@ -13,16 +13,20 @@
   <div class="header" id="header">
     <header class="fixed" id="navbar">
       <div class="container">
-          <div class="navbar-header">
-            <div id="header-buttons">
-                <ul id="header-ul" data-event="hover_intent" data-effect="fade" data-effect-speed="500">
-                    <li class="header-item"><a class="header-link" href="https://github.com/sarthou/mementar/wiki" tabindex="0">Wiki</a></li>
-                    <li class="header-item"><a class="header-link" href="https://github.com/sarthou/mementar" tabindex="0"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Octicons-mark-github.svg/1200px-Octicons-mark-github.svg.png" alt="github" width="40px" height="40px"/></a></li>
-                </ul>
-            </div>
-            <a class="navbar-icon" href="../index.html">
-              <img src="../img/logo/mementar.png " alt="mementar" width="65px" height="65px"/>
-            </a>
+        <div class="navbar-header">
+          <div id="header-buttons">
+            <ul id="header-ul" data-event="hover_intent" data-effect="fade" data-effect-speed="500">
+              <li class="header-item"><a class="header-link" href="https://github.com/sarthou/mementar/wiki"
+                  tabindex="0">Wiki</a></li>
+              <li class="header-item"><a class="header-link" href="https://github.com/sarthou/mementar"
+                  tabindex="0"><img
+                    src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Octicons-mark-github.svg/1200px-Octicons-mark-github.svg.png"
+                    alt="github" width="40px" height="40px" /></a></li>
+            </ul>
+          </div>
+          <a class="navbar-icon" href="../index.html">
+            <img src="../img/logo/mementar_light.png " alt="mementar" width="65px" height="65px" />
+          </a>
         </div>
       </div>
     </header>
@@ -37,7 +41,6 @@
         <li><a href="https://gitlab.com/sarthou/mementar/pipelines">Pipelines</a></li>
       </ul>
       <h1>Mementar API Documentation</h1>
-      <h2>Mementar 0.0.3</h2>
     </div>
 
     <div class="content">
@@ -80,13 +83,25 @@
 
       <div class="context">
         <h1 class="title">TimelinesManipulator Class</h1>
-        <p>The TimelinesManipulator class is an interface to manage several instance of <a href="TimelineManipulator.html">TimelineManipulator</a> in a multi-instances usage. <a href="#details">More...</a></p>
+        <p>The TimelinesManipulator class is an interface to manage several instance of <a
+            href="TimelineManipulator.html">TimelineManipulator</a> in a multi-instances usage. <a
+            href="#details">More...</a></p>
         <div class="table">
           <table class="alignedsummary">
             <tbody>
-              <tr><td class="memItemLeft rightAlign topAlign"> Header:</td><td class="memItemRight bottomAlign"> <span class="preprocessor">#include &quot;mementar/TimelinesManipulator.h&quot;</span>
-              </td></tr><tr><td class="memItemLeft rightAlign topAlign"> Inherits:</td><td class="memItemRight bottomAlign"> <a href="ManagerClient.html">ManagerClient</a></td></tr></tbody></table>
+              <tr>
+                <td class="memItemLeft rightAlign topAlign"> Header:</td>
+                <td class="memItemRight bottomAlign"> <span class="preprocessor">#include
+                    &quot;mementar/TimelinesManipulator.h&quot;</span>
+                </td>
+              </tr>
+              <tr>
+                <td class="memItemLeft rightAlign topAlign"> Inherits:</td>
+                <td class="memItemRight bottomAlign"> <a href="ManagerClient.html">ManagerClient</a></td>
+              </tr>
             </tbody>
+          </table>
+          </tbody>
           </table>
         </div>
 
@@ -95,11 +110,34 @@
         <div class="table">
           <table class="alignedsummary">
             <tbody>
-              <tr><td class="memItemLeft rightAlign topAlign"> </td><td class="memItemRight bottomAlign"><b><a href="TimelinesManipulator.html#TimelinesManipulator">TimelinesManipulator</a></b>(ros::NodeHandle* <i>n</i>)</td></tr>
-              <tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="TimelinesManipulator.html#waitInit">waitInit</a></b>(int32_t <i>timeout</i> = -1)</td></tr>
-              <tr><td class="memItemLeft rightAlign topAlign"> TimelineManipulator* </td><td class="memItemRight bottomAlign"><b><a href="TimelinesManipulator.html#operator">operator[]</a></b>(const std::string&amp; <i>name</i>)</td></tr>
-              <tr><td class="memItemLeft rightAlign topAlign"> TimelineManipulator* </td><td class="memItemRight bottomAlign"><b><a href="TimelinesManipulator.html#get">get</a></b>(const std::string&amp; <i>name</i>)</td></tr>
-              <tr><td class="memItemLeft rightAlign topAlign"> void </td><td class="memItemRight bottomAlign"><b><a href="TimelinesManipulator.html#verbose">verbose</a></b>(bool verbose)</td></tr>
+              <tr>
+                <td class="memItemLeft rightAlign topAlign"> </td>
+                <td class="memItemRight bottomAlign"><b><a
+                      href="TimelinesManipulator.html#TimelinesManipulator">TimelinesManipulator</a></b>(ros::NodeHandle*
+                  <i>n</i>)
+                </td>
+              </tr>
+              <tr>
+                <td class="memItemLeft rightAlign topAlign"> bool </td>
+                <td class="memItemRight bottomAlign"><b><a
+                      href="TimelinesManipulator.html#waitInit">waitInit</a></b>(int32_t <i>timeout</i> = -1)</td>
+              </tr>
+              <tr>
+                <td class="memItemLeft rightAlign topAlign"> TimelineManipulator* </td>
+                <td class="memItemRight bottomAlign"><b><a
+                      href="TimelinesManipulator.html#operator">operator[]</a></b>(const std::string&amp; <i>name</i>)
+                </td>
+              </tr>
+              <tr>
+                <td class="memItemLeft rightAlign topAlign"> TimelineManipulator* </td>
+                <td class="memItemRight bottomAlign"><b><a href="TimelinesManipulator.html#get">get</a></b>(const
+                  std::string&amp; <i>name</i>)</td>
+              </tr>
+              <tr>
+                <td class="memItemLeft rightAlign topAlign"> void </td>
+                <td class="memItemRight bottomAlign"><b><a href="TimelinesManipulator.html#verbose">verbose</a></b>(bool
+                  verbose)</td>
+              </tr>
             </tbody>
           </table>
         </div>
@@ -109,50 +147,74 @@
         <div class="table">
           <table class="alignedsummary">
             <tbody>
-              <tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="TimelinesManipulator.html#add">add</a></b>(const std::string&amp; <i>name</i>)</td></tr>
-              <tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="TimelinesManipulator.html#del">del</a></b>(const std::string&amp; <i>name</i>)</td></tr>
+              <tr>
+                <td class="memItemLeft rightAlign topAlign"> bool </td>
+                <td class="memItemRight bottomAlign"><b><a href="TimelinesManipulator.html#add">add</a></b>(const
+                  std::string&amp; <i>name</i>)</td>
+              </tr>
+              <tr>
+                <td class="memItemLeft rightAlign topAlign"> bool </td>
+                <td class="memItemRight bottomAlign"><b><a href="TimelinesManipulator.html#del">del</a></b>(const
+                  std::string&amp; <i>name</i>)</td>
+              </tr>
             </tbody>
           </table>
         </div>
         <ul>
-          <li class="fn">3 public functions inherited from <a href="ManagerClient.html#public-functions">ManagerClient</a></li>
+          <li class="fn">3 public functions inherited from <a
+              href="ManagerClient.html#public-functions">ManagerClient</a></li>
         </ul>
 
         <a name="details"></a>
         <div class="descr">
           <h2 id="details">Detailed Description</h2>
-          <p>The TimelinesManipulator class allows to create and delete mementar instances dynamically. It's usage is strongly recommanded for multi-instances usage and ensure a good thread management.</p>
+          <p>The TimelinesManipulator class allows to create and delete mementar instances dynamically. It's usage is
+            strongly recommanded for multi-instances usage and ensure a good thread management.</p>
           <p>This class allows you to set up the theory of mind quickly in a software application.</p>
         </div>
 
         <div class="func">
           <h2>Public Functions Documentation</h2>
 
-          <h3 class="fn" id="TimelinesManipulator"><a name="TimelinesManipulator"></a>mementar::TimelinesManipulator::<span class="name">TimelinesManipulator</span>(<span class="type">ros::NodeHandle</span>*<i> n</i>)</h3>
+          <h3 class="fn" id="TimelinesManipulator"><a
+              name="TimelinesManipulator"></a>mementar::TimelinesManipulator::<span
+              class="name">TimelinesManipulator</span>(<span class="type">ros::NodeHandle</span>*<i> n</i>)</h3>
           <p>Constructs a manipulator for several instance of mementar with a pointer to a NodeHandle <i>n</i>.</p>
 
-          <h3 class="fn" id="waitInit"><a name="waitInit"></a><span class="type">bool</span> mementar::TimelinesManipulator::<span class="name">waitInit</span>(<span class="type">int32_t</span><i> timeout</i> = -1)</h3>
+          <h3 class="fn" id="waitInit"><a name="waitInit"></a><span class="type">bool</span>
+            mementar::TimelinesManipulator::<span class="name">waitInit</span>(<span class="type">int32_t</span><i>
+              timeout</i> = -1)</h3>
           <p>Wait for mementar services to be advertised and available for. Blocks until it is.</p>
-          <p><i>timeout</i> is the amount of time to wait for before timing out. If timeout is -1 (default), waits until the node is shutdown.</p>
+          <p><i>timeout</i> is the amount of time to wait for before timing out. If timeout is -1 (default), waits until
+            the node is shutdown.</p>
 
-          <h3 class="fn" id="operator"><a name="operator"></a><span class="type"><a href="TimelineManipulator.html">TimelineManipulator</a></span>* mementar::TimelinesManipulator::<span class="name">operator[]</span>(const <span class="type">std::string</span>&amp; <i>name</i>)</h3>
+          <h3 class="fn" id="operator"><a name="operator"></a><span class="type"><a
+                href="TimelineManipulator.html">TimelineManipulator</a></span>* mementar::TimelinesManipulator::<span
+              class="name">operator[]</span>(const <span class="type">std::string</span>&amp; <i>name</i>)</h3>
           <p>Return a pointer on the TimelineManipulator instance named <i>name</i>.</p>
           <p>Return nullptr if no TimelineManipulator instance is named <i>name</i>.</p>
 
-          <h3 class="fn" id="get"><a name="get"></a><span class="type"><a href="TimelineManipulator.html">TimelineManipulator</a></span>* mementar::TimelinesManipulator::<span class="name">get</span>(const <span class="type">std::string</span>&amp; <i>name</i>)</h3>
+          <h3 class="fn" id="get"><a name="get"></a><span class="type"><a
+                href="TimelineManipulator.html">TimelineManipulator</a></span>* mementar::TimelinesManipulator::<span
+              class="name">get</span>(const <span class="type">std::string</span>&amp; <i>name</i>)</h3>
           <p>Return a pointer on the TimelineManipulator instance named <i>name</i>.</p>
           <p>Return nullptr if no TimelineManipulator instance is named <i>name</i>.</p>
 
-          <h3 class="fn" id="verbose"><a name="verbose"></a><span class="type">void</span> mementar::TimelinesManipulator::<span class="name">verbose</span>(<span class="type">bool</span> verbose)</h3>
-          <p>If verbose is set to true, the clients will post messages about the failure to call the services and about their restoration.</p>
+          <h3 class="fn" id="verbose"><a name="verbose"></a><span class="type">void</span>
+            mementar::TimelinesManipulator::<span class="name">verbose</span>(<span class="type">bool</span> verbose)
+          </h3>
+          <p>If verbose is set to true, the clients will post messages about the failure to call the services and about
+            their restoration.</p>
 
           <h2>Reimplemented Public Functions Documentation</h2>
 
-          <h3 class="fn" id="add"><a name="add"></a><span class="type">bool</span> mementar::TimelinesManipulator::<span class="name">add</span>(const <span class="type">std::string</span>&amp; <i>name</i>)</h3>
+          <h3 class="fn" id="add"><a name="add"></a><span class="type">bool</span> mementar::TimelinesManipulator::<span
+              class="name">add</span>(const <span class="type">std::string</span>&amp; <i>name</i>)</h3>
           <p>Creates a new instance of TimelineManipulator identified by the name <i>name</i>.</p>
           <p>Returns false creating fails. Returns true even if the instance already exists.</p>
 
-          <h3 class="fn" id="del"><a name="del"></a><span class="type">bool</span> mementar::TimelinesManipulator::<span class="name">del</span>(const <span class="type">std::string</span>&amp; <i>name</i>)</h3>
+          <h3 class="fn" id="del"><a name="del"></a><span class="type">bool</span> mementar::TimelinesManipulator::<span
+              class="name">del</span>(const <span class="type">std::string</span>&amp; <i>name</i>)</h3>
           <p>Deletes the instance of TimelineManipulator identified by the name <i>name</i>.</p>
           <p>Returns false deletation fails. Returns true even if the instance do not exists.</p>
         </div>
@@ -167,7 +229,7 @@
     <p>
       Brought to you by:
       <a class="laas_logo" href="https://www.laas.fr/public/">
-        <img src="../img/LogoLAAS-2016_BW.png " alt="LAAS-CNRS" height="60px"/>
+        <img src="../img/LogoLAAS-2016_BW.png " alt="LAAS-CNRS" height="60px" />
       </a>
     </p>
   </div>

@@ -1,89 +1,90 @@
 #ifndef MEMENTAR_COMPRESSEDLEAFNODE_H
 #define MEMENTAR_COMPRESSEDLEAFNODE_H
 
-#include <vector>
-#include <thread>
 #include <atomic>
 #include <shared_mutex>
+#include <thread>
+#include <vector>
 
-#include "mementar/core/memGraphs/Branchs/types/Fact.h"
-#include "mementar/core/memGraphs/Btree/BplusTree.h"
 #include "mementar/core/LtManagement/EpisodicTree/CompressedLeaf.h"
 #include "mementar/core/LtManagement/EpisodicTree/Context.h"
+#include "mementar/core/memGraphs/Branchs/types/Fact.h"
+#include "mementar/core/memGraphs/Branchs/types/SoftPoint.h"
+#include "mementar/core/memGraphs/Btree/BplusTree.h"
 
-namespace mementar
-{
+namespace mementar {
 
-class ArchivedLeaf;
+  class ArchivedLeaf;
 
-class CompressedLeafNode
-{
-  friend ArchivedLeaf;
-  using LeafType = typename BplusLeaf<time_t, Fact*>::LeafType;
-public:
-  CompressedLeafNode(const std::string& directory);
-  ~CompressedLeafNode();
-
-  CompressedLeafNode* split();
-
-  void insert(Fact* data);
-  void remove(Fact* data);
-  LeafType* find(const time_t& key);
-  LeafType* findNear(const time_t& key);
-  LeafType* getFirst();
-  LeafType* getLast();
-
-  void display(time_t key);
-  size_t size() { return keys_.size(); }
-
-  std::string getDirectory() { return directory_; }
-  time_t getKey()
+  class CompressedLeafNode
   {
-    if(contexts_.size())
-      return contexts_[0].getKey();
-    else
-      return -1;
-  }
+    friend ArchivedLeaf;
+    using LeafType = typename BplusLeaf<SoftPoint::Ttime, Fact*>::LeafType;
 
-  void newSession() { ask_for_new_tree_ = true; }
+  public:
+    CompressedLeafNode(const std::string& directory);
+    ~CompressedLeafNode();
 
-private:
-  CompressedLeafNode() {};
-  void init();
+    CompressedLeafNode* split();
 
-  std::string directory_;
-  mutable std::shared_timed_mutex mut_;
+    void insert(Fact* data);
+    void remove(Fact* data);
+    LeafType* find(const SoftPoint::Ttime& key);
+    LeafType* findNear(const SoftPoint::Ttime& key);
+    LeafType* getFirst();
+    LeafType* getLast();
 
-  // keys_.size() == btree_childs_.size() + compressed_childs_.size()
-  // keys_[i] correspond to the first key of child i
-  std::vector<time_t> keys_;
-  std::vector<Context> contexts_;
-  std::vector<BplusTree<time_t, Fact*>*> btree_childs_;
-  std::vector<CompressedLeaf> compressed_childs_;
-  std::vector<BplusTree<time_t, Fact*>*> compressed_sessions_tree_;
-  std::vector<int> compressed_sessions_timeout_; //ms
-  std::vector<bool> modified_;
+    void display(SoftPoint::Ttime key);
+    size_t size() { return keys_.size(); }
 
-  size_t last_tree_nb_leafs_;
-  time_t earlier_key_;
-  bool ask_for_new_tree_;
+    std::string getDirectory() { return directory_; }
+    SoftPoint::Ttime getKey()
+    {
+      if(contexts_.empty() == false)
+        return contexts_[0].getKey();
+      else
+        return -1;
+    }
 
-  std::atomic<bool> running_;
-  std::thread session_cleaner_;
+    void newSession() { ask_for_new_tree_ = true; }
 
-  inline void createNewTreeChild(const time_t& key);
-  inline bool useNewTree();
-  inline int getKeyIndex(const time_t& key);
+  private:
+    CompressedLeafNode() = default;
+    void init();
 
-  bool loadStoredData();
-  void insert(const time_t& key, const CompressedLeaf& leaf);
+    std::string directory_;
+    mutable std::shared_timed_mutex mut_;
 
-  void compressFirst();
-  void createSession(size_t index);
+    // keys_.size() == btree_childs_.size() + compressed_childs_.size()
+    // keys_[i] correspond to the first key of child i
+    std::vector<SoftPoint::Ttime> keys_;
+    std::vector<Context> contexts_;
+    std::vector<BplusTree<SoftPoint::Ttime, Fact*>*> btree_childs_;
+    std::vector<CompressedLeaf> compressed_childs_;
+    std::vector<BplusTree<SoftPoint::Ttime, Fact*>*> compressed_sessions_tree_;
+    std::vector<long> compressed_sessions_timeout_; // ms
+    std::vector<bool> modified_;
 
-  void clean();
-};
+    size_t last_tree_nb_leafs_;
+    SoftPoint::Ttime earlier_key_;
+    bool ask_for_new_tree_;
 
-} // mementar
+    std::atomic<bool> running_;
+    std::thread session_cleaner_;
+
+    inline void createNewTreeChild(const SoftPoint::Ttime& key);
+    inline bool useNewTree();
+    inline int getKeyIndex(const SoftPoint::Ttime& key);
+
+    bool loadStoredData();
+    void insert(const SoftPoint::Ttime& key, const CompressedLeaf& leaf);
+
+    void compressFirst();
+    void createSession(size_t index);
+
+    void clean();
+  };
+
+} // namespace mementar
 
 #endif // MEMENTAR_COMPRESSEDLEAFNODE_H

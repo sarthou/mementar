@@ -1,176 +1,88 @@
 #ifndef MEMENTAR_CLIENTBASE_H
 #define MEMENTAR_CLIENTBASE_H
 
-#include <vector>
 #include <string>
+#include <utility>
+#include <vector>
 
-#include <ros/ros.h>
-
-#include "mementar/MementarService.h"
+#include "mementar/compat/ros.h"
 
 #ifndef COLOR_OFF
-#define COLOR_OFF     "\x1B[0m"
+#define COLOR_OFF "\x1B[0m"
 #endif
 #ifndef COLOR_RED
-#define COLOR_RED     "\x1B[0;91m"
+#define COLOR_RED "\x1B[0;91m"
 #endif
 #ifndef COLOR_ORANGE
-#define COLOR_ORANGE  "\x1B[1;33m"
+#define COLOR_ORANGE "\x1B[1;33m"
 #endif
 #ifndef COLOR_GREEN
-#define COLOR_GREEN   "\x1B[1;92m"
+#define COLOR_GREEN "\x1B[1;92m"
 #endif
 
-namespace mementar
-{
-
-class ClientBase
-{
-public:
-  ClientBase(ros::NodeHandle* n, std::string name) : client(n->serviceClient<mementar::MementarService>("mementar/" + name, true))
+namespace mementar {
+  class ClientBase
   {
-    n_ = n;
-    name_ = name;
-  }
+  public:
+    explicit ClientBase(const std::string& name) : name_(name),
+                                                   error_code_(0),
+                                                   client_("mementar/" + name) {}
 
-  size_t nb() {return cpt;}
-  void resetNb() {cpt = 0;}
-  static void verbose(bool verbose) { verbose_ = verbose; }
+    size_t nb() const { return cpt; }
+    void resetNb() { cpt = 0; }
+    static void verbose(bool do_verbose) { client_verbose = do_verbose; }
+    int getErrorCode() const { return error_code_; }
 
-protected:
-  ros::ServiceClient client;
+    std::pair<std::vector<std::string>, compat::mem_ros::Time> call(const std::string& action, const std::string& param);
 
-  inline std::vector<std::string> call(mementar::MementarService& srv)
-  {
-    std::vector<std::string> res;
-    cpt++;
-
-    if(client.call(srv))
-      return srv.response.values;
-    else
+    std::vector<std::string> callStrs(const std::string& action, const std::string& param)
     {
-      if(verbose_)
-        std::cout << COLOR_ORANGE << "Failure to call mementar/" << name_ << COLOR_OFF << std::endl;
-      client = n_->serviceClient<mementar::MementarService>("mementar/" + name_, true);
-      if(client.call(srv))
-      {
-        if(verbose_)
-          std::cout << COLOR_GREEN << "Restored mementar/" << name_ << COLOR_OFF << std::endl;
-        return srv.response.values;
-      }
-      else
-      {
-        if(verbose_)
-          std::cout << COLOR_RED << "Failure of service restoration" << COLOR_OFF << std::endl;
-        res.push_back("ERR:SERVICE_FAIL");
-        return res;
-      }
+      return call(action, param).first;
     }
-  }
 
-  inline std::string callStr(mementar::MementarService& srv)
-  {
-    std::string res = "";
-    cpt++;
-
-    if(client.call(srv))
+    compat::mem_ros::Time callStamp(const std::string& action, const std::string& param)
     {
-      if(srv.response.values.size())
-        return srv.response.values[0];
-      else
-        return res;
+      return call(action, param).second;
     }
-    else
+
+    /// @brief Calls the service set up in the constructor of ClientBase.
+    /// @param action the query action.
+    /// @param param the query parameters.
+    /// @return Returns a single string. If the service call fails, the returned value is "ERR:SERVICE_FAIL".
+    std::string callStr(const std::string& action, const std::string& param)
     {
-      if(verbose_)
-        std::cout << COLOR_ORANGE << "Failure to call mementar/" << name_ << COLOR_OFF << std::endl;
-      client = n_->serviceClient<mementar::MementarService>("mementar/" + name_, true);
-      if(client.call(srv))
-      {
-        if(verbose_)
-          std::cout << COLOR_GREEN << "Restored mementar/" << name_ << COLOR_OFF << std::endl;
-        if(srv.response.values.size())
-          return srv.response.values[0];
-        else
-          return res;
-      }
-      else
-      {
-        if(verbose_)
-          std::cout << COLOR_RED << "Failure of service restoration" << COLOR_OFF << std::endl;
-        res = "ERR:SERVICE_FAIL";
-        return res;
-      }
+      auto res = this->callStrs(action, param);
+      return res.empty() ? "" : res[0];
     }
-  }
 
-  inline ros::Time callStamp(mementar::MementarService& srv)
-  {
-    ros::Time res;
-    cpt++;
-
-    if(client.call(srv))
+    /// @brief Calls the service set up in the constructor of ClientBase.
+    /// @param action the query action.
+    /// @param param the query parameters.
+    /// @return Returns false if the service call fails.
+    bool callNR(const std::string& action, const std::string& param)
     {
-      if(srv.response.values.size())
-        return srv.response.time_value;
-      else
-        return res;
+      return this->callStr(action, param) != "ERR:SERVICE_FAIL";
     }
-    else
+
+    /// @brief Calls the service set up in the constructor of ClientBase.
+    /// @param action the query action.
+    /// @param param the query parameters.
+    /// @return Returns false if the service call fails or the result code of the service is different from SUCCESS.
+    bool callBool(const std::string& action, const std::string& param)
     {
-      if(verbose_)
-        std::cout << COLOR_ORANGE << "Failure to call mementar/" << name_ << COLOR_OFF << std::endl;
-      client = n_->serviceClient<mementar::MementarService>("mementar/" + name_, true);
-      if(client.call(srv))
-      {
-        if(verbose_)
-          std::cout << COLOR_GREEN << "Restored mementar/" << name_ << COLOR_OFF << std::endl;
-        if(srv.response.values.size())
-          return srv.response.time_value;
-        else
-          return res;
-      }
-      else
-      {
-        if(verbose_)
-          std::cout << COLOR_RED << "Failure of service restoration" << COLOR_OFF << std::endl;
-        return res;
-      }
+      auto res = this->callStr(action, param);
+      return (res != "ERR:SERVICE_FAIL") && (error_code_ == 0);
     }
-  }
 
-  inline bool callNR(mementar::MementarService& srv)
-  {
-    cpt++;
-
-    if(client.call(srv))
-      return true;
-    else
-    {
-      if(verbose_)
-        std::cout << COLOR_ORANGE << "Failure to call mementar/" << name_ << COLOR_OFF << std::endl;
-      client = n_->serviceClient<mementar::MementarService>("mementar/" + name_, true);
-      if(client.call(srv))
-      {
-        if(verbose_)
-          std::cout << COLOR_GREEN << "Restored mementar/" << name_ << COLOR_OFF << std::endl;
-        return true;
-      }
-      else
-      {
-        if(verbose_)
-          std::cout << COLOR_RED << "Failure of service restoration" << COLOR_OFF << std::endl;
-        return false;
-      }
-    }
-  }
-
-private:
+  private:
     std::string name_;
-    ros::NodeHandle* n_;
+    int error_code_ = 0;
     static size_t cpt;
-    static bool verbose_;
-};
+    static bool client_verbose;
+
+  public:
+    compat::mem_ros::Client<compat::MementarService> client_;
+  };
 
 } // namespace mementar
 
