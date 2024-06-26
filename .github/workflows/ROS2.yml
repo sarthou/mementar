@@ -48,9 +48,9 @@ jobs:
           cmake --version
           cd $GITHUB_WORKSPACE
           mkdir -p ros2_ws/src/mementar
-          cd ros2_ws/src
+          cd $GITHUB_WORKSPACE/ros2_ws/src
           git clone https://github.com/sarthou/ontologenius.git
-          cd ros2_ws
+          cd $GITHUB_WORKSPACE/ros2_ws
           colcon build --symlink-install
 
       - name: Checkout
