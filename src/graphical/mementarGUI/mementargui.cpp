@@ -113,7 +113,7 @@ void MementarGUI::init()
   {
     timeline_ = new mementar::TimelineManipulator();
     timeline_->action_feeder_.registerFeederNotificationCallback([this](auto msg) { this->feederCallback(msg); });
-    timeline_->fact_feeder_.registerFeederNotificationCallback([this](auto msg) { this->feederCallback(msg); });
+    // timeline_->fact_feeder_.registerFeederNotificationCallback([this](auto msg) { this->feederCallback(msg); }); // onbly one has to be connected
     multi_usage_ = false;
   }
   else
@@ -360,7 +360,7 @@ void MementarGUI::addInstanceSlot()
     {
       ui_->static_result_editext->setText(QString::fromStdString(""));
       timelines_.get(inst_name)->action_feeder_.registerFeederNotificationCallback([this](auto msg) { this->feederCallback(msg); });
-      timelines_.get(inst_name)->fact_feeder_.registerFeederNotificationCallback([this](auto msg) { this->feederCallback(msg); });
+      // timelines_.get(inst_name)->fact_feeder_.registerFeederNotificationCallback([this](auto msg) { this->feederCallback(msg); }); // only one has to be connected
     }
 
     displayInstancesList();
