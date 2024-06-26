@@ -13,12 +13,12 @@ namespace mementar {
 
   OccasionsManager::OccasionsManager(const std::string& name)
     : run_(false),
-      pub_((name.empty()) ? "occasions" : "occasions/" + name, 1000),
+      pub_((name.empty()) ? "mementar/occasions" : "mementar/occasions/" + name, 1000),
       sub_service_(
-        name.empty() ? "subscribe" : "subscribe/" + name,
+        name.empty() ? "mementar/subscribe" : "mementar/subscribe/" + name,
         &OccasionsManager::subscribeCallback, this),
       unsub_service_(
-        name.empty() ? "unsubscribe" : "unsubscribe/" + name,
+        name.empty() ? "mementar/unsubscribe" : "mementar/unsubscribe/" + name,
         &OccasionsManager::unsubscribeCallback, this),
       queue_choice_(true)
   {
@@ -27,9 +27,9 @@ namespace mementar {
   OccasionsManager::OccasionsManager(onto::OntologyManipulator* onto, const std::string& name)
     : subscription_(onto),
       run_(false),
-      pub_((name.empty()) ? "occasions" : "occasions/" + name, 1000),
-      sub_service_(name.empty() ? "subscribe" : "subscribe/" + name, &OccasionsManager::subscribeCallback, this),
-      unsub_service_(name.empty() ? "unsubscribe" : "unsubscribe/" + name, &OccasionsManager::unsubscribeCallback,
+      pub_((name.empty()) ? "mementar/occasions" : "mementar/occasions/" + name, 1000),
+      sub_service_(name.empty() ? "mementar/subscribe" : "mementar/subscribe/" + name, &OccasionsManager::subscribeCallback, this),
+      unsub_service_(name.empty() ? "mementar/unsubscribe" : "mementar/unsubscribe/" + name, &OccasionsManager::unsubscribeCallback,
                      this),
       queue_choice_(true)
   {
