@@ -98,7 +98,7 @@ namespace mementar {
       return (onto_name.empty()) ? "/ontologenius/" + topic_name : "/ontologenius/" + topic_name + "/" + onto_name;
     }
 
-    double rosTime2Double(double s, int ns);
+    double rosTime2Double(double s, uint32_t ns);
   };
 
 } // namespace mementar

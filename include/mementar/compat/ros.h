@@ -163,9 +163,15 @@ namespace mementar::compat {
     class Time : public RosTime
     {
     public:
+#if MEME_ROS_VERSION == 1
       Time(uint32_t sec, uint32_t nsec) : RosTime(sec, nsec) {}
 
       explicit Time(double t) : RosTime((uint32_t)t, (uint32_t)((t - std::floor(t)) * 1'000'000'000.)) {}
+#elif MEME_ROS_VERSION == 2
+      Time(uint32_t sec, uint32_t nsec) : RosTime((int32_t)sec, nsec) {}
+
+      explicit Time(double t) : RosTime((int32_t)t, (uint32_t)((t - std::floor(t)) * 1'000'000'000.)) {}
+#endif
 
       Time(const RosTime& time) : RosTime(time) {} // do not put it as explicit
 
@@ -174,7 +180,7 @@ namespace mementar::compat {
 #if MEME_ROS_VERSION == 1
         return sec;
 #elif MEME_ROS_VERSION == 2
-        return RosTime::seconds();
+        return (uint32_t)RosTime::seconds();
 #endif
       }
 

@@ -57,7 +57,7 @@ namespace mementar {
       if(compressed_sessions_tree_[i] != nullptr)
       {
         if(modified_[i])
-          compressed_childs_[i] = std::move(CompressedLeaf(compressed_sessions_tree_[i], directory_));
+          compressed_childs_[i] = CompressedLeaf(compressed_sessions_tree_[i], directory_);
         delete compressed_sessions_tree_[i];
       }
       Display::percent((++leafs_cpt) * 100 / nb_leafs);
@@ -467,7 +467,7 @@ namespace mementar {
           {
             mut_.lock();
             if(modified_[i])
-              compressed_childs_[i] = std::move(CompressedLeaf(compressed_sessions_tree_[i], directory_));
+              compressed_childs_[i] = CompressedLeaf(compressed_sessions_tree_[i], directory_);
             delete compressed_sessions_tree_[i];
             compressed_sessions_tree_[i] = nullptr;
             mut_.unlock();

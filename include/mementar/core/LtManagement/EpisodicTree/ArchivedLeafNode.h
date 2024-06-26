@@ -48,7 +48,7 @@ namespace mementar {
     std::vector<CompressedLeafNode*> compressed_childs_;
     std::vector<ArchivedLeaf> archived_childs_;
     std::vector<CompressedLeafNodeSession*> archived_sessions_tree_;
-    std::vector<int> archived_sessions_timeout_; // ms
+    std::vector<long> archived_sessions_timeout_; // ms
     std::vector<bool> modified_;
 
     SoftPoint::Ttime earlier_key_;

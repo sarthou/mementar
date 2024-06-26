@@ -165,7 +165,7 @@ namespace mementar {
    *
    ****************/
 
-  double RosInterface::rosTime2Double(double s, int ns)
+  double RosInterface::rosTime2Double(double s, uint32_t ns)
   {
     ns = ns / 100000000;
     double res = (double)ns / 10.;
@@ -181,7 +181,7 @@ namespace mementar {
 
   void RosInterface::knowledgeCallback(const compat::mem_ros::MessageWrapper<compat::StampedString>& msg)
   {
-    feeder_.storeFact(msg->data, std::time(nullptr));
+    feeder_.storeFact(msg->data, (SoftPoint::Ttime)std::time(nullptr));
   }
 
   void RosInterface::stampedKnowledgeCallback(const compat::mem_ros::MessageWrapper<compat::StampedString>& msg)

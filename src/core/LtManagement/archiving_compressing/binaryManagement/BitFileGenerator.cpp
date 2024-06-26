@@ -20,12 +20,12 @@ namespace mementar {
     int8_t to_add = (int8_t)type_1_size_;
     do
     {
-      data_[major_index_] |= ((value & ~(0xffffffff << to_add)) << minor_index_);
+      data_[major_index_] |= ((value & ~(0xffffffff << to_add)) << minor_index_); // NOLINT
 
       const uint8_t added = 8 - minor_index_;
 
       value >>= (uint8_t)added;
-      to_add -= (int8_t)added;
+      to_add -= (int8_t)added; // NOLINT
       if(to_add >= 0)
       {
         if(data_.size() <= ++major_index_)
@@ -45,12 +45,12 @@ namespace mementar {
     int8_t to_add = (int8_t)type_2_size_;
     do
     {
-      data_[major_index_] |= ((value & ~(0xffffffff << to_add)) << minor_index_);
+      data_[major_index_] |= ((value & ~(0xffffffff << to_add)) << minor_index_); // NOLINT
 
       const uint8_t added = 8 - minor_index_;
 
       value >>= (uint8_t)added;
-      to_add -= (int8_t)added;
+      to_add -= (int8_t)added; // NOLINT
       if(to_add >= 0)
       {
         if(data_.size() <= ++major_index_)
@@ -70,12 +70,12 @@ namespace mementar {
     int8_t to_add = (int8_t)type_3_size_;
     do
     {
-      data_[major_index_] |= ((value & ~(0xffffffff << to_add)) << minor_index_);
+      data_[major_index_] |= ((value & ~(0xffffffff << to_add)) << minor_index_); // NOLINT
 
       const uint8_t added = 8 - minor_index_;
 
       value >>= (uint8_t)added;
-      to_add -= (int8_t)added;
+      to_add -= (int8_t)added; // NOLINT
       if(to_add >= 0)
       {
         if(data_.size() <= ++major_index_)
@@ -95,12 +95,12 @@ namespace mementar {
     int8_t to_add = (int8_t)type_4_size_;
     do
     {
-      data_[major_index_] |= ((value & ~(0xffffffff << to_add)) << minor_index_);
+      data_[major_index_] |= ((value & ~(0xffffffff << to_add)) << minor_index_); // NOLINT
 
       const uint8_t added = 8 - minor_index_;
 
       value >>= (uint8_t)added;
-      to_add -= (int8_t)added;
+      to_add -= (int8_t)added; // NOLINT
       if(to_add >= 0)
       {
         if(data_.size() <= ++major_index_)
@@ -120,12 +120,12 @@ namespace mementar {
     int8_t to_add = (int8_t)size;
     do
     {
-      data_[major_index_] |= ((value & ~(0xffffffff << to_add)) << minor_index_);
+      data_[major_index_] |= ((value & ~(0xffffffff << to_add)) << minor_index_); // NOLINT
 
       const uint8_t added = 8 - minor_index_;
 
       value >>= (uint8_t)added;
-      to_add -= (int8_t)added;
+      to_add -= (int8_t)added; // NOLINT
       if(to_add >= 0)
       {
         if(data_.size() <= ++major_index_)
@@ -145,7 +145,7 @@ namespace mementar {
     for(uint32_t i = 1 << (size - 1); i > 0; i >>= 1)
     {
       if((value & i) != 0)
-        data_[major_index_] |= (1 << minor_index_);
+        data_[major_index_] |= (1 << minor_index_); // NOLINT
 
       minor_index_++;
       if(minor_index_ > 7)
@@ -162,12 +162,12 @@ namespace mementar {
     int8_t to_add = 7;
     do
     {
-      data_[major_index_] |= ((value & ~(0xffffffff << to_add)) << minor_index_);
+      data_[major_index_] |= ((value & ~(0xffffffff << to_add)) << minor_index_); // NOLINT
 
       const uint8_t added = 8 - minor_index_;
 
-      value >>= added; // NOLINT
-      to_add -= (int8_t)added;
+      value >>= added;         // NOLINT
+      to_add -= (int8_t)added; // NOLINT
       if(to_add >= 0)
       {
         if(data_.size() <= ++major_index_)
@@ -184,7 +184,7 @@ namespace mementar {
 
   void BitFileGenerator::writeBitTrue()
   {
-    data_[major_index_] |= (1 << minor_index_);
+    data_[major_index_] |= (1 << minor_index_); // NOLINT
     if((7 - minor_index_) != 0)
     {
       ++minor_index_;

@@ -1,6 +1,5 @@
 #include "mementar/graphical/timeline/TimelineDrawer.h"
 
-#include <cstddef>
 #include <iostream>
 #include <opencv2/core/core_c.h>
 #include <opencv2/core/hal/interface.h>

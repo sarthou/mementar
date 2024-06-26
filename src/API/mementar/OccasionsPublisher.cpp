@@ -13,7 +13,7 @@ namespace mementar {
                                                                     feeder_notif_sub_(name.empty() ? "mementar/feeder_notifications" : "mementar/feeder_notifications/" + name, 1000, &OccasionsPublisher::feederNotificationCallback, this)
   {}
 
-  void OccasionsPublisher::insert(const Fact& fact, compat::mem_ros::Time stamp)
+  void OccasionsPublisher::insert(const Fact& fact, const compat::mem_ros::Time& stamp)
   {
     publish(fact(), stamp);
   }
@@ -23,7 +23,7 @@ namespace mementar {
     publish(fact(), stamp);
   }
 
-  void OccasionsPublisher::publish(const std::string& str, compat::mem_ros::Time stamp)
+  void OccasionsPublisher::publish(const std::string& str, const compat::mem_ros::Time& stamp)
   {
     compat::StampedString msg;
     msg.data = str;

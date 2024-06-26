@@ -41,7 +41,7 @@ namespace mementar {
         ros_msg.subject = message->subject_;
         ros_msg.predicat = message->predicat_;
         ros_msg.object = message->object_;
-        ros_msg.added = message->add_ ? 1 : 0;
+        ros_msg.added = message->add_;
         feeder_echo_pub_.publish(ros_msg);
       }
       echo_messages_.clear();

@@ -1,6 +1,7 @@
 #include "mementar/compat/ros.h"
 
 #include <string>
+#include <thread>
 
 namespace mementar::compat::mem_ros {
 

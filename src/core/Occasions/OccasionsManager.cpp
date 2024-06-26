@@ -12,8 +12,7 @@
 namespace mementar {
 
   OccasionsManager::OccasionsManager(const std::string& name)
-    : onto_(nullptr),
-      run_(false),
+    : run_(false),
       pub_((name.empty()) ? "occasions" : "occasions/" + name, 1000),
       sub_service_(
         name.empty() ? "subscribe" : "subscribe/" + name,
@@ -26,8 +25,7 @@ namespace mementar {
   }
 
   OccasionsManager::OccasionsManager(onto::OntologyManipulator* onto, const std::string& name)
-    : onto_(onto),
-      subscription_(onto),
+    : subscription_(onto),
       run_(false),
       pub_((name.empty()) ? "occasions" : "occasions/" + name, 1000),
       sub_service_(name.empty() ? "subscribe" : "subscribe/" + name, &OccasionsManager::subscribeCallback, this),
@@ -55,7 +53,7 @@ namespace mementar {
             compat::MementarOccasion msg;
             msg.id = (int)id;
             msg.data = triplet.toString();
-            msg.last = subscription_.isFinished(id) ? 1 : 0;
+            msg.last = subscription_.isFinished(id);
             pub_.publish(msg);
           }
         }

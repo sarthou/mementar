@@ -1,12 +1,15 @@
 #include "mementar/graphical/mementarGUI/mementargui.h"
 
+#include <algorithm>
+#include <bits/types/struct_timeval.h>
 #include <cstdio>
-#include <memory>
 #include <regex>
 #include <string>
 #include <sys/time.h>
 #include <vector>
 
+#include "mementar/API/mementar/Fact.h"
+#include "mementar/API/mementar/TimelineManipulator.h"
 #include "mementar/API/mementar/TimelinesManipulator.h"
 #include "mementar/compat/ros.h"
 #include "mementar/graphical/mementarGUI/QLineEditExtended.h"
@@ -16,7 +19,6 @@
 #include "qobject.h"
 #include "qobjectdefs.h"
 #include "qpushbutton.h"
-#include "qtextcursor.h"
 #include "qwidget.h"
 #include "ui_mementargui.h"
 
@@ -327,7 +329,7 @@ void MementarGUI::currentTabChangedSlot(int tab_id)
 void MementarGUI::addInstanceSlot()
 {
   std::string param = ui_->manager_instance_name_editline->text().toStdString();
-  std::string inst_name = param;
+  const std::string& inst_name = param;
 
   std::regex base_regex("(.*)=(.*)");
   std::smatch base_match;

@@ -28,7 +28,7 @@ namespace mementar {
 
       const uint8_t getted = (minor_index_ + to_get > 7) ? 8 - minor_index_ : to_get;
 
-      to_get -= (int8_t)getted;
+      to_get -= (int8_t)getted; // NOLINT
       if(to_get > 0)
       {
         current_data_ = data_[++major_index_];
@@ -61,7 +61,7 @@ namespace mementar {
 
       const uint8_t getted = (minor_index_ + to_get > 7) ? 8 - minor_index_ : to_get;
 
-      to_get -= (int8_t)getted;
+      to_get -= (int8_t)getted; // NOLINT
       if(to_get > 0)
       {
         current_data_ = data_[++major_index_];
@@ -94,7 +94,7 @@ namespace mementar {
 
       const uint8_t getted = (minor_index_ + to_get > 7) ? 8 - minor_index_ : to_get;
 
-      to_get -= (int8_t)getted;
+      to_get -= (int8_t)getted; // NOLINT
       if(to_get > 0)
       {
         current_data_ = data_[++major_index_];
@@ -127,7 +127,7 @@ namespace mementar {
 
       const uint8_t getted = (minor_index_ + to_get > 7) ? 8 - minor_index_ : to_get;
 
-      to_get -= (int8_t)getted;
+      to_get -= (int8_t)getted; // NOLINT
       if(to_get > 0)
       {
         current_data_ = data_[++major_index_];
@@ -160,7 +160,7 @@ namespace mementar {
 
       const uint8_t getted = (minor_index_ + to_get > 7) ? 8 - minor_index_ : to_get;
 
-      to_get -= (int8_t)getted;
+      to_get -= (int8_t)getted; // NOLINT
       if(to_get > 0)
       {
         current_data_ = data_[++major_index_];

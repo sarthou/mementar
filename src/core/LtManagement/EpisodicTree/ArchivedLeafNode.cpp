@@ -24,11 +24,10 @@ namespace mementar {
                                                      order_(order),
                                                      earlier_key_(0),
                                                      ask_for_new_tree_(false),
-                                                     running_(false)
+                                                     running_(true)
   {
     loadStoredData();
 
-    running_ = true;
     session_cleaner_ = std::move(std::thread(&ArchivedLeafNode::clean, this));
   }
 
@@ -400,7 +399,7 @@ namespace mementar {
       if(cpt-- == 0)
       {
         cpt = rate;
-        SoftPoint::Ttime now = std::time(nullptr);
+        time_t now = std::time(nullptr);
         for(size_t i = 0; i < archived_sessions_timeout_.size(); i++)
         {
           if((archived_sessions_tree_[i] != nullptr) &&

@@ -7,7 +7,6 @@
 #include <iostream>
 #include <iterator>
 #include <map>
-#include <memory>
 #include <stdexcept>
 #include <string>
 #include <thread>
@@ -92,10 +91,10 @@ bool managerHandle(mementar::compat::mem_ros::ServiceWrapper<mementar::compat::M
       }
       else
       {
-        auto tmp = new mementar::RosInterface(params.parameters_.at("directory").getFirst(),
-                                              params.parameters_.at("config").getFirst(),
-                                              10,
-                                              req->param);
+        auto* tmp = new mementar::RosInterface(params.parameters_.at("directory").getFirst(),
+                                               params.parameters_.at("config").getFirst(),
+                                               10,
+                                               req->param);
         interfaces[req->param] = tmp;
 
         std::thread th(&mementar::RosInterface::run, tmp);

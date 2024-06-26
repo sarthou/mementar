@@ -26,7 +26,6 @@ namespace mementar {
     bool isRunning() const { return run_; }
 
   private:
-    onto::OntologyManipulator* onto_;
     Subscription subscription_;
     std::atomic<bool> run_;
 

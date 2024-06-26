@@ -70,7 +70,7 @@ namespace mementar {
       }
 
       if(done)
-        ids_.erase(ids_.begin() + i);
+        ids_.erase(ids_.begin() + (int)i);
       else
         i++;
     }
@@ -84,7 +84,7 @@ namespace mementar {
     if(it != ids_.end())
     {
       callback_(Fact(msg.data));
-      if(msg.last != 0)
+      if(msg.last)
         ids_.erase(it);
     }
   }
