@@ -8,4 +8,4 @@ LAAS-CNRS, Toulouse, 2018 – 2024.
 ```
 
 [Release-Url]: https://github.com/sarthou/mementar/releases
-[Release-image]: http://img.shields.io/badge/release-v0.0.3-1eb0fc.svg
+[Release-image]: http://img.shields.io/badge/release-v0.0.4-1eb0fc.svg
