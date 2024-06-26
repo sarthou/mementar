@@ -135,7 +135,8 @@ namespace mementar {
 
     if(pattern.isObjectIndividual() == false)
     {
-      if(onto_->individuals.isA(triplet.object_, pattern.object_) == false)
+      if((onto_->individuals.isA(triplet.object_, pattern.object_) == false) &&
+         (onto_->classes.isA(triplet.object_, pattern.object_) == false))
         return false;
     }
     // object match
