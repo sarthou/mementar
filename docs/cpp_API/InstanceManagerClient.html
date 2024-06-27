@@ -1,7 +1,7 @@
 <html lang="en_US">
 
 <head>
-  <title>ManagerClient Class | Mementar 0.0.4</title>
+  <title>InstanceManagerClient Class | Mementar 0.0.4</title>
   <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
   <link href="../style/mementar_api.css" rel="stylesheet" type="text/css">
   <link href="../img/logo/favicon.ico" rel="shortcut icon">
@@ -50,7 +50,6 @@
           <h3>Contents</h3>
           <ul style="display: block;">
             <li class="level1"><a href="#public-functions">Public Functions</a></li>
-            <li class="level1"><a href="#reimplemented-public-functions">Reimplemented Public Functions</a></li>
             <li class="level1"><a href="#details">Detailed Description</a></li>
           </ul>
         </div>
@@ -74,8 +73,8 @@
             <li class="level1"><a href="ClientBase.html">ClientBase</a></li>
             <li class="level1"><a href="Fact.html">Fact</a></li>
             <li class="level1"><a href="FactClient.html">FactClient</a></li>
-            <li class="level1"><a href="InstanceManagerClient.html">InstanceManagerClient</a></li>
-            <li class="level1"><a href="ManagerClient.html"><b>ManagerClient</b></a></li>
+            <li class="level1"><a href="InstanceManagerClient.html"><b>InstanceManagerClient</b></a></li>
+            <li class="level1"><a href="ManagerClient.html">ManagerClient</a></li>
             <li class="level1"><a href="OccasionsPublisher.html">OccasionsPublisher</a></li>
             <li class="level1"><a href="OccasionsSubscriber.html">OccasionsSubscriber</a></li>
             <li class="level1"><a href="TimelineManipulator.html">TimelineManipulator</a></li>
@@ -86,8 +85,9 @@
       </div>
 
       <div class="context">
-        <h1 class="title">ManagerClient Class</h1>
-        <p>The ManagerClient class provides an abstraction for mementar manage service. <a href="#details">More...</a>
+        <h1 class="title">InstanceManagerClient Class</h1>
+        <p>The InstanceManagerClient class provides a ROS service abstraction for facts exploration. <a
+            href="#details">More...</a>
         </p>
         <div class="table">
           <table class="alignedsummary">
@@ -95,7 +95,7 @@
               <tr>
                 <td class="memItemLeft rightAlign topAlign"> Header:</td>
                 <td class="memItemRight bottomAlign"> <span class="preprocessor">#include
-                    &quot;mementar/clients/ManagerClient.h&quot;</span></td>
+                    &quot;mementar/clients/InstanceManagerClient.h&quot;</span></td>
               </tr>
               <tr>
                 <td class="memItemLeft rightAlign topAlign"> Inherits:</td>
@@ -103,7 +103,7 @@
               </tr>
               <tr>
                 <td class="memItemLeft rightAlign topAlign"> Namespace:</td>
-                <td class="memItemRight bottomAlign">mementar</td>
+                <td class="memItemRight bottomAlign"> <span class="preprocessor">mementar</span></td>
               </tr>
             </tbody>
           </table>
@@ -117,72 +117,62 @@
               <tr>
                 <td class="memItemLeft rightAlign topAlign"> </td>
                 <td class="memItemRight bottomAlign"><b><a
-                      href="ManagerClient.html#ManagerClient">ManagerClient</a></b>()
+                      href="InstanceManagerClient.html#InstanceManagerClient">InstanceManagerClient</a></b>(const
+                  std::string&amp; <i>name</i>)
                 </td>
               </tr>
               <tr>
-                <td class="memItemLeft rightAlign topAlign"> std::vector&lt;std::string&gt; </td>
-                <td class="memItemRight bottomAlign"><b><a href="ManagerClient.html#list">list</a></b>()</td>
+                <td class="memItemLeft rightAlign topAlign"> bool </td>
+                <td class="memItemRight bottomAlign"><b><a href="InstanceManagerClient.html#save">save</a></b>(const
+                  std::string& <i>path</i>)</td>
               </tr>
               <tr>
                 <td class="memItemLeft rightAlign topAlign"> bool </td>
-                <td class="memItemRight bottomAlign"><b><a href="ManagerClient.html#add">add</a></b>(const
-                  std::string&amp; <i>name</i>)</td>
-              </tr>
-              <tr>
-                <td class="memItemLeft rightAlign topAlign"> bool </td>
-                <td class="memItemRight bottomAlign"><b><a href="ManagerClient.html#del">del</a></b>(const
-                  std::string&amp; <i>name</i>)</td>
+                <td class="memItemRight bottomAlign"><b><a href="InstanceManagerClient.html#draw">draw</a></b>
+                  (const std::string& <i>path</i>)
+                </td>
               </tr>
             </tbody>
           </table>
         </div>
 
-        <a name="reimplemented-public-functions"></a>
-        <h2 id="reimplemented-public-functions">Reimplemented Public Functions</h2>
-        <ul>
-          <li class="fn">2 public functions inherited from <a href="ClientBase.html#public-functions">ClientBase</a>
-          </li>
-        </ul>
+        <div class="table">
+          <a name="details"></a>
+          <div class="descr">
+            <h2 id="details">Detailed Description</h2>
+            <p>The InstanceManagerClient class provides an abstraction of mementar instance management ROS service.</p>
+            <p>The mementar instance management service allows the management of one specific mementar instance.</p>
+            <p>This class is based on <a href="ClientBase.html">ClientBase</a> and so ensure a persistent connection
+              with ontologenius/class service. The persistent connection ensures a minimal response time. A reconnection
+              logic is implemented in the event that the persistent connection fails. </p>
+          </div>
 
-        <a name="details"></a>
-        <div class="descr">
-          <h2 id="details">Detailed Description</h2>
-          <p>The ManagerClient class provides an abstraction mementar manage ROS services.</p>
-          <p>The manager client is used to manage ontology instances in multi-ontology usage. This makes it possible to
-            start new ontologies or to stop old ones, but also to study the differences of knowledge between several
-            instances. With the manager client, it is easy to develop software using theory of mind. </p>
-          <p>This class is based on <a href="ClientBase.html">ClientBase</a> and so ensure a persistent connection with
-            the service based on. The persistent connection ensure a minimal response time. A reconnection logic is
-            implemented in the event that the persistent connection fails. </p>
-        </div>
+          <div class="func">
+            <h2>Public Functions Documentation</h2>
 
-        <div class="func">
-          <h2>Public Functions Documentation</h2>
+            <h3 class="fn" id="InstanceManagerClient"><a name="InstanceManagerClient"></a>InstanceManagerClient::<span
+                class="name">InstanceManagerClient</span>(const <span class="type">std::string</span>&amp; <i>name</i> =
+              &quot;&quot;)</h3>
+            <p>Constructs an instance manager client.</p>
+            <p>Can be used in a multi-timeline mode by specifying the name of the timeline <i>name</i>. For classic use,
+              <i>name</i> should be defined as &quot;&quot;.
+            </p>
 
-          <h3 class="fn" id="ManagerClient"><a name="ManagerClient"></a>ManagerClient::<span
-              class="name">ManagerClient</span>()</h3>
-          <p>Constructs an manager client.</p>
-          <p>Can only be used in a multi-process mode.</p>
+            <h3 class="fn" id="save"><a name="save"></a><span class="type">bool</span> InstanceManagerClient::<span
+                class="name">save</span>(const <span class="type">std::string</span>&amp; <i>path</i>)
+            </h3>
+            <p>Saves the timeline as a CSV file and store it at <i>path</i>.</p>
 
-          <h3 class="fn" id="list"><a name="list"></a><span class="type">std::vector&lt;std::string&gt;</span>
-            ManagerClient::<span class="name">list</span>()</h3>
-          <p>Returns the name of the intanced mementar process.</p>
+            <h3 class="fn" id="draw"><a name="draw"></a><span class="type">bool</span> InstanceManagerClient::<span
+                class="name">draw</span>(const <span class="type">std::string</span>&amp; <i>path</i>)
+            </h3>
+            <p>Generates a graphical representation of the timeline and store it at <i>path</i>.</p>
 
-          <h3 class="fn" id="add"><a name="add"></a><span class="type">bool</span> ManagerClient::<span
-              class="name">add</span>(const <span class="type">std::string</span>&amp; <i>name</i>)</h3>
-          <p>Create an mementar instance named <i>name</i>.</p>
-          <p>Returns false if the service call fails.</p>
-
-          <h3 class="fn" id="del"><a name="del"></a><span class="type">bool</span> ManagerClient::<span
-              class="name">del</span>(const <span class="type">std::string</span>&amp; <i>name</i>)</h3>
-          <p>Delete the mementar instance named <i>name</i></p>
-          <p>Returns false if the service call fails.</p>
-
+          </div>
         </div>
       </div>
-    </div>
 
+    </div>
   </div>
 </body>
 
