@@ -8,8 +8,6 @@
 #include "include/mementar/API/mementar/clients/ManagerClient.h"
 
 namespace mementar {
-  TimelinesManipulator::TimelinesManipulator() : ManagerClient("")
-  {}
 
   bool TimelinesManipulator::waitInit(int32_t timeout)
   {

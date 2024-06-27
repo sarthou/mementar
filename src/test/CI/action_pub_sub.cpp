@@ -45,13 +45,13 @@ TEST(action_pub_sub_tests, TimelineManipulator_fact_start_subscriber)
   r.sleep();
   for(size_t i = 0; i < 2; i++)
   {
-    time_ptr->action_feeder_.insert("act_" + std::to_string(i));
-    time_ptr->action_feeder_.insert("other_act_" + std::to_string(i));
+    time_ptr->action_feeder.insert("act_" + std::to_string(i));
+    time_ptr->action_feeder.insert("other_act_" + std::to_string(i));
   }
   for(size_t i = 0; i < 2; i++)
   {
-    time_ptr->action_feeder_.insertEnd("act_" + std::to_string(i));
-    time_ptr->action_feeder_.insertEnd("other_act_" + std::to_string(i));
+    time_ptr->action_feeder.insertEnd("act_" + std::to_string(i));
+    time_ptr->action_feeder.insertEnd("other_act_" + std::to_string(i));
   }
   r.sleep();
 
@@ -70,13 +70,13 @@ TEST(action_pub_sub_tests, TimelineManipulator_fact_end_subscriber)
   r.sleep();
   for(size_t i = 10; i < 12; i++)
   {
-    time_ptr->action_feeder_.insert("act_" + std::to_string(i));
-    time_ptr->action_feeder_.insert("other_act_" + std::to_string(i));
+    time_ptr->action_feeder.insert("act_" + std::to_string(i));
+    time_ptr->action_feeder.insert("other_act_" + std::to_string(i));
   }
   for(size_t i = 10; i < 12; i++)
   {
-    time_ptr->action_feeder_.insertEnd("act_" + std::to_string(i));
-    time_ptr->action_feeder_.insertEnd("other_act_" + std::to_string(i));
+    time_ptr->action_feeder.insertEnd("act_" + std::to_string(i));
+    time_ptr->action_feeder.insertEnd("other_act_" + std::to_string(i));
   }
   r.sleep();
 
@@ -95,13 +95,13 @@ TEST(action_pub_sub_tests, TimelineManipulator_action_start_subscriber)
   r.sleep();
   for(size_t i = 20; i < 22; i++)
   {
-    time_ptr->action_feeder_.insert("act_" + std::to_string(i));
-    time_ptr->action_feeder_.insert("other_act_" + std::to_string(i));
+    time_ptr->action_feeder.insert("act_" + std::to_string(i));
+    time_ptr->action_feeder.insert("other_act_" + std::to_string(i));
   }
   for(size_t i = 20; i < 22; i++)
   {
-    time_ptr->action_feeder_.insertEnd("act_" + std::to_string(i));
-    time_ptr->action_feeder_.insertEnd("other_act_" + std::to_string(i));
+    time_ptr->action_feeder.insertEnd("act_" + std::to_string(i));
+    time_ptr->action_feeder.insertEnd("other_act_" + std::to_string(i));
   }
   r.sleep();
 
@@ -120,13 +120,13 @@ TEST(action_pub_sub_tests, TimelineManipulator_action_end_subscriber)
   r.sleep();
   for(size_t i = 30; i < 32; i++)
   {
-    time_ptr->action_feeder_.insert("act_" + std::to_string(i));
-    time_ptr->action_feeder_.insert("other_act_" + std::to_string(i));
+    time_ptr->action_feeder.insert("act_" + std::to_string(i));
+    time_ptr->action_feeder.insert("other_act_" + std::to_string(i));
   }
   for(size_t i = 30; i < 32; i++)
   {
-    time_ptr->action_feeder_.insertEnd("act_" + std::to_string(i));
-    time_ptr->action_feeder_.insertEnd("other_act_" + std::to_string(i));
+    time_ptr->action_feeder.insertEnd("act_" + std::to_string(i));
+    time_ptr->action_feeder.insertEnd("other_act_" + std::to_string(i));
   }
   r.sleep();
 
@@ -147,8 +147,8 @@ TEST(action_pub_sub_tests, TimelineManipulator_action_start_end_subscriber)
   r.sleep();
   for(size_t i = 40; i < 42; i++)
   {
-    time_ptr->action_feeder_.insert("act_" + std::to_string(i), time(0), time(0) + 2);
-    time_ptr->action_feeder_.insert("other_act_" + std::to_string(i), time(0), time(0) + 2);
+    time_ptr->action_feeder.insert("act_" + std::to_string(i), time(0), time(0) + 2);
+    time_ptr->action_feeder.insert("other_act_" + std::to_string(i), time(0), time(0) + 2);
   }
   r.sleep();
 

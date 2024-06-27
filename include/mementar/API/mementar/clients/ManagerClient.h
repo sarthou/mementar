@@ -7,7 +7,7 @@ namespace mementar {
   class ManagerClient : public ClientBase
   {
   public:
-    explicit ManagerClient(const std::string& name) : ClientBase(name.empty() ? "manage" : "manage/" + name) {}
+    ManagerClient() : ClientBase("manage") {}
 
     std::vector<std::string> list();
 

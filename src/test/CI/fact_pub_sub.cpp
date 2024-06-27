@@ -40,8 +40,8 @@ TEST(fact_pub_sub_tests, TimelineManipulator_one_subscriber)
   r.sleep();
   for(size_t i = 0; i < 5; i++)
   {
-    time_ptr->fact_feeder_.insert(mementar::Fact("a", "b", "c"));
-    time_ptr->fact_feeder_.insert(mementar::Fact("d", "e", "f"));
+    time_ptr->fact_feeder.insert(mementar::Fact("a", "b", "c"));
+    time_ptr->fact_feeder.insert(mementar::Fact("d", "e", "f"));
   }
   r.sleep();
 
@@ -62,8 +62,8 @@ TEST(fact_pub_sub_tests, TimelineManipulator_two_subscriber)
   r.sleep();
   for(size_t i = 0; i < 5; i++)
   {
-    time_ptr->fact_feeder_.insert(mementar::Fact("a", "b", "c"));
-    time_ptr->fact_feeder_.insert(mementar::Fact("d", "e", "f"));
+    time_ptr->fact_feeder.insert(mementar::Fact("a", "b", "c"));
+    time_ptr->fact_feeder.insert(mementar::Fact("d", "e", "f"));
   }
   r.sleep();
 
@@ -85,8 +85,8 @@ TEST(fact_pub_sub_tests, TimelineManipulator_three_subscriber)
   r.sleep();
   for(size_t i = 0; i < 5; i++)
   {
-    time_ptr->fact_feeder_.insert(mementar::Fact("a", "b", "c"));
-    time_ptr->fact_feeder_.insert(mementar::Fact("d", "e", "f"));
+    time_ptr->fact_feeder.insert(mementar::Fact("a", "b", "c"));
+    time_ptr->fact_feeder.insert(mementar::Fact("d", "e", "f"));
   }
   r.sleep();
 
@@ -105,8 +105,8 @@ TEST(fact_pub_sub_tests, TimelineManipulator_pattern_subscriber)
   r.sleep();
   for(size_t i = 0; i < 5; i++)
   {
-    time_ptr->fact_feeder_.insert(mementar::Fact("a", "b", "c"));
-    time_ptr->fact_feeder_.insert(mementar::Fact("a", "b", "d"));
+    time_ptr->fact_feeder.insert(mementar::Fact("a", "b", "c"));
+    time_ptr->fact_feeder.insert(mementar::Fact("a", "b", "d"));
   }
   r.sleep();
 

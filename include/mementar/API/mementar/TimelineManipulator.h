@@ -19,17 +19,16 @@ namespace mementar {
 
     bool waitInit(int32_t timeout = -1);
 
-    /*size_t nb() {return actions_.nb();}
-    void resetNb() {actions_.resetNb();}*/
+    size_t nb() { return actions.nb(); }
+    void resetNb() { actions.resetNb(); }
 
     void verbose(bool verbose) { ClientBase::verbose(verbose); }
 
-    OccasionsPublisher fact_feeder_;
-    ActionsPublisher action_feeder_;
-    ActionClient actions_;
-    FactClient facts_;
-    ManagerClient manager_;
-    InstanceManagerClient inst_manager_;
+    OccasionsPublisher fact_feeder;
+    ActionsPublisher action_feeder;
+    ActionClient actions;
+    FactClient facts;
+    InstanceManagerClient inst_manager;
 
   private:
     std::string name_;

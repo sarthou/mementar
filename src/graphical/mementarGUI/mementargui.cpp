@@ -112,8 +112,8 @@ void MementarGUI::init()
   if(timelines_.waitInit(1) == false)
   {
     timeline_ = new mementar::TimelineManipulator();
-    timeline_->action_feeder_.registerFeederNotificationCallback([this](auto msg) { this->feederCallback(msg); });
-    // timeline_->fact_feeder_.registerFeederNotificationCallback([this](auto msg) { this->feederCallback(msg); }); // onbly one has to be connected
+    timeline_->action_feeder.registerFeederNotificationCallback([this](auto msg) { this->feederCallback(msg); });
+    // timeline_->fact_feeder.registerFeederNotificationCallback([this](auto msg) { this->feederCallback(msg); }); // onbly one has to be connected
     multi_usage_ = false;
   }
   else
@@ -179,8 +179,8 @@ void MementarGUI::actionButtonClickedSlot()
   const QString text = dynamic_cast<QPushButtonExtended*>(sender())->text() + " : " + ui_->action_parameter_editline->text();
   ui_->action_description_textedit->setText(text);
 
-  auto response = timeline_->actions_.call(action, param);
-  const int err = timeline_->actions_.getErrorCode();
+  auto response = timeline_->actions.call(action, param);
+  const int err = timeline_->actions.getErrorCode();
   if(err == -1)
     displayErrorInfo("client call failed");
   else
@@ -211,8 +211,8 @@ void MementarGUI::factButtonClickedSlot()
   const QString text = dynamic_cast<QPushButtonExtended*>(sender())->text() + " : " + ui_->fact_parameter_editline->text();
   ui_->fact_description_textedit->setText(text);
 
-  auto response = timeline_->facts_.call(action, param);
-  const int err = timeline_->facts_.getErrorCode();
+  auto response = timeline_->facts.call(action, param);
+  const int err = timeline_->facts.getErrorCode();
 
   if(err == -1)
     displayErrorInfo("client call failed");
@@ -359,8 +359,8 @@ void MementarGUI::addInstanceSlot()
     else
     {
       ui_->static_result_editext->setText(QString::fromStdString(""));
-      timelines_.get(inst_name)->action_feeder_.registerFeederNotificationCallback([this](auto msg) { this->feederCallback(msg); });
-      // timelines_.get(inst_name)->fact_feeder_.registerFeederNotificationCallback([this](auto msg) { this->feederCallback(msg); }); // only one has to be connected
+      timelines_.get(inst_name)->action_feeder.registerFeederNotificationCallback([this](auto msg) { this->feederCallback(msg); });
+      // timelines_.get(inst_name)->fact_feeder.registerFeederNotificationCallback([this](auto msg) { this->feederCallback(msg); }); // only one has to be connected
     }
 
     displayInstancesList();
@@ -399,8 +399,8 @@ void MementarGUI::saveInstanceSlot()
     return;
 
   auto param = ui_->manager_save_path_editline->text().toStdString();
-  timeline_->inst_manager_.save(param);
-  const int err = timeline_->inst_manager_.getErrorCode();
+  timeline_->inst_manager.save(param);
+  const int err = timeline_->inst_manager.getErrorCode();
 
   if(err == -1)
   {
@@ -428,8 +428,8 @@ void MementarGUI::drawInstanceSlot()
     return;
 
   auto param = ui_->manager_save_path_editline->text().toStdString();
-  timeline_->inst_manager_.draw(param);
-  const int err = timeline_->inst_manager_.getErrorCode();
+  timeline_->inst_manager.draw(param);
+  const int err = timeline_->inst_manager.getErrorCode();
 
   if(err == -1)
   {
@@ -539,11 +539,11 @@ void MementarGUI::feederAddSlot()
   else
   {
     if((predicat.empty()) && (object.empty()))
-      timeline_->action_feeder_.insert(subject, mementar::compat::mem_ros::Time(current_time_.seconds, current_time_.nanoseconds));
+      timeline_->action_feeder.insert(subject, mementar::compat::mem_ros::Time(current_time_.seconds, current_time_.nanoseconds));
     else
     {
       mementar::Fact fact(subject, predicat, object, true);
-      timeline_->fact_feeder_.insert(fact, mementar::compat::mem_ros::Time(current_time_.seconds, current_time_.nanoseconds));
+      timeline_->fact_feeder.insert(fact, mementar::compat::mem_ros::Time(current_time_.seconds, current_time_.nanoseconds));
     }
   }
 }
@@ -564,11 +564,11 @@ void MementarGUI::feederDelSlot()
   else
   {
     if((predicat.empty()) && (object.empty()))
-      timeline_->action_feeder_.insertEnd(subject, mementar::compat::mem_ros::Time(current_time_.seconds, current_time_.nanoseconds));
+      timeline_->action_feeder.insertEnd(subject, mementar::compat::mem_ros::Time(current_time_.seconds, current_time_.nanoseconds));
     else
     {
       mementar::Fact fact(subject, predicat, object, false);
-      timeline_->fact_feeder_.insert(fact, mementar::compat::mem_ros::Time(current_time_.seconds, current_time_.nanoseconds));
+      timeline_->fact_feeder.insert(fact, mementar::compat::mem_ros::Time(current_time_.seconds, current_time_.nanoseconds));
     }
   }
 }
@@ -578,7 +578,7 @@ void MementarGUI::feederCommitSlot()
   if(updateTimelinePtr() == false)
     return;
 
-  // timeline_->fact_feeder_.commit(ui_->feeder_commit_name_editline->text().toStdString());
+  // timeline_->fact_feeder.commit(ui_->feeder_commit_name_editline->text().toStdString());
 }
 
 void MementarGUI::feederCheckoutSlot()
@@ -586,7 +586,7 @@ void MementarGUI::feederCheckoutSlot()
   if(updateTimelinePtr() == false)
     return;
 
-  // timeline_->fact_feeder_.checkout(ui_->feeder_commit_name_editline->text().toStdString());
+  // timeline_->fact_feeder.checkout(ui_->feeder_commit_name_editline->text().toStdString());
 }
 
 bool MementarGUI::updateTimelinePtr()

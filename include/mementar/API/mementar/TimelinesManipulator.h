@@ -12,7 +12,7 @@ namespace mementar {
   class TimelinesManipulator : public ManagerClient
   {
   public:
-    TimelinesManipulator();
+    TimelinesManipulator() = default;
     ~TimelinesManipulator() = default;
 
     bool waitInit(int32_t timeout = -1);

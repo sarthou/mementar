@@ -1,6 +1,7 @@
 #ifndef MEMENTAR_API_FACT_H
 #define MEMENTAR_API_FACT_H
 
+#include <cstddef>
 #include <regex>
 #include <string>
 #include <vector>
@@ -57,14 +58,26 @@ namespace mementar {
     void setAdd(bool add) { add_ = add; }
     void operator()(const std::string& fact, bool add = true)
     {
-      std::vector<std::string> splitted = split(fact, "|");
-      if(splitted.empty() == false)
-        subject_ = splitted[0];
-      if(splitted.size() >= 2)
-        predicat_ = splitted[1];
-      if(splitted.size() >= 3)
-        object_ = splitted[2];
-      add_ = add;
+      std::smatch match;
+      std::regex regex(R"(\[(\w+)\]([^|]+)\|([^|]+)\|([^|]+))");
+      if(std::regex_match(fact, match, regex))
+      {
+        subject_ = match[2].str();
+        predicat_ = match[3].str();
+        object_ = match[4].str();
+        add_ = (match[1].str() == "ADD") || (match[1].str() == "add");
+      }
+      else
+      {
+        std::vector<std::string> splitted = split(fact, "|");
+        if(splitted.empty() == false)
+          subject_ = splitted[0];
+        if(splitted.size() >= 2)
+          predicat_ = splitted[1];
+        if(splitted.size() >= 3)
+          object_ = splitted[2];
+        add_ = add;
+      }
     }
 
   private:

@@ -8,7 +8,7 @@ namespace mementar {
   class ActionClient : public ClientBase
   {
   public:
-    ActionClient(const std::string& name) : ClientBase(name.empty() ? "action" : "action/" + name) {}
+    ActionClient(const std::string& name = "") : ClientBase(name.empty() ? "action" : "action/" + name) {}
 
     bool exist(const std::string& action_name);
     std::vector<std::string> getPending();
