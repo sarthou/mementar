@@ -377,8 +377,7 @@ namespace mementar::compat {
         ros_status_failure
       };
 
-      explicit Client(const std::string& service_name)
-        : name_(service_name)
+      explicit Client(const std::string& service_name) : name_(service_name)
       {
         auto& node = Node::get();
 

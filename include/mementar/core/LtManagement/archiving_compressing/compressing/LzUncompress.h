@@ -1,22 +1,25 @@
 #ifndef MEMENTAR_LZUNCOMPRESS_H
 #define MEMENTAR_LZUNCOMPRESS_H
 
-#include "mementar/core/LtManagement/archiving_compressing/binaryManagement/BitFileGetter.h"
+#include <cstddef>
+#include <string>
+#include <vector>
+
 #include "mementar/core/LtManagement/archiving_compressing/binaryManagement/BinaryManager.h"
+#include "mementar/core/LtManagement/archiving_compressing/binaryManagement/BitFileGetter.h"
 
-namespace mementar
-{
+namespace mementar {
 
-class LzUncompress : public BinaryManager
-{
-public:
-  LzUncompress();
+  class LzUncompress : public BinaryManager
+  {
+  public:
+    LzUncompress();
 
-  std::string uncompress(const std::vector<char>& data);
+    std::string uncompress(const std::vector<char>& data);
 
-private:
-  int neededBitCount(size_t max_value);
-};
+  private:
+    int neededBitCount(size_t max_value);
+  };
 
 } // namespace mementar
 

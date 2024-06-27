@@ -11,9 +11,9 @@
 #include <string>
 #include <vector>
 
+#include "mementar/core/memGraphs/Branchs/types/SoftPoint.h"
 #include "mementar/core/memGraphs/Branchs/types/Triplet.h"
 #include "mementar/graphical/Display.h"
-#include "mementar/core/memGraphs/Branchs/types/SoftPoint.h"
 
 namespace mementar {
 
