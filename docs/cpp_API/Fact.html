@@ -69,6 +69,7 @@
           <div id="contents-toggle" class=""></div>
           <h3><a href="CppAPI.html">All C++ Classes</a></h3>
           <ul style="display: block;">
+            <li class="level1"><a href="ActionClient.html">ActionClient</a></li>
             <li class="level1"><a href="ClientBase.html">ClientBase</a></li>
             <li class="level1"><a href="Fact.html"><b>Fact</b></a></li>
             <li class="level1"><a href="ManagerClient.html">ManagerClient</a></li>
@@ -91,6 +92,12 @@
                 <td class="memItemLeft rightAlign topAlign"> Header:</td>
                 <td class="memItemRight bottomAlign"> <span class="preprocessor">#include
                     &quot;mementar/Fact.h&quot;</span>
+                </td>
+              </tr>
+              <tr>
+                <td class="memItemLeft rightAlign topAlign"> Namespace:</td>
+                <td class="memItemRight bottomAlign">mementar</td>
+              </tr>
             </tbody>
           </table>
         </div>
@@ -103,50 +110,64 @@
               <tr>
                 <td class="memItemLeft rightAlign topAlign"> </td>
                 <td class="memItemRight bottomAlign"><b><a href="Fact.html#Fact">Fact</a></b>(const std::string&amp;
-                  <i>fact</i>)
+                  <i>fact</i>, bool <i>add</i> = true)
                 </td>
               </tr>
               <tr>
                 <td class="memItemLeft rightAlign topAlign"> </td>
                 <td class="memItemRight bottomAlign"><b><a href="Fact.html#Fact2">Fact</a></b>(const std::string&amp;
-                  <i>subject</i>, const std::string&amp; <i>predicat</i>, const std::string&amp; <i>object</i>)
+                  <i>subject</i>, const std::string&amp; <i>predicat</i>, const std::string&amp; <i>object</i>, bool
+                  <i>add</i> = true)
                 </td>
               </tr>
               <tr>
                 <td class="memItemLeft rightAlign topAlign"> std::string </td>
-                <td class="memItemRight bottomAlign"><b><a href="Fact.html#subject_get">subject</a></b>()</td>
+                <td class="memItemRight bottomAlign"><b><a href="Fact.html#getSubject">getSubject</a></b>()</td>
               </tr>
               <tr>
                 <td class="memItemLeft rightAlign topAlign"> std::string </td>
-                <td class="memItemRight bottomAlign"><b><a href="Fact.html#predicat_get">predicat</a></b>()</td>
+                <td class="memItemRight bottomAlign"><b><a href="Fact.html#getPredicat">getPredicat</a></b>()</td>
               </tr>
               <tr>
                 <td class="memItemLeft rightAlign topAlign"> std::string </td>
-                <td class="memItemRight bottomAlign"><b><a href="Fact.html#object_get">object</a></b>()</td>
+                <td class="memItemRight bottomAlign"><b><a href="Fact.html#getObject">getObject</a></b>()</td>
+              </tr>
+              <tr>
+                <td class="memItemLeft rightAlign topAlign"> bool </td>
+                <td class="memItemRight bottomAlign"><b><a href="Fact.html#getAdd">getAdd</a></b>()</td>
               </tr>
               <tr>
                 <td class="memItemLeft rightAlign topAlign"> std::string </td>
                 <td class="memItemRight bottomAlign"><b><a href="Fact.html#operator_get">operator()</a></b>()</td>
               </tr>
               <tr>
+                <td class="memItemLeft rightAlign topAlign"> std::string </td>
+                <td class="memItemRight bottomAlign"><b><a href="Fact.html#toString">toString</a></b>()</td>
+              </tr>
+              <tr>
                 <td class="memItemLeft rightAlign topAlign"> void </td>
-                <td class="memItemRight bottomAlign"><b><a href="Fact.html#subject_set">subject</a></b>(const
+                <td class="memItemRight bottomAlign"><b><a href="Fact.html#setSubject">setSubject</a></b>(const
                   std::string&amp; <i>subject</i>)</td>
               </tr>
               <tr>
                 <td class="memItemLeft rightAlign topAlign"> void </td>
-                <td class="memItemRight bottomAlign"><b><a href="Fact.html#predicat_set">predicat</a></b>(const
+                <td class="memItemRight bottomAlign"><b><a href="Fact.html#setPredicat">setPredicat</a></b>(const
                   std::string&amp; <i>predicat</i>)</td>
               </tr>
               <tr>
                 <td class="memItemLeft rightAlign topAlign"> void </td>
-                <td class="memItemRight bottomAlign"><b><a href="Fact.html#object_set">object</a></b>(const
+                <td class="memItemRight bottomAlign"><b><a href="Fact.html#setObject">setObject</a></b>(const
                   std::string&amp; <i>object</i>)</td>
               </tr>
               <tr>
                 <td class="memItemLeft rightAlign topAlign"> void </td>
+                <td class="memItemRight bottomAlign"><b><a href="Fact.html#setAdd">setAdd</a></b>(bool <i>add</i>)</td>
+              </tr>
+              <tr>
+                <td class="memItemLeft rightAlign topAlign"> void </td>
                 <td class="memItemRight bottomAlign"><b><a href="Fact.html#operator_set">operator()</a></b>(const
-                  std::string&amp; <i>fact</i>)</td>
+                  std::string&amp; <i>fact</i>, bool <i>add</i> = true)
+                </td>
               </tr>
             </tbody>
           </table>
@@ -156,73 +177,88 @@
         <div class="descr">
           <h2 id="details">Detailed Description</h2>
           <p>The Fact class provides a way to represent facts in mementar.</p>
-          <p>Mementar formats the data representing an fact to be able to communicate them at the level of ROS messages.
+          <p>Mementar formats the data representing a fact to be able to communicate them at the level of ROS messages.
             The Fact class makes it possible to make the link between this formatted representation and the
             representation in the form of a triplet.</p>
           <p>In mementar, a fact is a datum that is not linked to a temporal stamp. When a fact occurs at a moment t, it
-            is
-            called an occasion. An occasion is a particular time or instance of an event. An event occurs on a time
-            interval.
-            It is thus composed of two occasions, one being the beginning of the event and the other the end. An event
-            is
-            therefore a change of state of a fact, so that two facts have the same subject and the same predicate, but
-            the
-            object changes.</p>
+            is called an occasion. An occasion is a particular time or instance of an event. An event occurs on a time
+            interval. It is thus composed of two occasions, one being the beginning of the event and the other the end.
+            An event is therefore a change of state of a fact, so that two facts have the same subject and the same
+            predicate, but the object changes.</p>
         </div>
 
         <div class="func">
           <h2>Public Functions Documentation</h2>
 
-          <h3 class="fn" id="Fact"><a name="Fact"></a>mementar::Fact::<span class="name">Fact</span>(const <span
-              class="type">std::string</span>&amp; <i>fact</i>)</h3>
-          <p>Constructs a new fact from the formatted parameter <i>fact</i>.</p>
+          <h3 class="fn" id="Fact"><a name="Fact"></a>Fact::<span class="name">Fact</span>(const <span
+              class="type">std::string</span>&amp; <i>fact</i>, <span class="type">bool</span> add = true)</h3>
+          <p>Constructs a new fact from the formatted parameter <i>fact</i> and the optional boolean <i>add</i>
+            representing the addition or deletion of the fact.</p>
           <p>In its formatted form, an fact is written as follows: subject|predicat|object</p>
+          <p>The <i>add</i> parameter can be transmitted in the formatted form with the syntax:
+            [add/del]subject|predicat|object</p>
 
-          <h3 class="fn" id="Fact2"><a name="Fact2"></a>mementar::Fact::<span class="name">Fact</span>(const <span
+          <h3 class="fn" id="Fact2"><a name="Fact2"></a>Fact::<span class="name">Fact</span>(const <span
               class="type">std::string</span>&amp; <i>subject</i>, const <span class="type">std::string</span>&amp;
-            <i>predicat</i>, const <span class="type">std::string</span>&amp; <i>object</i>)
+            <i>predicat</i>, const <span class="type">std::string</span>&amp; <i>object</i>, <span
+              class="type">bool</span> add = true)
           </h3>
           <p>Constructs a new fact from the triplet defined by the parameters <i>subject</i>, <i>predicat</i> and
-            <i>object</i>.
+            <i>object</i> and the optional boolean <i>add</i>
+            representing the addition or deletion of the fact.
           </p>
 
-          <h3 class="fn" id="subject_get"><a name="subject_get"></a><span class="type">std::string</span>
-            mementar::Fact::<span class="name">subject</span>()</h3>
-          <p>Return the subject of the fact.</p>
+          <h3 class="fn" id="getSubject"><a name="getSubject"></a><span class="type">std::string</span>
+            Fact::<span class="name">getSubject</span>()</h3>
+          <p>Returns the subject of the fact.</p>
 
-          <h3 class="fn" id="predicat_get"><a name="predicat_get"></a><span class="type">std::string</span>
-            mementar::Fact::<span class="name">predicat</span>()</h3>
-          <p>Return the predicat of the fact.</p>
+          <h3 class="fn" id="getPredicat"><a name="getPredicat"></a><span class="type">std::string</span>
+            Fact::<span class="name">getPredicat</span>()</h3>
+          <p>Returns the predicat of the fact.</p>
 
-          <h3 class="fn" id="object_get"><a name="object_get"></a><span class="type">std::string</span>
-            mementar::Fact::<span class="name">object</span>()</h3>
-          <p>Return the object of the fact.</p>
+          <h3 class="fn" id="getObject"><a name="getObject"></a><span class="type">std::string</span>
+            Fact::<span class="name">getObject</span>()</h3>
+          <p>Returns the object of the fact.</p>
+
+          <h3 class="fn" id="getAdd"><a name="getAdd"></a><span class="type">bool</span>
+            Fact::<span class="name">getAdd</span>()</h3>
+          <p>Returns true if the fact is an insertion and false if it is a deletion.</p>
 
           <h3 class="fn" id="operator_get"><a name="operator_get"></a><span class="type">std::string</span>
-            mementar::Fact::<span class="name">operator()</span>()</h3>
-          <p>Return the fact in its formatted form.</p>
-          <p>In its formatted form, an fact is written as follows: subject|predicat|object</p>
+            Fact::<span class="name">operator()</span>()</h3>
+          <p>Returns the fact in its formatted form.</p>
+          <p>In its formatted form, an fact is written as follows: [add/del]subject|predicat|object</p>
 
-          <h3 class="fn" id="subject_set"><a name="subject_set"></a><span class="type">void</span> mementar::Fact::<span
-              class="name">subject</span>(const <span class="type">std::string</span>&amp; <i>subject</i>)</h3>
-          <p>Set the subject of the fact.</p>
+          <h3 class="fn" id="toString"><a name="toString"></a><span class="type">std::string</span>
+            Fact::<span class="name">toString</span>()</h3>
+          <p>Returns the fact in its formatted form.</p>
+          <p>In its formatted form, an fact is written as follows: [add/del]subject|predicat|object</p>
 
-          <h3 class="fn" id="predicat_set"><a name="predicat_set"></a><span class="type">void</span>
-            mementar::Fact::<span class="name">predicat</span>(const <span class="type">std::string</span>&amp;
+          <h3 class="fn" id="setSubject"><a name="setSubject"></a><span class="type">void</span> Fact::<span
+              class="name">setSubject</span>(const <span class="type">std::string</span>&amp; <i>subject</i>)</h3>
+          <p>Sets the subject of the fact.</p>
+
+          <h3 class="fn" id="setPredicat"><a name="setPredicat"></a><span class="type">void</span>
+            Fact::<span class="name">setPredicat</span>(const <span class="type">std::string</span>&amp;
             <i>predicat</i>)
           </h3>
-          <p>Set the predicat of the fact.</p>
+          <p>Sets the predicat of the fact.</p>
 
-          <h3 class="fn" id="object_set"><a name="object_set"></a><span class="type">void</span> mementar::Fact::<span
-              class="name">object</span>(const <span class="type">std::string</span>&amp; <i>object</i>)</h3>
-          <p>Set the object of the fact.</p>
+          <h3 class="fn" id="setObject"><a name="setObject"></a><span class="type">void</span> Fact::<span
+              class="name">setObject</span>(const <span class="type">std::string</span>&amp; <i>object</i>)</h3>
+          <p>Sets the object of the fact.</p>
+
+          <h3 class="fn" id="setAdd"><a name="setAdd"></a><span class="type">void</span> Fact::<span
+              class="name">setAdd</span>(const <span class="type">bool</span>&amp; <i>add</i>)</h3>
+          <p>Sets the addition or deletion of the fact.</p>
 
           <h3 class="fn" id="operator_set"><a name="operator_set"></a><span class="type">void</span>
-            mementar::Fact::<span class="name">operator()</span>(const <span class="type">std::string</span>&amp;
-            <i>fact</i>)
+            Fact::<span class="name">operator()</span>(const <span class="type">std::string</span>&amp;
+            <i>fact</i>, <span class="type">bool</span> <i>add</i> = true)
           </h3>
-          <p>Set the fact using its formatted form.</p>
-          <p>In its formatted form, an fact is written as follows: subject|predicat|object</p>
+          <p>Set the fact using its formatted form and the optional <i>add</i> parameter.</p>
+          <p>In its formatted form, an fact is written as follows: subject|predicat|object or
+            [add/del]subject|predicat|object</p>
 
         </div>
       </div>

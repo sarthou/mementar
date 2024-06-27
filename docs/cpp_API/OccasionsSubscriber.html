@@ -69,6 +69,7 @@
           <div id="contents-toggle" class=""></div>
           <h3><a href="CppAPI.html">All C++ Classes</a></h3>
           <ul style="display: block;">
+            <li class="level1"><a href="ActionClient.html">ActionClient</a></li>
             <li class="level1"><a href="ClientBase.html">ClientBase</a></li>
             <li class="level1"><a href="Fact.html">Fact</a></li>
             <li class="level1"><a href="ManagerClient.html">ManagerClient</a></li>
@@ -92,6 +93,13 @@
                 <td class="memItemLeft rightAlign topAlign"> Header:</td>
                 <td class="memItemRight bottomAlign"> <span class="preprocessor">#include
                     &quot;mementar/OccasionsSubscriber.h&quot;</span>
+                </td>
+              </tr>
+              <tr>
+                <td class="memItemLeft rightAlign topAlign"> Namespace:</td>
+                <td class="memItemRight bottomAlign"> <span class="preprocessor">mementar</span>
+                </td>
+              </tr>
             </tbody>
           </table>
         </div>
@@ -104,16 +112,9 @@
               <tr>
                 <td class="memItemLeft rightAlign topAlign"> </td>
                 <td class="memItemRight bottomAlign"><b><a
-                      href="OccasionsSubscriber.html#OccasionsSubscriber">OccasionsSubscriber</a></b>(std::function&lt;void(const
-                  <a href="Fact.html">Fact</a>&amp;)&gt; <i>callback</i>, const std::string&amp; <i>name</i> = "", bool
-                  <i>spin_thread</i> = true)
-                </td>
-              </tr>
-              <tr>
-                <td class="memItemLeft rightAlign topAlign"> </td>
-                <td class="memItemRight bottomAlign"><b><a
-                      href="OccasionsSubscriber.html#OccasionsSubscriber2">OccasionsSubscriber</a></b>(std::function&lt;void(const
-                  <a href="Fact.html">Fact</a>&amp;)&gt; <i>callback</i>, bool <i>spin_thread</i>)
+                      href="OccasionsSubscriber.html#OccasionsSubscriber">OccasionsSubscriber</a></b>const
+                  (std::function&lt;void(const <a href="Fact.html">Fact</a>&amp;)&gt;&amp; <i>callback</i>, const
+                  std::string&amp; <i>name</i> = "")
                 </td>
               </tr>
               <tr>
@@ -159,36 +160,20 @@
         <div class="func">
           <h2>Public Functions Documentation</h2>
 
-          <h3 class="fn" id="OccasionsSubscriber"><a name="OccasionsSubscriber"></a>mementar::OccasionsSubscriber::<span
+          <h3 class="fn" id="OccasionsSubscriber"><a name="OccasionsSubscriber"></a>OccasionsSubscriber::<span
               class="name">OccasionsSubscriber</span>(const <span class="type">std::function&lt;void(<a
-                href="Fact.html">Fact</a>&amp;)&gt;</span> <i>callback</i>, const <span
-              class="type">std::string</span>&amp; <i>name</i> = "", <span class="type">bool</span> <i>spin_thread</i> =
-            true)</h3>
+                href="Fact.html">Fact</a>&amp;)&gt;</span>&amp; <i>callback</i>, const <span
+              class="type">std::string</span>&amp; <i>name</i> = "")</h3>
           <p>Constructs an OccasionsSubscriber with a callback function <i>callback</i>.</p>
-          <p>The OccasionsSubscriber constructor also takes a boolean option to automatically spin a thread. If you
-            prefer not to use threads (and you want the OccasionsSubscriber to do the 'thread magic' behind the scenes),
-            this is a good option for you.</p>
           <p>Can be used in a multi-process mode by specifying the name of the mementar instance <i>name</i>. For
             classic use, <i>name</i> should be defined as &quot;&quot;.</p>
 
-          <h3 class="fn" id="OccasionsSubscriber2"><a
-              name="OccasionsSubscriber2"></a>mementar::OccasionsSubscriber::<span
-              class="name">OccasionsSubscriber</span>(const <span class="type">std::function&lt;void(<a
-                href="Fact.html">Fact</a>&amp;)&gt;</span> <i>callback</i>, <span class="type">bool</span>
-            <i>spin_thread</i>)
-          </h3>
-          <p>Constructs an OccasionsSubscriber with a callback function <i>callback</i>.</p>
-          <p>The OccasionsSubscriber constructor also takes a boolean option to automatically spin a thread. If you
-            prefer not to use threads (and you want the OccasionsSubscriber to do the 'thread magic' behind the scenes),
-            this is a good option for you.</p>
-
-          <h3 class="fn" id="OccasionsSubscriber_dest"><a
-              name="OccasionsSubscriber_dest"></a>mementar::OccasionsSubscriber::<span
+          <h3 class="fn" id="OccasionsSubscriber_dest"><a name="OccasionsSubscriber_dest"></a>OccasionsSubscriber::<span
               class="name">~OccasionsSubscriber</span>()</h3>
           <p>The OccasionsSubscriber destructor cancel all the subscriptions previous done.</p>
 
           <h3 class="fn" id="subscribe"><a name="subscribe"></a><span class="type">bool</span>
-            mementar::OccasionsSubscriber::<span class="name">subscribe</span>(const <span class="type"><a
+            OccasionsSubscriber::<span class="name">subscribe</span>(const <span class="type"><a
                 href="Fact.html">Fact</a></span>&amp; <i>pattern</i>, <span class="type">size_t</span>&amp; <i>count</i>
             = -1)</h3>
           <p>Subscribe to the fact pattern <i>pattern</i> defined as an Fact object.</p>
@@ -196,16 +181,14 @@
             value &quot;?&quot; to represent anything.</p>
           <p>The <i>count</i> parameter defines the number of occasions corresponding to the model you want to know. By
             using the default value -1, the number of occasions is unlimited.</p>
-          <p>Returns false if the subscription failed.
-          <p>
+          <p>Returns false if the subscription failed.</p>
 
           <h3 class="fn" id="cancel"><a name="cancel"></a><span class="type">bool</span>
-            mementar::OccasionsSubscriber::<span class="name">cancel</span>()</h3>
+            OccasionsSubscriber::<span class="name">cancel</span>()</h3>
           <p>Cancel all subscriptions.</p>
-          <p>Returns false if at least one subscription fails.
-          <p>
+          <p>Returns false if the unsubscription fails.</p>
 
-          <h3 class="fn" id="end"><a name="end"></a><span class="type">bool</span> mementar::OccasionsSubscriber::<span
+          <h3 class="fn" id="end"><a name="end"></a><span class="type">bool</span> OccasionsSubscriber::<span
               class="name">end</span>()</h3>
           <p>Returns true if no more occasions are expected.</p>
           <p>If at least one subscription has been made with an account set to -1, the end function will always return

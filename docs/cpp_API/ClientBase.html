@@ -50,8 +50,6 @@
           <h3>Contents</h3>
           <ul style="display: block;">
             <li class="level1"><a href="#public-functions">Public Functions</a></li>
-            <li class="level1"><a href="#reimplemented-public-functions">Reimplemented Public Functions</a></li>
-            <li class="level1"><a href="#protected-functions">Protected Functions</a></li>
             <li class="level1"><a href="#details">Detailed Description</a></li>
           </ul>
         </div>
@@ -71,6 +69,7 @@
           <div id="contents-toggle" class=""></div>
           <h3><a href="CppAPI.html">All C++ Classes</a></h3>
           <ul style="display: block;">
+            <li class="level1"><a href="ActionClient.html">ActionClient</a></li>
             <li class="level1"><a href="ClientBase.html"><b>ClientBase</b></a></li>
             <li class="level1"><a href="Fact.html">Fact</a></li>
             <li class="level1"><a href="ManagerClient.html">ManagerClient</a></li>
@@ -98,6 +97,10 @@
                 <td class="memItemLeft rightAlign topAlign"> Inherited By:</td>
                 <td class="memItemRight bottomAlign"> <a href="ManagerClient.html">ManagerClient</a></td>
               </tr>
+              <tr>
+                <td class="memItemLeft rightAlign topAlign"> Namespace:</td>
+                <td class="memItemRight bottomAlign"> <span class="preprocessor">mementar</span></td>
+              </tr>
             </tbody>
           </table>
         </div>
@@ -110,8 +113,7 @@
               <tr>
                 <td class="memItemLeft rightAlign topAlign"> </td>
                 <td class="memItemRight bottomAlign"><b><a
-                      href="ClientBase.html#ClientBase">ClientBase</a></b>(ros::NodeHandle* <i>n</i>, std::string
-                  <i>name</i>)
+                      href="ClientBase.html#ClientBase">ClientBase</a></b>(std::string <i>name</i>)
                 </td>
               </tr>
               <tr>
@@ -122,32 +124,49 @@
                 <td class="memItemLeft rightAlign topAlign"> void </td>
                 <td class="memItemRight bottomAlign"><b><a href="ClientBase.html#resetNb">resetNb</a></b>()</td>
               </tr>
+              <tr>
+                <td class="memItemLeft rightAlign topAlign"> int </td>
+                <td class="memItemRight bottomAlign"><b><a href="ClientBase.html#getErrorCode">getErrorCode</a></b>()
+                </td>
+              </tr>
+              <tr>
+                <td class="memItemLeft rightAlign topAlign"> std::pair&lt;std::vector&lt;std::string&gt,
+                  compat::mem_ros::Time&gt </td>
+                <td class="memItemRight bottomAlign"><b><a href="ClientBase.html#call">call</a></b>(const
+                  std::string& <i>action</i>, const std::string& <i>param</i>)
+                </td>
+              </tr>
+              <tr>
+                <td class="memItemLeft rightAlign topAlign"> std::vector&lt;std::string&gt; </td>
+                <td class="memItemRight bottomAlign"><b><a href="ClientBase.html#callStrs">callStrs</a></b>(const
+                  std::string& <i>action</i>, const std::string& <i>param</i>)</td>
+              </tr>
+              <tr>
+                <td class="memItemLeft rightAlign topAlign"> compat::mem_ros::Time </td>
+                <td class="memItemRight bottomAlign"><b><a href="ClientBase.html#callStamp">callStamp</a></b>(const
+                  std::string& <i>action</i>, const std::string& <i>param</i>)</td>
+              </tr>
+              <tr>
+                <td class="memItemLeft rightAlign topAlign"> std::string </td>
+                <td class="memItemRight bottomAlign"><b><a href="ClientBase.html#callStr">callStr</a></b>(const
+                  std::string& <i>action</i>, const std::string& <i>param</i>)</td>
+              </tr>
+              <tr>
+                <td class="memItemLeft rightAlign topAlign"> bool </td>
+                <td class="memItemRight bottomAlign"><b><a href="ClientBase.html#callNR">callNR</a></b>(const
+                  std::string& <i>action</i>, const std::string& <i>param</i>)</td>
+              </tr>
+              <tr>
+                <td class="memItemLeft rightAlign topAlign"> bool </td>
+                <td class="memItemRight bottomAlign"><b><a href="ClientBase.html#callBool">callBool</a></b>(const
+                  std::string& <i>action</i>, const std::string& <i>param</i>)</td>
+              </tr>
             </tbody>
           </table>
         </div>
 
-        <a name="protected-functions"></a>
-        <h2 id="protected-functions">Protected Functions</h2>
         <div class="table">
-          <table class="alignedsummary">
-            <tbody>
-              <tr>
-                <td class="memItemLeft rightAlign topAlign"> std::vector&lt;std::string&gt; </td>
-                <td class="memItemRight bottomAlign"><b><a
-                      href="ClientBase.html#call">call</a></b>(mementar::MementarService&amp; <i>srv</i>)</td>
-              </tr>
-              <tr>
-                <td class="memItemLeft rightAlign topAlign"> std::string </td>
-                <td class="memItemRight bottomAlign"><b><a
-                      href="ClientBase.html#callStr">callStr</a></b>(mementar::MementarService&amp; <i>srv</i>)</td>
-              </tr>
-              <tr>
-                <td class="memItemLeft rightAlign topAlign"> bool </td>
-                <td class="memItemRight bottomAlign"><b><a
-                      href="ClientBase.html#callNR">callNR</a></b>(mementar::MementarService&amp; <i>srv</i>)</td>
-              </tr>
-            </tbody>
-          </table <a name="details"></a>
+          <a name="details"></a>
           <div class="descr">
             <h2 id="details">Detailed Description</h2>
             <p>The ClientBase class provides an abstraction for any ROS services.</p>
@@ -159,44 +178,79 @@
           <div class="func">
             <h2>Public Functions Documentation</h2>
 
-            <h3 class="fn" id="ClientBase"><a name="ClientBase"></a>mementar::ClientBase::<span
-                class="name">ClientBase</span>(<span class="type">ros::NodeHandle</span>*<i> n</i>, const <span
-                class="type">std::string</span>&amp; <i>name</i>)</h3>
-            <p>Constructs a ROS client linked to the service <i>name</i> with a pointer to a NodeHandle <i>n</i>.</p>
+            <h3 class="fn" id="ClientBase"><a name="ClientBase"></a>ClientBase::<span
+                class="name">ClientBase</span>(const <span class="type">std::string</span>&amp; <i>name</i>)</h3>
+            <p>Constructs a ROS client linked to the service <i>name</i>.</p>
 
-            <h3 class="fn" id="nb"><a name="nb"></a><span class="type">size_t</span> mementar::ClientBase::<span
+            <h3 class="fn" id="nb"><a name="nb"></a><span class="type">size_t</span> ClientBase::<span
                 class="name">nb</span>()</h3>
             <p>Gives the total number of service calls from all ClientBase instances since the last reset.</p>
 
-            <h3 class="fn" id="resetNb"><a name="resetNb"></a><span class="type">void</span> mementar::ClientBase::<span
+            <h3 class="fn" id="resetNb"><a name="resetNb"></a><span class="type">void</span> ClientBase::<span
                 class="name">resetNb</span>()</h3>
             <p>Reset Call Counter for all instances of ClientBase.</p>
 
-            <h2>Protected Function Documentation</h2>
+            <h3 class="fn" id="getErrorCode"><a name="getErrorCode"></a><span class="type">int</span>
+              ClientBase::<span class="name">getErrorCode</span>()</h3>
+            <p>Gives the error code of the last service call. Code 0 corresponds to no error. Code -1 corresponds to
+              service call error. Code 1 corresponds to an internal error. Code 2 corresponds to unknown query. Code 3
+              corresponds to unclosed ontology.</p>
 
-            <h3 class="fn" id="call"><a name="call"></a>inline <span class="type">std::vector&lt;std::string&gt;</span>
-              mementar::ClientBase::<span class="name">call</span>(<span
-                class="type">mementar::MementarService</span>&amp; <i>srv</i>)</h3>
-            <p>Call the service setup in the constructor of ClientBase with the request <i>srv</i></p>
-            <p>If the service call fails, the first element of the returned vector is &quot;ERR:SERVICE_FAIL&quot;.</p>
+            <h3 class="fn" id="call"><a name="call"></a><span class="type">std::pair&lt;std::vector&lt;std::string&gt;,
+                compat::mem_ros::Time&gt;</span>
+              ClientBase::<span class="name">call</span>(const <span class="type">std::string</span>&amp;
+              <i>action</i>, const <span class="type">std::string</span>&amp; <i>param</i>)
+            </h3>
+            <p>Calls the service set up in the constructor of ClientBase with the request composed of an action action
+              and parameters param.</p>
+            <p>getErrorCode should be used to test if the call fail.</p>
 
-            <h3 class="fn" id="callStr"><a name="callStr"></a>inline <span class="type">std::string</span>
-              mementar::ClientBase::<span class="name">callStr</span>(<span
-                class="type">mementar::MementarService</span>&amp; <i>srv</i>)</h3>
-            <p>Call the service setup in the constructor of ClientBase with the request <i>srv</i></p>
-            <p>If the service call fails, the returned value is &quot;ERR:SERVICE_FAIL&quot;.</p>
+            <h3 class="fn" id="callStrs"><a name="callStrs"></a>std::vector&lt;std::string&gt;</span>
+              ClientBase::<span class="name">callStrs</span>(const <span class="type">std::string</span>&amp;
+              <i>action</i>, const <span class="type">std::string</span>&amp; <i>param</i>)
+            </h3>
+            <p>Calls the service set up in the constructor of ClientBase with the request composed of an action action
+              and parameters param.</p>
+            <p>getErrorCode should be used to test if the call fail.</p>
 
-            <h3 class="fn" id="callNR"><a name="callNR"></a>inline <span class="type">bool</span>
-              mementar::ClientBase::<span class="name">callNR</span>(<span
-                class="type">mementar::MementarService</span>&amp; <i>srv</i>)</h3>
-            <p>Call the service setup in the constructor of ClientBase with the request <i>srv</i></p>
-            <p>Return false if the service call fails.</p>
+            <h3 class="fn" id="callStr"><a name="callStr"></a>std::string</span>
+              ClientBase::<span class="name">callStr</span>(const <span class="type">std::string</span>&amp;
+              <i>action</i>, const <span class="type">std::string</span>&amp; <i>param</i>)
+            </h3>
+            <p>Calls the service set up in the constructor of ClientBase with the request composed of an action action
+              and parameters param.</p>
+            <p>getErrorCode should be used to test if the call fail.</p>
+
+            <h3 class="fn" id="callStamp"><a name="callStamp"></a>compat::mem_ros::Time</span>
+              ClientBase::<span class="name">callStamp</span>(const <span class="type">std::string</span>&amp;
+              <i>action</i>, const <span class="type">std::string</span>&amp; <i>param</i>)
+            </h3>
+            <p>Calls the service set up in the constructor of ClientBase with the request composed of an action action
+              and parameters param.</p>
+            <p>getErrorCode should be used to test if the call fail.</p>
+
+            <h3 class="fn" id="callNR"><a name="callNR"></a>bool</span>
+              ClientBase::<span class="name">callNR</span>(const <span class="type">std::string</span>&amp;
+              <i>action</i>, const <span class="type">std::string</span>&amp; <i>param</i>)
+            </h3>
+            <p>Calls the service set up in the constructor of ClientBase with the request composed of an action action
+              and parameters param.</p>
+            <p>Returns false if the service call fails.</p>
+
+            <h3 class="fn" id="callBool"><a name="callBool"></a>bool</span>
+              ClientBase::<span class="name">callBool</span>(const <span class="type">std::string</span>&amp;
+              <i>action</i>, const <span class="type">std::string</span>&amp; <i>param</i>)
+            </h3>
+            <p>Calls the service set up in the constructor of ClientBase with the request composed of an action action
+              and parameters param.</p>
+            <p>getErrorCode should be used to test if the call fail.</p>
 
           </div>
         </div>
       </div>
 
     </div>
+  </div>
 </body>
 
 <footer>
