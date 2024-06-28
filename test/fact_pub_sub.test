@@ -6,8 +6,6 @@
   <arg name="intern_file" default="none"/>
 
   <group>
-    <remap from="/ontologenius/insert_echo" to="/mementar/insert_fact_stamped"/>
-    <remap from="/ontologenius/insert_explanations" to="/mementar/insert_fact_explanations"/>
     <include file="$(find ontologenius)/launch/ontologenius.launch">
       <arg name="display" value="$(arg display)" />
       <arg name="intern_file" value="$(arg intern_file)" />

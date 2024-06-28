@@ -1,7 +1,7 @@
 <html lang="en_US">
 
 <head>
-  <title>OccasionsSubscriber Class | Mementar 0.0.3</title>
+  <title>OccasionsSubscriber Class | Mementar 0.0.4</title>
   <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
   <link href="../style/mementar_api.css" rel="stylesheet" type="text/css">
   <link href="../img/logo/favicon.ico" rel="shortcut icon">
@@ -13,16 +13,20 @@
   <div class="header" id="header">
     <header class="fixed" id="navbar">
       <div class="container">
-          <div class="navbar-header">
-            <div id="header-buttons">
-                <ul id="header-ul" data-event="hover_intent" data-effect="fade" data-effect-speed="500">
-                    <li class="header-item"><a class="header-link" href="https://github.com/sarthou/mementar/wiki" tabindex="0">Wiki</a></li>
-                    <li class="header-item"><a class="header-link" href="https://github.com/sarthou/mementar" tabindex="0"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Octicons-mark-github.svg/1200px-Octicons-mark-github.svg.png" alt="github" width="40px" height="40px"/></a></li>
-                </ul>
-            </div>
-            <a class="navbar-icon" href="../index.html">
-              <img src="../img/logo/mementar.png " alt="mementar" width="65px" height="65px"/>
-            </a>
+        <div class="navbar-header">
+          <div id="header-buttons">
+            <ul id="header-ul" data-event="hover_intent" data-effect="fade" data-effect-speed="500">
+              <li class="header-item"><a class="header-link" href="https://github.com/sarthou/mementar/wiki"
+                  tabindex="0">Wiki</a></li>
+              <li class="header-item"><a class="header-link" href="https://github.com/sarthou/mementar"
+                  tabindex="0"><img
+                    src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Octicons-mark-github.svg/1200px-Octicons-mark-github.svg.png"
+                    alt="github" width="40px" height="40px" /></a></li>
+            </ul>
+          </div>
+          <a class="navbar-icon" href="../index.html">
+            <img src="../img/logo/mementar_light.png " alt="mementar" width="65px" height="65px" />
+          </a>
         </div>
       </div>
     </header>
@@ -37,7 +41,6 @@
         <li><a href="https://gitlab.com/sarthou/mementar/pipelines">Pipelines</a></li>
       </ul>
       <h1>Mementar API Documentation</h1>
-      <h2>Mementar 0.0.3</h2>
     </div>
 
     <div class="content">
@@ -56,7 +59,9 @@
           <h3>Getting Start</h3>
           <ul style="display: block;">
             <li class="level1"><a href="../Download.html">Download</a></li>
-            <li class="level1"><a href="../InstallMementar.html">Install Mementar</a></li>
+            <li class="level1">Install Mementar</li>
+            <li class="level2"><a href="../InstallMementarROS1.html">- Install with ROS1</a></li>
+            <li class="level2"><a href="../InstallMementarROS2.html">- Install with ROS2</a></li>
             <li class="level1"><a href="../SetUp.html">Set Up Your Environnement</a></li>
             <li class="level1"><a href="../Tutorials.html">Tutorials</a></li>
           </ul>
@@ -66,8 +71,13 @@
           <div id="contents-toggle" class=""></div>
           <h3><a href="CppAPI.html">All C++ Classes</a></h3>
           <ul style="display: block;">
+            <li class="level1"><a href="ActionClient.html">ActionClient</a></li>
+            <li class="level1"><a href="ActionsPublisher.html">ActionsPublisher</a></li>
+            <li class="level1"><a href="ActionsSubscriber.html">ActionsSubscriber</a></li>
             <li class="level1"><a href="ClientBase.html">ClientBase</a></li>
             <li class="level1"><a href="Fact.html">Fact</a></li>
+            <li class="level1"><a href="FactClient.html">FactClient</a></li>
+            <li class="level1"><a href="InstanceManagerClient.html">InstanceManagerClient</a></li>
             <li class="level1"><a href="ManagerClient.html">ManagerClient</a></li>
             <li class="level1"><a href="OccasionsPublisher.html">OccasionsPublisher</a></li>
             <li class="level1"><a href="OccasionsSubscriber.html"><b>OccasionsSubscriber</b></a></li>
@@ -79,12 +89,23 @@
       </div>
 
       <div class="context">
-        <h1 class="title">OccasionsPublisher Class</h1>
-        <p>The OccasionsSubscriber class can be seen as an action server to subscribe to occasions. <a href="#details">More...</a></p>
+        <h1 class="title">OccasionsSubscriber Class</h1>
+        <p>The OccasionsSubscriber class can be seen as an action server to subscribe to occasions. <a
+            href="#details">More...</a></p>
         <div class="table">
           <table class="alignedsummary">
             <tbody>
-              <tr><td class="memItemLeft rightAlign topAlign"> Header:</td><td class="memItemRight bottomAlign"> <span class="preprocessor">#include &quot;mementar/API/OccasionsSubscriber.h&quot;</span>
+              <tr>
+                <td class="memItemLeft rightAlign topAlign"> Header:</td>
+                <td class="memItemRight bottomAlign"> <span class="preprocessor">#include
+                    &quot;mementar/OccasionsSubscriber.h&quot;</span>
+                </td>
+              </tr>
+              <tr>
+                <td class="memItemLeft rightAlign topAlign"> Namespace:</td>
+                <td class="memItemRight bottomAlign"> <span class="preprocessor">mementar</span>
+                </td>
+              </tr>
             </tbody>
           </table>
         </div>
@@ -94,12 +115,33 @@
         <div class="table">
           <table class="alignedsummary">
             <tbody>
-              <tr><td class="memItemLeft rightAlign topAlign"> </td><td class="memItemRight bottomAlign"><b><a href="OccasionsSubscriber.html#OccasionsSubscriber">OccasionsSubscriber</a></b>(std::function&lt;void(const <a href="Fact.html">Fact</a>&amp;)&gt; <i>callback</i>, const std::string&amp; <i>name</i> = "", bool <i>spin_thread</i> = true)</td></tr>
-              <tr><td class="memItemLeft rightAlign topAlign"> </td><td class="memItemRight bottomAlign"><b><a href="OccasionsSubscriber.html#OccasionsSubscriber2">OccasionsSubscriber</a></b>(std::function&lt;void(const <a href="Fact.html">Fact</a>&amp;)&gt; <i>callback</i>, bool <i>spin_thread</i>)</td></tr>
-              <tr><td class="memItemLeft rightAlign topAlign"> </td><td class="memItemRight bottomAlign"><b><a href="OccasionsSubscriber.html#OccasionsSubscriber_dest">~OccasionsSubscriber</a></b>()</td></tr>
-              <tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="OccasionsSubscriber.html#subscribe">subscribe</a></b>(const <a href="Fact.html">Fact</a>&amp; <i>pattern</i>, size_t <i>count</i> = -1)</td></tr>
-              <tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="OccasionsSubscriber.html#cancel">cancel</a></b>()</td></tr>
-              <tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="OccasionsSubscriber.html#end">end</a></b>()</td></tr>
+              <tr>
+                <td class="memItemLeft rightAlign topAlign"> </td>
+                <td class="memItemRight bottomAlign"><b><a
+                      href="OccasionsSubscriber.html#OccasionsSubscriber">OccasionsSubscriber</a></b>const
+                  (std::function&lt;void(const <a href="Fact.html">Fact</a>&amp;)&gt;&amp; <i>callback</i>, const
+                  std::string&amp; <i>name</i> = "")
+                </td>
+              </tr>
+              <tr>
+                <td class="memItemLeft rightAlign topAlign"> </td>
+                <td class="memItemRight bottomAlign"><b><a
+                      href="OccasionsSubscriber.html#OccasionsSubscriber_dest">~OccasionsSubscriber</a></b>()</td>
+              </tr>
+              <tr>
+                <td class="memItemLeft rightAlign topAlign"> bool </td>
+                <td class="memItemRight bottomAlign"><b><a
+                      href="OccasionsSubscriber.html#subscribe">subscribe</a></b>(const <a
+                    href="Fact.html">Fact</a>&amp; <i>pattern</i>, size_t <i>count</i> = -1)</td>
+              </tr>
+              <tr>
+                <td class="memItemLeft rightAlign topAlign"> bool </td>
+                <td class="memItemRight bottomAlign"><b><a href="OccasionsSubscriber.html#cancel">cancel</a></b>()</td>
+              </tr>
+              <tr>
+                <td class="memItemLeft rightAlign topAlign"> bool </td>
+                <td class="memItemRight bottomAlign"><b><a href="OccasionsSubscriber.html#end">end</a></b>()</td>
+              </tr>
             </tbody>
           </table>
         </div>
@@ -108,42 +150,55 @@
         <div class="descr">
           <h2 id="details">Detailed Description</h2>
           <p>The OccasionsSubscriber class can be seen as an action server to subscribe to occasions.</p>
-          <p>It allows you to subscribe to multiple fact patterns at the same time and specify a number of occasions that you expect.</p>
-          <p>In mementar, a fact is a datum that is not linked to a temporal stamp. When a fact occurs at a moment t, it is
-            called an occasion. An occasion is a particular time or instance of an event. An event occurs on a time interval.
-            It is thus composed of two occasions, one being the beginning of the event and the other the end. An event is
-            therefore a change of state of a fact, so that two facts have the same subject and the same predicate, but the
+          <p>It allows you to subscribe to multiple fact patterns at the same time and specify a number of occasions
+            that you expect.</p>
+          <p>In mementar, a fact is a datum that is not linked to a temporal stamp. When a fact occurs at a moment t, it
+            is
+            called an occasion. An occasion is a particular time or instance of an event. An event occurs on a time
+            interval.
+            It is thus composed of two occasions, one being the beginning of the event and the other the end. An event
+            is
+            therefore a change of state of a fact, so that two facts have the same subject and the same predicate, but
+            the
             object changes.</p>
         </div>
 
         <div class="func">
           <h2>Public Functions Documentation</h2>
 
-          <h3 class="fn" id="OccasionsSubscriber"><a name="OccasionsSubscriber"></a>mementar::OccasionsSubscriber::<span class="name">OccasionsSubscriber</span>(const <span class="type">std::function&lt;void(<a href="Fact.html">Fact</a>&amp;)&gt;</span> <i>callback</i>, const <span class="type">std::string</span>&amp; <i>name</i> = "", <span class="type">bool</span> <i>spin_thread</i> = true)</h3>
+          <h3 class="fn" id="OccasionsSubscriber"><a name="OccasionsSubscriber"></a>OccasionsSubscriber::<span
+              class="name">OccasionsSubscriber</span>(const <span class="type">std::function&lt;void(<a
+                href="Fact.html">Fact</a>&amp;)&gt;</span>&amp; <i>callback</i>, const <span
+              class="type">std::string</span>&amp; <i>name</i> = "")</h3>
           <p>Constructs an OccasionsSubscriber with a callback function <i>callback</i>.</p>
-          <p>The OccasionsSubscriber constructor also takes a boolean option to automatically spin a thread. If you prefer not to use threads (and you want the OccasionsSubscriber to do the 'thread magic' behind the scenes), this is a good option for you.</p>
-          <p>Can be used in a multi-process mode by specifying the name of the mementar instance <i>name</i>. For classic use, <i>name</i> should be defined as &quot;&quot;.</p>
+          <p>Can be used in a multi-process mode by specifying the name of the mementar instance <i>name</i>. For
+            classic use, <i>name</i> should be defined as &quot;&quot;.</p>
 
-          <h3 class="fn" id="OccasionsSubscriber2"><a name="OccasionsSubscriber2"></a>mementar::OccasionsSubscriber::<span class="name">OccasionsSubscriber</span>(const <span class="type">std::function&lt;void(<a href="Fact.html">Fact</a>&amp;)&gt;</span> <i>callback</i>, <span class="type">bool</span> <i>spin_thread</i>)</h3>
-          <p>Constructs an OccasionsSubscriber with a callback function <i>callback</i>.</p>
-          <p>The OccasionsSubscriber constructor also takes a boolean option to automatically spin a thread. If you prefer not to use threads (and you want the OccasionsSubscriber to do the 'thread magic' behind the scenes), this is a good option for you.</p>
-
-          <h3 class="fn" id="OccasionsSubscriber_dest"><a name="OccasionsSubscriber_dest"></a>mementar::OccasionsSubscriber::<span class="name">~OccasionsSubscriber</span>()</h3>
+          <h3 class="fn" id="OccasionsSubscriber_dest"><a name="OccasionsSubscriber_dest"></a>OccasionsSubscriber::<span
+              class="name">~OccasionsSubscriber</span>()</h3>
           <p>The OccasionsSubscriber destructor cancel all the subscriptions previous done.</p>
 
-          <h3 class="fn" id="subscribe"><a name="subscribe"></a><span class="type">bool</span> mementar::OccasionsSubscriber::<span class="name">subscribe</span>(const <span class="type"><a href="Fact.html">Fact</a></span>&amp; <i>pattern</i>, <span class="type">size_t</span>&amp; <i>count</i> = -1)</h3>
+          <h3 class="fn" id="subscribe"><a name="subscribe"></a><span class="type">bool</span>
+            OccasionsSubscriber::<span class="name">subscribe</span>(const <span class="type"><a
+                href="Fact.html">Fact</a></span>&amp; <i>pattern</i>, <span class="type">size_t</span>&amp; <i>count</i>
+            = -1)</h3>
           <p>Subscribe to the fact pattern <i>pattern</i> defined as an Fact object.</p>
-          <p>A pattern can be constructed as a classic fact, but each component of the triplet can also be set to the value &quot;?&quot; to represent anything.</p>
-          <p>The <i>count</i> parameter defines the number of occasions corresponding to the model you want to know. By using the default value -1, the number of occasions is unlimited.</p>
-          <p>Returns false if the subscription failed.<p>
+          <p>A pattern can be constructed as a classic fact, but each component of the triplet can also be set to the
+            value &quot;?&quot; to represent anything.</p>
+          <p>The <i>count</i> parameter defines the number of occasions corresponding to the model you want to know. By
+            using the default value -1, the number of occasions is unlimited.</p>
+          <p>Returns false if the subscription failed.</p>
 
-          <h3 class="fn" id="cancel"><a name="cancel"></a><span class="type">bool</span> mementar::OccasionsSubscriber::<span class="name">cancel</span>()</h3>
+          <h3 class="fn" id="cancel"><a name="cancel"></a><span class="type">bool</span>
+            OccasionsSubscriber::<span class="name">cancel</span>()</h3>
           <p>Cancel all subscriptions.</p>
-          <p>Returns false if at least one subscription fails.<p>
+          <p>Returns false if the unsubscription fails.</p>
 
-          <h3 class="fn" id="end"><a name="end"></a><span class="type">bool</span> mementar::OccasionsSubscriber::<span class="name">end</span>()</h3>
+          <h3 class="fn" id="end"><a name="end"></a><span class="type">bool</span> OccasionsSubscriber::<span
+              class="name">end</span>()</h3>
           <p>Returns true if no more occasions are expected.</p>
-          <p>If at least one subscription has been made with an account set to -1, the end function will always return false until the next cancellation.</p>
+          <p>If at least one subscription has been made with an account set to -1, the end function will always return
+            false until the next cancellation.</p>
 
         </div>
       </div>
@@ -157,7 +212,7 @@
     <p>
       Brought to you by:
       <a class="laas_logo" href="https://www.laas.fr/public/">
-        <img src="../img/LogoLAAS-2016_BW.png " alt="LAAS-CNRS" height="60px"/>
+        <img src="../img/LogoLAAS-2016_BW.png " alt="LAAS-CNRS" height="60px" />
       </a>
     </p>
   </div>

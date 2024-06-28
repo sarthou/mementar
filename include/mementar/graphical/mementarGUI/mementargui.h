@@ -2,43 +2,45 @@
 #define MEMENTAR_MEMENTARGUI_H
 
 #include <QMainWindow>
-#include "include/mementar/graphical/mementarGUI/QCheckBoxExtended.h"
-#include "include/mementar/graphical/mementarGUI/CallBackTimer.h"
 #include <QTextCursor>
-
-#include <ros/ros.h>
-#include <vector>
 #include <string>
+#include <vector>
 
-#include "std_msgs/String.h"
+#include "include/mementar/graphical/mementarGUI/CallBackTimer.h"
+#include "include/mementar/graphical/mementarGUI/QCheckBoxExtended.h"
+#include "mementar/API/mementar/TimelinesManipulator.h"
+#include "mementar/compat/ros.h"
 
-namespace Ui {
-class mementarGUI;
+namespace Ui { // NOLINT
+  class MementarGUI;
 }
 
-class mementarGUI : public QMainWindow
+class MementarGUI : public QMainWindow
 {
-    Q_OBJECT
+  Q_OBJECT
 
 public:
-  explicit mementarGUI(QWidget *parent = 0);
-  ~mementarGUI();
+  explicit MementarGUI(QWidget* parent = nullptr);
+  ~MementarGUI() override;
 
-  void init(ros::NodeHandle* n);
+  void init();
   void wait();
   void start();
 
 private:
-  Ui::mementarGUI *ui;
-  ros::NodeHandle* n_;
+  Ui::MementarGUI* ui_;
 
-  std::map<std::string, ros::Publisher> facts_publishers_;
-  std::map<std::string, ros::Publisher> actions_publishers_;
-  std::map<std::string, ros::Subscriber> feeder_notifications_subs_;
+  mementar::TimelinesManipulator timelines_;
+  mementar::TimelineManipulator* timeline_;
+  bool multi_usage_;
+
   std::string feeder_notifications_;
 
   int time_source_;
-  std::atomic<ros::Time> current_time_;
+
+  // todo: can't make it atomic because its not trivially copiable
+  mementar::compat::MementarTimestamp current_time_;
+
   CallBackTimer timer_;
 
   void displayInstancesList();
@@ -59,27 +61,29 @@ public slots:
   void factButtonClickedSlot();
 
   void nameEditingFinishedSlot();
-  void currentTabChangedSlot(int);
+  void currentTabChangedSlot(int tab_id);
 
   void displayInstancesListSlot();
   void addInstanceSlot();
   void deleteInstanceSlot();
   void saveInstanceSlot();
   void drawInstanceSlot();
-  void InstanceNameAddDelChangedSlot(const QString&);
-  void InstanceNameChangedSlot(const QString&);
+  void instanceNameAddDelChangedSlot(const QString& text);
+  void instanceNameChangedSlot(const QString& text);
   void timesourceChangedSlot(int index);
   void currentTimeEditingFinishedSlot();
 
-  void feederCallback(const std_msgs::String& msg);
+  void feederCallback(const std::string& msg);
   void feederAddSlot();
   void feederDelSlot();
   void feederCommitSlot();
   void feederCheckoutSlot();
-  void createPublisher(const std::string& onto_ns);
+
+  bool updateTimelinePtr();
 
 signals:
-  void feederSetHtmlSignal(QString);
+  void feederSetHtmlSignal(QString t1);
+  void feederScrollSignal(QString t1);
   void setTimeSignal(QString);
 };
 

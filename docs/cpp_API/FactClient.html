@@ -1,0 +1,232 @@
+<html lang="en_US">
+
+<head>
+  <title>FactClient Class | Mementar 0.0.4</title>
+  <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+  <link href="../style/mementar_api.css" rel="stylesheet" type="text/css">
+  <link href="../img/logo/favicon.ico" rel="shortcut icon">
+  <link href="../img/logo/favicon-32x32.png" rel="icon" type="image/png">
+  <link href="../img/logo/favicon-16x16.png" rel="icon" type="image/png">
+</head>
+
+<body>
+  <div class="header" id="header">
+    <header class="fixed" id="navbar">
+      <div class="container">
+        <div class="navbar-header">
+          <div id="header-buttons">
+            <ul id="header-ul" data-event="hover_intent" data-effect="fade" data-effect-speed="500">
+              <li class="header-item"><a class="header-link" href="https://github.com/sarthou/mementar/wiki"
+                  tabindex="0">Wiki</a></li>
+              <li class="header-item"><a class="header-link" href="https://github.com/sarthou/mementar"
+                  tabindex="0"><img
+                    src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Octicons-mark-github.svg/1200px-Octicons-mark-github.svg.png"
+                    alt="github" width="40px" height="40px" /></a></li>
+            </ul>
+          </div>
+          <a class="navbar-icon" href="../index.html">
+            <img src="../img/logo/mementar_light.png " alt="mementar" width="65px" height="65px" />
+          </a>
+        </div>
+      </div>
+    </header>
+  </div>
+
+  <div class="main">
+
+    <div class="navigationbar">
+      <ul class="sub-navigation">
+        <li><a href="https://github.com/sarthou/mementar/tree/master/src/API">C++ API sources</a></li>
+        <li><a href="https://github.com/sarthou/mementar/tree/master/include/mementar/API">C++ API headers</a></li>
+        <li><a href="https://gitlab.com/sarthou/mementar/pipelines">Pipelines</a></li>
+      </ul>
+      <h1>Mementar API Documentation</h1>
+    </div>
+
+    <div class="content">
+      <div class="sidebar" style="transition: all 0.2s ease-out 0s; top: -588px;">
+        <div class="contents class-content">
+          <div id="contents-toggle" class=""></div>
+          <h3>Contents</h3>
+          <ul style="display: block;">
+            <li class="level1"><a href="#public-functions">Public Functions</a></li>
+            <li class="level1"><a href="#details">Detailed Description</a></li>
+          </ul>
+        </div>
+
+        <div class="contents">
+          <div id="contents-toggle" class=""></div>
+          <h3>Getting Start</h3>
+          <ul style="display: block;">
+            <li class="level1"><a href="../Download.html">Download</a></li>
+            <li class="level1">Install Mementar</li>
+            <li class="level2"><a href="../InstallMementarROS1.html">- Install with ROS1</a></li>
+            <li class="level2"><a href="../InstallMementarROS2.html">- Install with ROS2</a></li>
+            <li class="level1"><a href="../SetUp.html">Set Up Your Environnement</a></li>
+            <li class="level1"><a href="../Tutorials.html">Tutorials</a></li>
+          </ul>
+        </div>
+
+        <div class="contents">
+          <div id="contents-toggle" class=""></div>
+          <h3><a href="CppAPI.html">All C++ Classes</a></h3>
+          <ul style="display: block;">
+            <li class="level1"><a href="ActionClient.html">ActionClient</a></li>
+            <li class="level1"><a href="ActionsPublisher.html">ActionsPublisher</a></li>
+            <li class="level1"><a href="ActionsSubscriber.html">ActionsSubscriber</a></li>
+            <li class="level1"><a href="ClientBase.html">ClientBase</a></li>
+            <li class="level1"><a href="Fact.html">Fact</a></li>
+            <li class="level1"><a href="FactClient.html"><b>FactClient</b></a></li>
+            <li class="level1"><a href="InstanceManagerClient.html">InstanceManagerClient</a></li>
+            <li class="level1"><a href="ManagerClient.html">ManagerClient</a></li>
+            <li class="level1"><a href="OccasionsPublisher.html">OccasionsPublisher</a></li>
+            <li class="level1"><a href="OccasionsSubscriber.html">OccasionsSubscriber</a></li>
+            <li class="level1"><a href="TimelineManipulator.html">TimelineManipulator</a></li>
+            <li class="level1"><a href="TimelinesManipulator.html">TimelinesManipulator</a></li>
+          </ul>
+        </div>
+
+      </div>
+
+      <div class="context">
+        <h1 class="title">FactClient Class</h1>
+        <p>The FactClient class provides a ROS service abstraction for facts exploration. <a href="#details">More...</a>
+        </p>
+        <div class="table">
+          <table class="alignedsummary">
+            <tbody>
+              <tr>
+                <td class="memItemLeft rightAlign topAlign"> Header:</td>
+                <td class="memItemRight bottomAlign"> <span class="preprocessor">#include
+                    &quot;mementar/clients/FactClient.h&quot;</span></td>
+              </tr>
+              <tr>
+                <td class="memItemLeft rightAlign topAlign"> Inherits:</td>
+                <td class="memItemRight bottomAlign"> <a href="ClientBase.html">ClientBase</a></td>
+              </tr>
+              <tr>
+                <td class="memItemLeft rightAlign topAlign"> Namespace:</td>
+                <td class="memItemRight bottomAlign"> <span class="preprocessor">mementar</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <a name="public-functions"></a>
+        <h2 id="public-functions">Public Functions</h2>
+        <div class="table">
+          <table class="alignedsummary">
+            <tbody>
+              <tr>
+                <td class="memItemLeft rightAlign topAlign"> </td>
+                <td class="memItemRight bottomAlign"><b><a href="FactClient.html#FactClient">FactClient</a></b>(const
+                  std::string&amp; <i>name</i>)
+                </td>
+              </tr>
+              <tr>
+                <td class="memItemLeft rightAlign topAlign"> bool </td>
+                <td class="memItemRight bottomAlign"><b><a href="FactClient.html#exist">exist</a></b>(const
+                  std::string& <i>fact_id</i>)</td>
+              </tr>
+              <tr>
+                <td class="memItemLeft rightAlign topAlign"> bool </td>
+                <td class="memItemRight bottomAlign"><b><a href="FactClient.html#isActionPart">isActionPart</a></b>
+                  (const std::string& <i>fact_id</i>)
+                </td>
+              </tr>
+              <tr>
+                <td class="memItemLeft rightAlign topAlign"> std::string </td>
+                <td class="memItemRight bottomAlign"><b><a
+                      href="FactClient.html#getActionPart">getActionPart</a></b>(const std::string& <i>fact_id</i>)
+                </td>
+              </tr>
+              <tr>
+                <td class="memItemLeft rightAlign topAlign"> std::string </td>
+                <td class="memItemRight bottomAlign"><b><a href="FactClient.html#getData">getData</a></b>(const
+                  std::string& <i>fact_id</i>)
+                </td>
+              </tr>
+              <tr>
+                <td class="memItemLeft rightAlign topAlign"> compat::mem_ros::Time </td>
+                <td class="memItemRight bottomAlign"><b><a href="FactClient.html#getStamp">getStamp</a></b>(const
+                  std::string& <i>fact_id</i>)
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="table">
+          <a name="details"></a>
+          <div class="descr">
+            <h2 id="details">Detailed Description</h2>
+            <p>The FactClient class provides an abstraction of mementar facts ROS service.</p>
+            <p>The mementar facts service allows the exploration of facts contained by mementar core.</p>
+            <p>This class is based on <a href="ClientBase.html">ClientBase</a> and so ensure a persistent connection
+              with mementar/facts service. The persistent connection ensures a minimal response time. A reconnection
+              logic is implemented in the event that the persistent connection fails. </p>
+          </div>
+
+          <div class="func">
+            <h2>Public Functions Documentation</h2>
+
+            <h3 class="fn" id="FactClient"><a name="FactClient"></a>FactClient::<span
+                class="name">FactClient</span>(const <span class="type">std::string</span>&amp; <i>name</i> =
+              &quot;&quot;)</h3>
+            <p>Constructs an fact client.</p>
+            <p>Can be used in a multi-timeline mode by specifying the name of the timeline <i>name</i>. For classic use,
+              <i>name</i> should be defined as &quot;&quot;.
+            </p>
+
+            <h3 class="fn" id="exist"><a name="exist"></a><span class="type">bool</span> FactClient::<span
+                class="name">exist</span>(const <span class="type">std::string</span>&amp; <i>fact_id</i>)
+            </h3>
+            <p>Returns true if the fact represented by its id <i>fact_id</i> exists.</p>
+
+            <h3 class="fn" id="isActionPart"><a name="isActionPart"></a><span class="type">bool</span>
+              FactClient::<span class="name">isActionPart</span>(const <span class="type">std::string</span>&amp;
+              <i>fact_id</i>)
+            </h3>
+            <p>Returns true if the fact represented by its id <i>fact_id</i> is part of an action.</p>
+
+            <h3 class="fn" id="getActionPart"><a name="getActionPart"></a>std::string</span>
+              FactClient::<span class="name">getActionPart</span>(const <span class="type">std::string</span>&amp;
+              <i>fact_id</i>)
+            </h3>
+            <p>Returns the action the fact represented by its id <i>fact_id</i> is part of.</p>
+            <p>If the fact is not part of any action, the returned string will be empty.</p>
+
+            <h3 class="fn" id="getData"><a name="getData"></a>std::string</span>
+              FactClient::<span class="name">getData</span>(const <span class="type">std::string</span>&amp;
+              <i>fact_id</i>)
+            </h3>
+            <p>Returns the formatted representation of the fact represented by its id <i>fact_id</i>.</p>
+            <p>If the fact does not exist, the returned string will be empty.</p>
+
+            <h3 class="fn" id="getStamp"><a name="getStamp"></a><span class="type">compat::mem_ros::Time</span>
+              FactClient::<span class="name">getStamp</span>(const
+              <span class="type">std::string</span>&amp; <i>fact_id</i>)
+            </h3>
+            <p>Returns the time stamp of the fact represented by its id <i>fact_id</i>.</p>
+            <p>If the fact does not exist the time stamp will be 0.</p>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</body>
+
+<footer>
+  <div align="center">
+    <p>
+      Brought to you by:
+      <a class="laas_logo" href="https://www.laas.fr/public/">
+        <img src="../img/LogoLAAS-2016_BW.png " alt="LAAS-CNRS" height="60px" />
+      </a>
+    </p>
+  </div>
+</footer>
+
+</html>

@@ -1,41 +1,41 @@
 #ifndef MEMENTAR_ACTION_H
 #define MEMENTAR_ACTION_H
 
+#include <optional>
+#include <string>
+
 #include "mementar/core/memGraphs/Branchs/ValuedNode.h"
 #include "mementar/core/memGraphs/Branchs/types/SoftPoint.h"
 
-#include <experimental/optional>
-
 namespace mementar {
 
-class ContextualizedFact;
+  class ContextualizedFact;
 
-class Action : public ValuedNode
-{
-public:
-  Action(const std::string& name, const SoftPoint& start);
-  Action(const std::string& name, const SoftPoint& start, const SoftPoint& end);
+  class Action : public ValuedNode
+  {
+  public:
+    Action(const std::string& name, const SoftPoint& start);
+    Action(const std::string& name, const SoftPoint& start, const SoftPoint& end);
+    Action(const Action& other) = delete;
 
-  Action(const Action& other) = delete;
+    bool setEnd(const SoftPoint& end);
 
-  bool setEnd(const SoftPoint& end);
+    std::string getName() const { return getValue(); }
 
-  std::string getName() { return getValue(); }
+    SoftPoint::Ttime getDuration();
+    SoftPoint::Ttime getMinDuration();
+    SoftPoint::Ttime getMaxDuration();
 
-  size_t getDuration();
-  size_t getMinDuration();
-  size_t getMaxDuration();
+    bool isSoft();
+    bool isPending() const { return end_ == std::nullopt; }
 
-  bool isSoft();
-  bool isPending() { return end_ == std::experimental::nullopt; }
+    ContextualizedFact* getStartFact() const { return start_; }
+    ContextualizedFact* getEndFact() { return end_.value(); }
 
-  ContextualizedFact* getStartFact() { return start_; }
-  ContextualizedFact* getEndFact() { return end_.value(); }
-
-private:
-  ContextualizedFact* start_;
-  std::experimental::optional<ContextualizedFact*> end_;
-};
+  private:
+    ContextualizedFact* start_;
+    std::optional<ContextualizedFact*> end_;
+  };
 
 } // namespace mementar
 

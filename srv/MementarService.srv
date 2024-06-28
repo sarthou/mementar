@@ -1,7 +1,7 @@
 string action
 string param
-time stamp
+MementarTimestamp stamp
 ---
 string[] values
-time time_value
+MementarTimestamp time_value
 int16 code

@@ -1,249 +1,286 @@
-#include "include/mementar/graphical/mementarGUI/mementargui.h"
-#include "include/mementar/graphical/mementarGUI/QLineEditExtended.h"
-#include "include/mementar/graphical/mementarGUI/QPushButtonExtended.h"
-#include "ui_mementargui.h"
+#include "mementar/graphical/mementarGUI/mementargui.h"
 
-#include <QScrollBar>
-
-#include "mementar/MementarService.h"
-#include "mementar/StampedString.h"
-#include "mementar/MementarAction.h"
-#include "std_msgs/String.h"
-
+#include <algorithm>
+#include <bits/types/struct_timeval.h>
+#include <cstdio>
 #include <regex>
+#include <string>
+#include <sys/time.h>
+#include <vector>
+
+#include "mementar/API/mementar/Fact.h"
+#include "mementar/API/mementar/TimelineManipulator.h"
+#include "mementar/API/mementar/TimelinesManipulator.h"
+#include "mementar/compat/ros.h"
+#include "mementar/graphical/mementarGUI/QLineEditExtended.h"
+#include "mementar/graphical/mementarGUI/QPushButtonExtended.h"
+#include "qmainwindow.h"
+#include "qnamespace.h"
+#include "qobject.h"
+#include "qobjectdefs.h"
+#include "qpushbutton.h"
+#include "qwidget.h"
+#include "ui_mementargui.h"
 
 #define QUEU_SIZE 1000
 
-mementarGUI::mementarGUI(QWidget *parent) :
-    QMainWindow(parent),
-    ui(new Ui::mementarGUI),
-    current_time_(ros::Time::now())
+MementarGUI::MementarGUI(QWidget* parent) : QMainWindow(parent), ui_(new Ui::MementarGUI)
 {
-    ui->setupUi(this);
+  ui_->setupUi(this);
 
-    QObject::connect(ui->action_exist_button, SIGNAL(hoverEnter()),this, SLOT(actionButtonHoverEnterSlot()));
-    QObject::connect(ui->action_exist_button, SIGNAL(hoverLeave()),this, SLOT(actionButtonHoverLeaveSlot()));
-    QObject::connect(ui->action_getPending_button, SIGNAL(hoverEnter()),this, SLOT(actionButtonHoverEnterSlot()));
-    QObject::connect(ui->action_getPending_button, SIGNAL(hoverLeave()),this, SLOT(actionButtonHoverLeaveSlot()));
-    QObject::connect(ui->action_isPending_button, SIGNAL(hoverEnter()),this, SLOT(actionButtonHoverEnterSlot()));
-    QObject::connect(ui->action_isPending_button, SIGNAL(hoverLeave()),this, SLOT(actionButtonHoverLeaveSlot()));
-    QObject::connect(ui->action_getStartStamp_button, SIGNAL(hoverEnter()),this, SLOT(actionButtonHoverEnterSlot()));
-    QObject::connect(ui->action_getStartStamp_button, SIGNAL(hoverLeave()),this, SLOT(actionButtonHoverLeaveSlot()));
-    QObject::connect(ui->action_getEndStamp_button, SIGNAL(hoverEnter()),this, SLOT(actionButtonHoverEnterSlot()));
-    QObject::connect(ui->action_getEndStamp_button, SIGNAL(hoverLeave()),this, SLOT(actionButtonHoverLeaveSlot()));
-    QObject::connect(ui->action_getDuration_button, SIGNAL(hoverEnter()),this, SLOT(actionButtonHoverEnterSlot()));
-    QObject::connect(ui->action_getDuration_button, SIGNAL(hoverLeave()),this, SLOT(actionButtonHoverLeaveSlot()));
-    QObject::connect(ui->action_getStartFact_button, SIGNAL(hoverEnter()),this, SLOT(actionButtonHoverEnterSlot()));
-    QObject::connect(ui->action_getStartFact_button, SIGNAL(hoverLeave()),this, SLOT(actionButtonHoverLeaveSlot()));
-    QObject::connect(ui->action_getEndFact_button, SIGNAL(hoverEnter()),this, SLOT(actionButtonHoverEnterSlot()));
-    QObject::connect(ui->action_getEndFact_button, SIGNAL(hoverLeave()),this, SLOT(actionButtonHoverLeaveSlot()));
-    QObject::connect(ui->action_getFactsDuring_button, SIGNAL(hoverEnter()),this, SLOT(actionButtonHoverEnterSlot()));
-    QObject::connect(ui->action_getFactsDuring_button, SIGNAL(hoverLeave()),this, SLOT(actionButtonHoverLeaveSlot()));
+  QObject::connect(ui_->action_exist_button, SIGNAL(hoverEnter()), this, SLOT(actionButtonHoverEnterSlot()));
+  QObject::connect(ui_->action_exist_button, SIGNAL(hoverLeave()), this, SLOT(actionButtonHoverLeaveSlot()));
+  QObject::connect(ui_->action_removeAction_button, SIGNAL(hoverEnter()), this, SLOT(actionButtonHoverEnterSlot()));
+  QObject::connect(ui_->action_removeAction_button, SIGNAL(hoverLeave()), this, SLOT(actionButtonHoverLeaveSlot()));
+  QObject::connect(ui_->action_getPending_button, SIGNAL(hoverEnter()), this, SLOT(actionButtonHoverEnterSlot()));
+  QObject::connect(ui_->action_getPending_button, SIGNAL(hoverLeave()), this, SLOT(actionButtonHoverLeaveSlot()));
+  QObject::connect(ui_->action_isPending_button, SIGNAL(hoverEnter()), this, SLOT(actionButtonHoverEnterSlot()));
+  QObject::connect(ui_->action_isPending_button, SIGNAL(hoverLeave()), this, SLOT(actionButtonHoverLeaveSlot()));
+  QObject::connect(ui_->action_getStartStamp_button, SIGNAL(hoverEnter()), this, SLOT(actionButtonHoverEnterSlot()));
+  QObject::connect(ui_->action_getStartStamp_button, SIGNAL(hoverLeave()), this, SLOT(actionButtonHoverLeaveSlot()));
+  QObject::connect(ui_->action_getEndStamp_button, SIGNAL(hoverEnter()), this, SLOT(actionButtonHoverEnterSlot()));
+  QObject::connect(ui_->action_getEndStamp_button, SIGNAL(hoverLeave()), this, SLOT(actionButtonHoverLeaveSlot()));
+  QObject::connect(ui_->action_getDuration_button, SIGNAL(hoverEnter()), this, SLOT(actionButtonHoverEnterSlot()));
+  QObject::connect(ui_->action_getDuration_button, SIGNAL(hoverLeave()), this, SLOT(actionButtonHoverLeaveSlot()));
+  QObject::connect(ui_->action_getStartFact_button, SIGNAL(hoverEnter()), this, SLOT(actionButtonHoverEnterSlot()));
+  QObject::connect(ui_->action_getStartFact_button, SIGNAL(hoverLeave()), this, SLOT(actionButtonHoverLeaveSlot()));
+  QObject::connect(ui_->action_getEndFact_button, SIGNAL(hoverEnter()), this, SLOT(actionButtonHoverEnterSlot()));
+  QObject::connect(ui_->action_getEndFact_button, SIGNAL(hoverLeave()), this, SLOT(actionButtonHoverLeaveSlot()));
+  QObject::connect(ui_->action_getFactsDuring_button, SIGNAL(hoverEnter()), this, SLOT(actionButtonHoverEnterSlot()));
+  QObject::connect(ui_->action_getFactsDuring_button, SIGNAL(hoverLeave()), this, SLOT(actionButtonHoverLeaveSlot()));
 
-    QObject::connect(ui->fact_exist_button, SIGNAL(hoverEnter()),this, SLOT(factButtonHoverEnterSlot()));
-    QObject::connect(ui->fact_exist_button, SIGNAL(hoverLeave()),this, SLOT(factButtonHoverLeaveSlot()));
-    QObject::connect(ui->fact_getData_button, SIGNAL(hoverEnter()),this, SLOT(factButtonHoverEnterSlot()));
-    QObject::connect(ui->fact_getData_button, SIGNAL(hoverLeave()),this, SLOT(factButtonHoverLeaveSlot()));
-    QObject::connect(ui->fact_getActionPart_button, SIGNAL(hoverEnter()),this, SLOT(factButtonHoverEnterSlot()));
-    QObject::connect(ui->fact_getActionPart_button, SIGNAL(hoverLeave()),this, SLOT(factButtonHoverLeaveSlot()));
-    QObject::connect(ui->fact_isActionPart_button, SIGNAL(hoverEnter()),this, SLOT(factButtonHoverEnterSlot()));
-    QObject::connect(ui->fact_isActionPart_button, SIGNAL(hoverLeave()),this, SLOT(factButtonHoverLeaveSlot()));
-    QObject::connect(ui->fact_getStamp_button, SIGNAL(hoverEnter()),this, SLOT(factButtonHoverEnterSlot()));
-    QObject::connect(ui->fact_getStamp_button, SIGNAL(hoverLeave()),this, SLOT(factButtonHoverLeaveSlot()));
+  QObject::connect(ui_->fact_exist_button, SIGNAL(hoverEnter()), this, SLOT(factButtonHoverEnterSlot()));
+  QObject::connect(ui_->fact_exist_button, SIGNAL(hoverLeave()), this, SLOT(factButtonHoverLeaveSlot()));
+  QObject::connect(ui_->fact_getData_button, SIGNAL(hoverEnter()), this, SLOT(factButtonHoverEnterSlot()));
+  QObject::connect(ui_->fact_getData_button, SIGNAL(hoverLeave()), this, SLOT(factButtonHoverLeaveSlot()));
+  QObject::connect(ui_->fact_getActionPart_button, SIGNAL(hoverEnter()), this, SLOT(factButtonHoverEnterSlot()));
+  QObject::connect(ui_->fact_getActionPart_button, SIGNAL(hoverLeave()), this, SLOT(factButtonHoverLeaveSlot()));
+  QObject::connect(ui_->fact_isActionPart_button, SIGNAL(hoverEnter()), this, SLOT(factButtonHoverEnterSlot()));
+  QObject::connect(ui_->fact_isActionPart_button, SIGNAL(hoverLeave()), this, SLOT(factButtonHoverLeaveSlot()));
+  QObject::connect(ui_->fact_getStamp_button, SIGNAL(hoverEnter()), this, SLOT(factButtonHoverEnterSlot()));
+  QObject::connect(ui_->fact_getStamp_button, SIGNAL(hoverLeave()), this, SLOT(factButtonHoverLeaveSlot()));
 
-    QObject::connect(ui->action_exist_button, SIGNAL(clicked()),this, SLOT(actionButtonClickedSlot()));
-    QObject::connect(ui->action_getPending_button, SIGNAL(clicked()),this, SLOT(actionButtonClickedSlot()));
-    QObject::connect(ui->action_isPending_button, SIGNAL(clicked()),this, SLOT(actionButtonClickedSlot()));
-    QObject::connect(ui->action_getStartStamp_button, SIGNAL(clicked()),this, SLOT(actionButtonClickedSlot()));
-    QObject::connect(ui->action_getEndStamp_button, SIGNAL(clicked()),this, SLOT(actionButtonClickedSlot()));
-    QObject::connect(ui->action_getDuration_button, SIGNAL(clicked()),this, SLOT(actionButtonClickedSlot()));
-    QObject::connect(ui->action_getStartFact_button, SIGNAL(clicked()),this, SLOT(actionButtonClickedSlot()));
-    QObject::connect(ui->action_getEndFact_button, SIGNAL(clicked()),this, SLOT(actionButtonClickedSlot()));
-    QObject::connect(ui->action_getFactsDuring_button, SIGNAL(clicked()),this, SLOT(actionButtonClickedSlot()));
+  QObject::connect(ui_->action_exist_button, SIGNAL(clicked()), this, SLOT(actionButtonClickedSlot()));
+  QObject::connect(ui_->action_getPending_button, SIGNAL(clicked()), this, SLOT(actionButtonClickedSlot()));
+  QObject::connect(ui_->action_removeAction_button, SIGNAL(clicked()), this, SLOT(actionButtonClickedSlot()));
+  QObject::connect(ui_->action_isPending_button, SIGNAL(clicked()), this, SLOT(actionButtonClickedSlot()));
+  QObject::connect(ui_->action_getStartStamp_button, SIGNAL(clicked()), this, SLOT(actionButtonClickedSlot()));
+  QObject::connect(ui_->action_getEndStamp_button, SIGNAL(clicked()), this, SLOT(actionButtonClickedSlot()));
+  QObject::connect(ui_->action_getDuration_button, SIGNAL(clicked()), this, SLOT(actionButtonClickedSlot()));
+  QObject::connect(ui_->action_getStartFact_button, SIGNAL(clicked()), this, SLOT(actionButtonClickedSlot()));
+  QObject::connect(ui_->action_getEndFact_button, SIGNAL(clicked()), this, SLOT(actionButtonClickedSlot()));
+  QObject::connect(ui_->action_getFactsDuring_button, SIGNAL(clicked()), this, SLOT(actionButtonClickedSlot()));
 
-    QObject::connect(ui->fact_exist_button, SIGNAL(clicked()),this, SLOT(factButtonClickedSlot()));
-    QObject::connect(ui->fact_getData_button, SIGNAL(clicked()),this, SLOT(factButtonClickedSlot()));
-    QObject::connect(ui->fact_getActionPart_button, SIGNAL(clicked()),this, SLOT(factButtonClickedSlot()));
-    QObject::connect(ui->fact_isActionPart_button, SIGNAL(clicked()),this, SLOT(factButtonClickedSlot()));
-    QObject::connect(ui->fact_getStamp_button, SIGNAL(clicked()),this, SLOT(factButtonClickedSlot()));
+  QObject::connect(ui_->fact_exist_button, SIGNAL(clicked()), this, SLOT(factButtonClickedSlot()));
+  QObject::connect(ui_->fact_getData_button, SIGNAL(clicked()), this, SLOT(factButtonClickedSlot()));
+  QObject::connect(ui_->fact_getActionPart_button, SIGNAL(clicked()), this, SLOT(factButtonClickedSlot()));
+  QObject::connect(ui_->fact_isActionPart_button, SIGNAL(clicked()), this, SLOT(factButtonClickedSlot()));
+  QObject::connect(ui_->fact_getStamp_button, SIGNAL(clicked()), this, SLOT(factButtonClickedSlot()));
 
-    QObject::connect(ui->manager_refresh_button, SIGNAL(clicked()),this, SLOT(displayInstancesListSlot()));
-    QObject::connect(ui->manager_add_instance_button, SIGNAL(clicked()),this, SLOT(addInstanceSlot()));
-    QObject::connect(ui->manager_delete_instance_button, SIGNAL(clicked()),this, SLOT(deleteInstanceSlot()));
-    QObject::connect(ui->manager_save_button, SIGNAL(clicked()),this, SLOT(saveInstanceSlot()));
-    QObject::connect(ui->manager_draw_button, SIGNAL(clicked()),this, SLOT(drawInstanceSlot()));
+  QObject::connect(ui_->manager_refresh_button, &QPushButton::clicked, this, &MementarGUI::displayInstancesListSlot);
+  QObject::connect(ui_->manager_add_instance_button, &QPushButton::clicked, this, &MementarGUI::addInstanceSlot);
+  QObject::connect(ui_->manager_delete_instance_button, &QPushButton::clicked, this, &MementarGUI::deleteInstanceSlot);
+  QObject::connect(ui_->manager_save_button, &QPushButton::clicked, this, &MementarGUI::saveInstanceSlot);
+  QObject::connect(ui_->manager_draw_button, &QPushButton::clicked, this, &MementarGUI::drawInstanceSlot);
 
-    QObject::connect(ui->feeder_add_start_button, SIGNAL(clicked()),this, SLOT(feederAddSlot()));
-    QObject::connect(ui->feeder_remove_end_button, SIGNAL(clicked()),this, SLOT(feederDelSlot()));
-    QObject::connect(ui->feeder_commit_button, SIGNAL(clicked()),this, SLOT(feederCommitSlot()));
-    QObject::connect(ui->feeder_checkout_button, SIGNAL(clicked()),this, SLOT(feederCheckoutSlot()));
+  QObject::connect(ui_->feeder_add_start_button, SIGNAL(clicked()), this, SLOT(feederAddSlot()));
+  QObject::connect(ui_->feeder_remove_end_button, SIGNAL(clicked()), this, SLOT(feederDelSlot()));
+  QObject::connect(ui_->feeder_commit_button, SIGNAL(clicked()), this, SLOT(feederCommitSlot()));
+  QObject::connect(ui_->feeder_checkout_button, SIGNAL(clicked()), this, SLOT(feederCheckoutSlot()));
 
-    QObject::connect(ui->manager_instance_name_editline, SIGNAL(textChanged(const QString&)), this, SLOT(InstanceNameAddDelChangedSlot(const QString&)));
-    QObject::connect(ui->static_instance_name_editline, SIGNAL(textChanged(const QString&)), this, SLOT(InstanceNameChangedSlot(const QString&)));
-    QObject::connect(ui->static_instance_name_editline, SIGNAL(editingFinished()),this, SLOT(nameEditingFinishedSlot()));
-    QObject::connect(ui->static_time_source_combobox, SIGNAL(currentIndexChanged(int)),this, SLOT(timesourceChangedSlot(int)));
-    QObject::connect(ui->static_tab_widget, SIGNAL(currentChanged(int)),this, SLOT(currentTabChangedSlot(int)));
+  QObject::connect(ui_->manager_instance_name_editline, SIGNAL(textChanged(const QString&)), this, SLOT(instanceNameAddDelChangedSlot(const QString&)));
+  QObject::connect(ui_->static_instance_name_editline, SIGNAL(textChanged(const QString&)), this, SLOT(instanceNameChangedSlot(const QString&)));
+  QObject::connect(ui_->static_instance_name_editline, SIGNAL(editingFinished()), this, SLOT(nameEditingFinishedSlot()));
+  QObject::connect(ui_->static_time_source_combobox, SIGNAL(currentIndexChanged(int)), this, SLOT(timesourceChangedSlot(int)));
+  QObject::connect(ui_->static_tab_widget, SIGNAL(currentChanged(int)), this, SLOT(currentTabChangedSlot(int)));
 
-    QObject::connect( this, SIGNAL( feederSetHtmlSignal(QString) ), ui->feeder_info_edittext, SLOT( setHtml(QString) ), Qt::BlockingQueuedConnection);
-    QObject::connect( this, SIGNAL( setTimeSignal(QString) ), ui->static_current_time_editline, SLOT( setText(QString) ), Qt::BlockingQueuedConnection);
-    QObject::connect(ui->static_current_time_editline, SIGNAL( editingFinished() ), this, SLOT( currentTimeEditingFinishedSlot() ));
+  QObject::connect(this, SIGNAL(feederSetHtmlSignal(QString)), ui_->feeder_info_edittext, SLOT(setHtml(QString)), Qt::BlockingQueuedConnection);
+  QObject::connect(this, SIGNAL(feederScrollSignal(QString)), ui_->feeder_info_edittext, SLOT(scrollToAnchor(QString)), Qt::BlockingQueuedConnection);
+  QObject::connect(this, SIGNAL(setTimeSignal(QString)), ui_->static_current_time_editline, SLOT(setText(QString)), Qt::BlockingQueuedConnection);
+  QObject::connect(ui_->static_current_time_editline, SIGNAL(editingFinished()), this, SLOT(currentTimeEditingFinishedSlot()));
 }
 
-mementarGUI::~mementarGUI()
+MementarGUI::~MementarGUI()
 {
-    delete ui;
+  delete ui_;
 }
 
-void mementarGUI::init(ros::NodeHandle* n)
+void MementarGUI::init()
 {
-  n_ = n;
   timesourceChangedSlot(0);
 
-  facts_publishers_["_"] = n_->advertise<mementar::StampedString>("/mementar/insert_fact_stamped", QUEU_SIZE);
-  actions_publishers_["_"] = n_->advertise<mementar::MementarAction>("/mementar/insert_action", QUEU_SIZE);
-  feeder_notifications_subs_["_"] = n_->subscribe("mementar/feeder_notifications", QUEU_SIZE, &mementarGUI::feederCallback, this);
+  if(timelines_.waitInit(1) == false)
+  {
+    timeline_ = new mementar::TimelineManipulator();
+    timeline_->action_feeder.registerFeederNotificationCallback([this](auto msg) { this->feederCallback(msg); });
+    // timeline_->fact_feeder.registerFeederNotificationCallback([this](auto msg) { this->feederCallback(msg); }); // onbly one has to be connected
+    multi_usage_ = false;
+  }
+  else
+  {
+    timeline_ = nullptr;
+    multi_usage_ = true;
+  }
 }
 
-void mementarGUI::wait()
+void MementarGUI::wait()
 {
   QString html = "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">"
-                  "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">"
-                  "p, li { white-space: pre-wrap; }"
-                  "</style></head><body style=\" font-family:'Noto Sans'; font-size:9pt; font-weight:400; font-style:normal;\">"
-                  "<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt; color:#a40000;\">Wainting for </span><span style=\" font-size:12pt; font-weight:600; color:#a40000;\">mementar</span></p></body></html>";
-  ui->static_info_area->setHtml(html);
+                 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">"
+                 "p, li { white-space: pre-wrap; }"
+                 "</style></head><body style=\" font-family:'Noto Sans'; font-size:9pt; font-weight:400; font-style:normal;\">"
+                 "<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt; color:#a40000;\">Wainting for </span><span style=\" font-size:12pt; font-weight:600; color:#a40000;\">mementar</span></p></body></html>";
+  ui_->static_info_area->setHtml(html);
 }
 
-void mementarGUI::start()
+void MementarGUI::start()
 {
   QString html = "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">"
-                  "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">"
-                  "p, li { white-space: pre-wrap; }"
-                  "</style></head><body style=\" font-family:'Noto Sans'; font-size:9pt; font-weight:400; font-style:normal;\">"
-                  "<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt; font-weight:600; color:#4e9a06;\">Mementar</span><span style=\" font-size:12pt; color:#4e9a06;\"> detected</span></p></body></html>";
-  ui->static_info_area->setHtml(html);
+                 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">"
+                 "p, li { white-space: pre-wrap; }"
+                 "</style></head><body style=\" font-family:'Noto Sans'; font-size:9pt; font-weight:400; font-style:normal;\">"
+                 "<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt; font-weight:600; color:#4e9a06;\">Mementar</span><span style=\" font-size:12pt; color:#4e9a06;\"> detected</span></p></body></html>";
+  ui_->static_info_area->setHtml(html);
 }
 
-void mementarGUI::actionButtonHoverEnterSlot()
+void MementarGUI::actionButtonHoverEnterSlot()
 {
-  ui->action_description_textedit->setText(dynamic_cast<QWidget*>(sender())->whatsThis());
+  ui_->action_description_textedit->setText(dynamic_cast<QWidget*>(sender())->whatsThis());
 }
 
-void mementarGUI::actionButtonHoverLeaveSlot()
+void MementarGUI::actionButtonHoverLeaveSlot()
 {
-  ui->action_description_textedit->setText("");
+  ui_->action_description_textedit->setText("");
 }
 
-void mementarGUI::factButtonHoverEnterSlot()
+void MementarGUI::factButtonHoverEnterSlot()
 {
-  ui->fact_description_textedit->setText(dynamic_cast<QWidget*>(sender())->whatsThis());
+  ui_->fact_description_textedit->setText(dynamic_cast<QWidget*>(sender())->whatsThis());
 }
 
-void mementarGUI::factButtonHoverLeaveSlot()
+void MementarGUI::factButtonHoverLeaveSlot()
 {
-  ui->fact_description_textedit->setText("");
+  ui_->fact_description_textedit->setText("");
 }
 
-void mementarGUI::actionButtonClickedSlot()
+void MementarGUI::actionButtonClickedSlot()
 {
-  std::string service_name = (ui->static_instance_name_editline->text().toStdString() == "") ? "mementar/action" : "mementar/action/" + ui->static_instance_name_editline->text().toStdString();
-  ros::ServiceClient client = n_->serviceClient<mementar::MementarService>(service_name);
+  if(ui_->static_instance_name_editline->text().toStdString().find('=') != std::string::npos)
+  {
+    displayErrorInfo("Instance name cannot have the symbol = : \'" + ui_->static_instance_name_editline->text().toStdString() + "\'\n Once an instance copy has been performed, use the new instance name.");
+    return;
+  }
 
-  mementar::MementarService srv;
-  srv.request.action = dynamic_cast<QPushButtonExtended *>(sender())->text().toStdString();
-  srv.request.param = ui->action_parameter_editline->text().toStdString();
-  QString text = dynamic_cast<QPushButtonExtended *>(sender())->text() + " : " + ui->action_parameter_editline->text();
-  ui->action_description_textedit->setText(text);
+  const std::string action = dynamic_cast<QPushButtonExtended*>(sender())->text().toStdString();
+  const std::string param = ui_->action_parameter_editline->text().toStdString();
+  if(updateTimelinePtr() == false)
+    return;
 
-  if(!client.call(srv))
-    displayErrorInfo(service_name + " client call failed");
+  const QString text = dynamic_cast<QPushButtonExtended*>(sender())->text() + " : " + ui_->action_parameter_editline->text();
+  ui_->action_description_textedit->setText(text);
+
+  auto response = timeline_->actions.call(action, param);
+  const int err = timeline_->actions.getErrorCode();
+  if(err == -1)
+    displayErrorInfo("client call failed");
   else
   {
     start();
     std::string res;
-    if(srv.response.values.size())
-      res = vector2string(srv.response.values);
-    else if(srv.response.time_value.sec != 0)
-      res = std::to_string(srv.response.time_value.sec);
-    ui->static_result_editext->setText(QString::fromStdString(res));
+    if(response.first.empty() == false)
+      res = vector2string(response.first);
+    else if(response.second.seconds() != 0)
+      res = std::to_string(response.second.seconds());
+    ui_->static_result_editext->setText(QString::fromStdString(res));
   }
 }
 
-void mementarGUI::factButtonClickedSlot()
+void MementarGUI::factButtonClickedSlot()
 {
-  std::string service_name = (ui->static_instance_name_editline->text().toStdString() == "") ? "mementar/fact" : "mementar/fact/" + ui->static_instance_name_editline->text().toStdString();
-  ros::ServiceClient client = n_->serviceClient<mementar::MementarService>(service_name);
+  if(ui_->static_instance_name_editline->text().toStdString().find('=') != std::string::npos)
+  {
+    displayErrorInfo("Instance name cannot have the symbol = : \'" + ui_->static_instance_name_editline->text().toStdString() + "\'\n Once an instance copy has been performed, use the new instance name.");
+    return;
+  }
 
-  mementar::MementarService srv;
-  srv.request.action = dynamic_cast<QPushButtonExtended *>(sender())->text().toStdString();
-  srv.request.param = ui->fact_parameter_editline->text().toStdString();
-  QString text = dynamic_cast<QPushButtonExtended *>(sender())->text() + " : " + ui->fact_parameter_editline->text();
-  ui->fact_description_textedit->setText(text);
+  const std::string action = dynamic_cast<QPushButtonExtended*>(sender())->text().toStdString();
+  const std::string param = ui_->fact_parameter_editline->text().toStdString();
+  if(updateTimelinePtr() == false)
+    return;
 
-  if(!client.call(srv))
-    displayErrorInfo(service_name + " client call failed");
+  const QString text = dynamic_cast<QPushButtonExtended*>(sender())->text() + " : " + ui_->fact_parameter_editline->text();
+  ui_->fact_description_textedit->setText(text);
+
+  auto response = timeline_->facts.call(action, param);
+  const int err = timeline_->facts.getErrorCode();
+
+  if(err == -1)
+    displayErrorInfo("client call failed");
   else
   {
     start();
     std::string res;
-    if(srv.response.values.size())
-      res = vector2string(srv.response.values);
-    else if(srv.response.time_value.sec != 0)
-      res = std::to_string(srv.response.time_value.sec);
-    ui->static_result_editext->setText(QString::fromStdString(res));
+    if(response.first.empty() == false)
+      res = vector2string(response.first);
+    else if(response.second.seconds() != 0)
+      res = std::to_string(response.second.seconds());
+    ui_->static_result_editext->setText(QString::fromStdString(res));
   }
 }
 
-void mementarGUI::nameEditingFinishedSlot()
+void MementarGUI::nameEditingFinishedSlot()
 {
-
+  if(updateTimelinePtr() == false)
+    return;
 }
 
-void mementarGUI::displayErrorInfo(const std::string& text)
+void MementarGUI::displayErrorInfo(const std::string& text)
 {
-  std::string html = "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">"
-                  "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">"
-                  "p, li { white-space: pre-wrap; }"
-                  "</style></head><body style=\" font-family:'Noto Sans'; font-size:9pt; font-weight:400; font-style:normal;\">"
-                  "<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt; color:#a40000;\">" + text + "</span></p></body></html>";
-  ui->static_info_area->setHtml(QString::fromStdString(html));
+  std::string html =
+    "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">"
+    "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">"
+    "p, li { white-space: pre-wrap; }"
+    "</style></head><body style=\" font-family:'Noto Sans'; font-size:9pt; font-weight:400; font-style:normal;\">"
+    "<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt; color:#a40000;\">" +
+    text + "</span></p></body></html>";
+  ui_->static_info_area->setHtml(QString::fromStdString(html));
 }
 
-void mementarGUI::displayInstancesList()
+void MementarGUI::displayInstancesList()
 {
-  ros::ServiceClient client = n_->serviceClient<mementar::MementarService>("mementar/manage_multi");
-
-  mementar::MementarService srv;
-  srv.request.action = "list";
+  auto res_vect = timelines_.list();
+  const int err = timelines_.getErrorCode();
 
   std::string html;
-  if(!client.call(srv))
+
+  if(err == -1)
   {
     html = "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">"
-            "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">"
-            "p, li { white-space: pre-wrap; }"
-            "</style></head><body style=\" font-family:'Noto Sans'; font-size:9pt; font-weight:400; font-style:normal;\">"
-            "<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt; color:#a40000;\">mementar is not running in multi mode.</span></p></body></html>";
+           "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">"
+           "p, li { white-space: pre-wrap; }"
+           "</style></head><body style=\" font-family:'Noto Sans'; font-size:9pt; font-weight:400; font-style:normal;\">"
+           "<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt; color:#a40000;\">mementar is not running in multi mode.</span></p></body></html>";
   }
   else
   {
-    std::string text = vector2html(srv.response.values);
+    std::string text = vector2html(res_vect);
     html = "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">"
-            "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">"
-            "p, li { white-space: pre-wrap; }"
-            "</style></head><body style=\" font-family:'Noto Sans'; font-size:9pt; font-weight:400; font-style:normal;\">"
-            "<p align=\"left\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt; \">" + text + "</span></p></body></html>";
+           "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">"
+           "p, li { white-space: pre-wrap; }"
+           "</style></head><body style=\" font-family:'Noto Sans'; font-size:9pt; font-weight:400; font-style:normal;\">"
+           "<p align=\"left\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt; \">" +
+           text + "</span></p></body></html>";
   }
 
-  ui->manager_instances_list_edittext->setHtml(QString::fromStdString(html));
+  ui_->manager_instances_list_edittext->setHtml(QString::fromStdString(html));
 }
 
-void mementarGUI::displayInstancesListSlot()
+void MementarGUI::displayInstancesListSlot()
 {
   displayInstancesList();
 }
 
-std::string mementarGUI::vector2string(const std::vector<std::string>& vect)
+std::string MementarGUI::vector2string(const std::vector<std::string>& vect)
 {
   std::string res;
   for(const auto& v : vect)
@@ -251,7 +288,7 @@ std::string mementarGUI::vector2string(const std::vector<std::string>& vect)
   return res;
 }
 
-std::string mementarGUI::vector2html(const std::vector<std::string>& vect)
+std::string MementarGUI::vector2html(const std::vector<std::string>& vect)
 {
   std::string res;
   for(const auto& v : vect)
@@ -259,307 +296,321 @@ std::string mementarGUI::vector2html(const std::vector<std::string>& vect)
   return res;
 }
 
-void mementarGUI::updateTime()
+void MementarGUI::updateTime() // todo fix time display
 {
   if(time_source_ == 0)
   {
-    current_time_.store(ros::Time::now(), std::memory_order_release);
-    setTimeSignal(QString::fromStdString(std::to_string(current_time_.load(std::memory_order_acquire).sec)));
-    //ui->static_current_time_editline->setText();
+    auto time = mementar::compat::mem_ros::Node::get().currentTime();
+    current_time_.seconds = time.seconds();
+    current_time_.nanoseconds = time.nanoseconds();
+    // current_time_.store(ros::Time::now(), std::memory_order_release);
+    // setTimeSignal(QString::fromStdString(std::to_string(current_time_.load(std::memory_order_acquire).sec)));
+    // ui_->static_current_time_editline->setText();
   }
   else if(time_source_ == 1)
   {
     struct timeval tp;
-    gettimeofday(&tp, NULL);
-    current_time_.store(ros::Time(tp.tv_sec, tp.tv_usec), std::memory_order_release);
-    setTimeSignal(QString::fromStdString(std::to_string(current_time_.load(std::memory_order_acquire).sec)));
+    gettimeofday(&tp, nullptr);
+    // current_time_.store(ros::Time(tp.tv_sec, tp.tv_usec), std::memory_order_release);
+    current_time_.seconds = tp.tv_sec;
+    current_time_.nanoseconds = tp.tv_usec;
+    // setTimeSignal(QString::fromStdString(std::to_string(current_time_.load(std::memory_order_acquire).sec)));
   }
+
+  setTimeSignal(QString::fromStdString(std::to_string(current_time_.seconds)));
 }
 
-void mementarGUI::currentTabChangedSlot(int index)
+void MementarGUI::currentTabChangedSlot(int tab_id)
 {
-  if(index == 1)
+  if(tab_id == 3)
     displayInstancesList();
 }
 
-void mementarGUI::addInstanceSlot()
+void MementarGUI::addInstanceSlot()
 {
-  ros::ServiceClient client = n_->serviceClient<mementar::MementarService>("mementar/manage_multi");
-
-  mementar::MementarService srv;
-  srv.request.action = "add";
-  srv.request.param = ui->manager_instance_name_editline->text().toStdString();
+  std::string param = ui_->manager_instance_name_editline->text().toStdString();
+  const std::string& inst_name = param;
 
   std::regex base_regex("(.*)=(.*)");
   std::smatch base_match;
-  if (std::regex_match(srv.request.param, base_match, base_regex))
+  if(std::regex_match(param, base_match, base_regex))
   {
-    if (base_match.size() == 3)
+    if(base_match.size() == 3)
     {
-      srv.request.action = "copy";
-      if(facts_publishers_.find(base_match[1].str()) == facts_publishers_.end())
-      {
-        facts_publishers_[base_match[1].str()] = n_->advertise<mementar::StampedString>("mementar/insert_fact_stamped/" + base_match[1].str(), QUEU_SIZE);
-        actions_publishers_[base_match[1].str()] = n_->advertise<mementar::MementarAction>("mementar/insert_action/" + base_match[1].str(), QUEU_SIZE);
-      }
-
-      if(feeder_notifications_subs_.find(base_match[1].str()) == feeder_notifications_subs_.end())
-        feeder_notifications_subs_[base_match[1].str()] = n_->subscribe("mementar/feeder_notifications", QUEU_SIZE, &mementarGUI::feederCallback, this);
+      ui_->static_result_editext->setText(QString::fromStdString("Copy is not yet supported."));
+      return;
+      // timelines_.copy(base_match[1].str(), base_match[2].str());
+      // inst_name = base_match[1].str();
     }
   }
   else
-  {
-    if(facts_publishers_.find(srv.request.param) == facts_publishers_.end())
-    {
-      facts_publishers_[srv.request.param] = n_->advertise<mementar::StampedString>("mementar/insert_fact_stamped/" + srv.request.param, QUEU_SIZE);
-      actions_publishers_[srv.request.param] = n_->advertise<mementar::MementarAction>("mementar/insert_action/" + srv.request.param, QUEU_SIZE);
-    }
+    timelines_.add(param);
 
-    if(feeder_notifications_subs_.find(srv.request.param) == feeder_notifications_subs_.end())
-      feeder_notifications_subs_[srv.request.param] = n_->subscribe("mementar/feeder_notifications", QUEU_SIZE, &mementarGUI::feederCallback, this);
-  }
-
-  if(!client.call(srv))
-    displayErrorInfo("mementar/manage_multi client call failed");
+  const int err = timelines_.getErrorCode();
+  if(err == -1)
+    displayErrorInfo("mementar/manage client call failed");
   else
   {
     start();
-    if(srv.response.code == 4)
-      ui->static_result_editext->setText(QString::fromStdString(srv.request.param + " already created"));
-    else if(srv.response.code == 1)
-      ui->static_result_editext->setText(QString::fromStdString("fail to stop " + srv.request.param + " : please retry"));
+    if(err == 4)
+      ui_->static_result_editext->setText(QString::fromStdString(param + " already created"));
+    else if(err == 1)
+      ui_->static_result_editext->setText(QString::fromStdString("fail to stop " + param + " : please retry"));
     else
-      ui->static_result_editext->setText(QString::fromStdString(""));
+    {
+      ui_->static_result_editext->setText(QString::fromStdString(""));
+      timelines_.get(inst_name)->action_feeder.registerFeederNotificationCallback([this](auto msg) { this->feederCallback(msg); });
+      // timelines_.get(inst_name)->fact_feeder.registerFeederNotificationCallback([this](auto msg) { this->feederCallback(msg); }); // only one has to be connected
+    }
+
     displayInstancesList();
   }
 }
 
-void mementarGUI::deleteInstanceSlot()
+void MementarGUI::deleteInstanceSlot()
 {
-  ros::ServiceClient client = n_->serviceClient<mementar::MementarService>("mementar/manage_multi");
+  auto param = ui_->manager_instance_name_editline->text().toStdString();
+  timelines_.del(param);
+  const int err = timelines_.getErrorCode();
 
-  mementar::MementarService srv;
-  srv.request.action = "delete";
-  srv.request.param = ui->manager_instance_name_editline->text().toStdString();
-
-  if(!client.call(srv))
-    displayErrorInfo("mementar/manage_multi client call failed");
-  else
+  if(err == -1)
   {
-    start();
-    if(srv.response.code == 4)
-      ui->static_result_editext->setText(QString::fromStdString("Instance \'" + srv.request.param + "\' don't exist"));
-    else
-      ui->static_result_editext->setText(QString::fromStdString(""));
-    displayInstancesList();
+    displayErrorInfo("mementar/manage client call failed");
+    return;
   }
+
+  start();
+  if(err == 4)
+    ui_->static_result_editext->setText(QString::fromStdString("Instance \'" + param + "\' don't exist"));
+  else
+    ui_->static_result_editext->setText(QString::fromStdString(""));
+  displayInstancesList();
 }
 
-void mementarGUI::saveInstanceSlot()
+void MementarGUI::saveInstanceSlot()
 {
-  std::string service_name = (ui->manager_instance_name_editline->text().toStdString() == "") ? "mementar/manage_instance" : "mementar/manage_instance/" + ui->manager_instance_name_editline->text().toStdString();
-  ros::ServiceClient client = n_->serviceClient<mementar::MementarService>(service_name);
+  if(ui_->manager_instance_name_editline->text().toStdString().find('=') != std::string::npos)
+  {
+    displayErrorInfo("Instance name cannot have the symbol = : \'" + ui_->manager_instance_name_editline->text().toStdString() + "\'\n Once an instance copy has been performed, use the new instance name.");
+    return;
+  }
 
-  mementar::MementarService srv;
-  srv.request.action = "save";
-  srv.request.param = ui->manager_save_path_editline->text().toStdString();
+  if(updateTimelinePtr() == false)
+    return;
 
-  if(!client.call(srv))
+  auto param = ui_->manager_save_path_editline->text().toStdString();
+  timeline_->inst_manager.save(param);
+  const int err = timeline_->inst_manager.getErrorCode();
+
+  if(err == -1)
+  {
     displayErrorInfo("mementar/manage_instance client call failed");
+    return;
+  }
   else
   {
-    if(srv.response.code == 4)
-      ui->static_result_editext->setText(QString::fromStdString("path \'" + srv.request.param + "\' don't exist"));
+    if(err == 4)
+      ui_->static_result_editext->setText(QString::fromStdString("path \'" + param + "\' don't exist"));
     else
-      ui->static_result_editext->setText(QString::fromStdString(""));
+      ui_->static_result_editext->setText(QString::fromStdString(""));
   }
 }
 
-void mementarGUI::drawInstanceSlot()
+void MementarGUI::drawInstanceSlot()
 {
-  std::string service_name = (ui->manager_instance_name_editline->text().toStdString() == "") ? "mementar/manage_instance" : "mementar/manage_instance/" + ui->manager_instance_name_editline->text().toStdString();
-  ros::ServiceClient client = n_->serviceClient<mementar::MementarService>(service_name);
+  if(ui_->manager_instance_name_editline->text().toStdString().find('=') != std::string::npos)
+  {
+    displayErrorInfo("Instance name cannot have the symbol = : \'" + ui_->manager_instance_name_editline->text().toStdString() + "\'\n Once an instance copy has been performed, use the new instance name.");
+    return;
+  }
 
-  mementar::MementarService srv;
-  srv.request.action = "draw";
-  srv.request.param = ui->manager_draw_path_editline->text().toStdString();
+  if(updateTimelinePtr() == false)
+    return;
 
-  if(!client.call(srv))
+  auto param = ui_->manager_save_path_editline->text().toStdString();
+  timeline_->inst_manager.draw(param);
+  const int err = timeline_->inst_manager.getErrorCode();
+
+  if(err == -1)
+  {
     displayErrorInfo("mementar/manage_instance client call failed");
+    return;
+  }
   else
   {
-    if(srv.response.code == 4)
-      ui->static_result_editext->setText(QString::fromStdString("path \'" + srv.request.param + "\' don't exist"));
+    if(err == 4)
+      ui_->static_result_editext->setText(QString::fromStdString("path \'" + param + "\' don't exist"));
     else
-      ui->static_result_editext->setText(QString::fromStdString(""));
+      ui_->static_result_editext->setText(QString::fromStdString(""));
   }
 }
 
-void mementarGUI::InstanceNameAddDelChangedSlot(const QString& text)
+void MementarGUI::instanceNameAddDelChangedSlot(const QString& text)
 {
-  if(ui->static_instance_name_editline->text() != text)
-    ui->static_instance_name_editline->setText(text);
+  if(ui_->static_instance_name_editline->text() != text)
+  {
+    const size_t equal_pose = text.toStdString().find('=');
+    if(equal_pose != std::string::npos)
+      ui_->static_instance_name_editline->setText(text.mid(0, (int)equal_pose));
+    else
+      ui_->static_instance_name_editline->setText(text);
+  }
 }
 
-void mementarGUI::InstanceNameChangedSlot(const QString& text)
+void MementarGUI::instanceNameChangedSlot(const QString& text)
 {
-  if(ui->manager_instance_name_editline->text() != text)
-    ui->manager_instance_name_editline->setText(text);
+  if(ui_->manager_instance_name_editline->text() != text)
+    ui_->manager_instance_name_editline->setText(text);
 }
 
-void mementarGUI::timesourceChangedSlot(int index)
+void MementarGUI::timesourceChangedSlot(int index)
 {
   time_source_ = index;
   if(index == 2) // manual
   {
     if(timer_.isRunning())
+    {
       timer_.stop();
-    ui->static_current_time_editline->setReadOnly(false);
+    }
+
+    ui_->static_current_time_editline->setReadOnly(false);
   }
   else
   {
-    ui->static_current_time_editline->setReadOnly(true);
+    ui_->static_current_time_editline->setReadOnly(true);
+
     if(timer_.isRunning() == false)
-      timer_.start(250, [this](){ this->updateTime(); });
+    {
+      timer_.start(250, [this]() { this->updateTime(); });
+    }
   }
 }
 
-void mementarGUI::currentTimeEditingFinishedSlot()
+void MementarGUI::currentTimeEditingFinishedSlot()
 {
   if(time_source_ == 2)
   {
-    std::string time_str = ui->static_current_time_editline->text().toStdString();
-    int time_int;
+    std::string time_str = ui_->static_current_time_editline->text().toStdString();
+    int time_int = 0;
     if(sscanf(time_str.c_str(), "%d", &time_int) == 1)
     {
-      current_time_.store(ros::Time(time_int, 0), std::memory_order_release);
-      ui->static_result_editext->setText(QString::fromStdString(""));
+      current_time_.seconds = time_int;
+      current_time_.nanoseconds = 0;
+      // current_time_.store(mementar::compat::mem_ros::Time(time_int, 0), std::memory_order_release);
+
+      ui_->static_result_editext->setText(QString::fromStdString(""));
     }
     else
     {
-      ui->static_result_editext->setText(QString::fromStdString("impossible to convert " + time_str + " to integer"));
+      ui_->static_result_editext->setText(
+        QString::fromStdString("impossible to convert " + time_str + " to integer"));
     }
   }
 }
 
-void mementarGUI::feederCallback(const std_msgs::String& msg)
+void MementarGUI::feederCallback(const std::string& msg)
 {
-  feeder_notifications_ += "<p>-" + msg.data + "</p>";
+  feeder_notifications_ += "<p>-" + msg + "</p>";
 
-  std::string html = "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">"
-          "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">"
-          "p, li { whicommitte-space: pre-wrap; }"
-          "</style></head><body style=\" font-family:'Noto Sans'; font-size:9pt; font-weight:400; font-style:normal;\">"
-          "<p align=\"left\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt; \">" + feeder_notifications_ + "<br></span></p></body></html>";
+  const std::string html = "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">"
+                           "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">"
+                           "p, li { whicommitte-space: pre-wrap; }"
+                           "</style></head><body style=\" font-family:'Noto Sans'; font-size:9pt; font-weight:400; font-style:normal;\">"
+                           "<p align=\"left\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt; \">" +
+                           feeder_notifications_ + R"(<a name="scrollToMe" href="#scroll"></a> <br></span></p></body></html>)";
 
-  ui->feeder_info_edittext->moveCursor(QTextCursor::End);
   feederSetHtmlSignal(QString::fromStdString(html));
-  ui->feeder_info_edittext->ensureCursorVisible();
+  feederScrollSignal("scrollToMe");
 }
 
-void mementarGUI::feederAddSlot()
+void MementarGUI::feederAddSlot()
 {
-  std::string subject = ui->feeder_subject_editline->text().toStdString();
-  std::string predicat = ui->feeder_property_editline->text().toStdString();
-  std::string object = ui->feeder_object_editline->text().toStdString();
+  if(updateTimelinePtr() == false)
+    return;
 
-  if((subject == "") && (predicat == "") && (object == ""))
+  std::string subject = ui_->feeder_subject_editline->text().toStdString();
+  std::string predicat = ui_->feeder_property_editline->text().toStdString();
+  std::string object = ui_->feeder_object_editline->text().toStdString();
+
+  if((subject.empty()) && (predicat.empty()) && (object.empty()))
   {
     return;
   }
   else
   {
-    std::string instance_ns = ui->static_instance_name_editline->text().toStdString();
-    if(instance_ns == "")
-      instance_ns = "_";
-    createPublisher(instance_ns);
-    if((predicat == "") && (object == ""))
-    {
-      mementar::MementarAction msg;
-      msg.name = subject;
-      msg.start_stamp = current_time_;
-      msg.end_stamp = ros::Time(0);
-      actions_publishers_[instance_ns].publish(msg);
-    }
+    if((predicat.empty()) && (object.empty()))
+      timeline_->action_feeder.insert(subject, mementar::compat::mem_ros::Time(current_time_.seconds, current_time_.nanoseconds));
     else
     {
-      mementar::StampedString msg;
-      msg.data = "[ADD]" + subject + "|" + predicat + "|" + object;
-      msg.stamp = current_time_;
-      facts_publishers_[instance_ns].publish(msg);
+      mementar::Fact fact(subject, predicat, object, true);
+      timeline_->fact_feeder.insert(fact, mementar::compat::mem_ros::Time(current_time_.seconds, current_time_.nanoseconds));
     }
   }
 }
 
-void mementarGUI::feederDelSlot()
+void MementarGUI::feederDelSlot()
 {
-  std::string subject = ui->feeder_subject_editline->text().toStdString();
-  std::string predicat = ui->feeder_property_editline->text().toStdString();
-  std::string object = ui->feeder_object_editline->text().toStdString();
+  if(updateTimelinePtr() == false)
+    return;
 
-  if((subject == "") && (predicat == "") && (object == ""))
+  std::string subject = ui_->feeder_subject_editline->text().toStdString();
+  std::string predicat = ui_->feeder_property_editline->text().toStdString();
+  std::string object = ui_->feeder_object_editline->text().toStdString();
+
+  if((subject.empty()) && (predicat.empty()) && (object.empty()))
   {
     return;
   }
   else
   {
-    std::string instance_ns = ui->static_instance_name_editline->text().toStdString();
-    if(instance_ns == "")
-      instance_ns = "_";
-    createPublisher(instance_ns);
-    if((predicat == "") && (object == ""))
-    {
-      mementar::MementarAction msg;
-      msg.name = subject;
-      msg.start_stamp = ros::Time(0);
-      msg.end_stamp = current_time_;
-      actions_publishers_[instance_ns].publish(msg);
-    }
+    if((predicat.empty()) && (object.empty()))
+      timeline_->action_feeder.insertEnd(subject, mementar::compat::mem_ros::Time(current_time_.seconds, current_time_.nanoseconds));
     else
     {
-      mementar::StampedString msg;
-      msg.data = "[DEL]" + subject + "|" + predicat + "|" + object;
-      msg.stamp = current_time_;
-      facts_publishers_[instance_ns].publish(msg);
+      mementar::Fact fact(subject, predicat, object, false);
+      timeline_->fact_feeder.insert(fact, mementar::compat::mem_ros::Time(current_time_.seconds, current_time_.nanoseconds));
     }
   }
 }
 
-void mementarGUI::feederCommitSlot()
+void MementarGUI::feederCommitSlot()
 {
-  mementar::StampedString msg;
-  msg.data = "[commit]" + ui->feeder_commit_name_editline->text().toStdString() + "|";
-  std::string instance_ns = ui->static_instance_name_editline->text().toStdString();
-  if(instance_ns == "")
-    instance_ns = "_";
-  createPublisher(instance_ns);
-  facts_publishers_[instance_ns].publish(msg);
+  if(updateTimelinePtr() == false)
+    return;
+
+  // timeline_->fact_feeder.commit(ui_->feeder_commit_name_editline->text().toStdString());
 }
 
-void mementarGUI::feederCheckoutSlot()
+void MementarGUI::feederCheckoutSlot()
 {
-  mementar::StampedString msg;
-  msg.data = "[checkout]" + ui->feeder_commit_name_editline->text().toStdString() + "|";
-  std::string instance_ns = ui->static_instance_name_editline->text().toStdString();
-  if(instance_ns == "")
-    instance_ns = "_";
-  createPublisher(instance_ns);
-  facts_publishers_[instance_ns].publish(msg);
+  if(updateTimelinePtr() == false)
+    return;
+
+  // timeline_->fact_feeder.checkout(ui_->feeder_commit_name_editline->text().toStdString());
 }
 
-void mementarGUI::createPublisher(const std::string& instance_ns)
+bool MementarGUI::updateTimelinePtr()
 {
-  if(facts_publishers_.find(instance_ns) == facts_publishers_.end())
-  {
-    facts_publishers_[instance_ns] = n_->advertise<mementar::StampedString>("mementar/insert_fact_stamped/" + instance_ns, QUEU_SIZE);
-    while(ros::ok() && (facts_publishers_[instance_ns].getNumSubscribers() == 0))
-      ros::spinOnce();
-  }
+  if(multi_usage_ == false)
+    return true;
 
-  if(actions_publishers_.find(instance_ns) == actions_publishers_.end())
+  const std::string instance_name = ui_->static_instance_name_editline->text().toStdString();
+  timeline_ = timelines_.get(instance_name);
+  if(timeline_ == nullptr)
   {
-    actions_publishers_[instance_ns] = n_->advertise<mementar::MementarAction>("mementar/insert_action/" + instance_ns, QUEU_SIZE);
-    while(ros::ok() && (actions_publishers_[instance_ns].getNumSubscribers() == 0))
-      ros::spinOnce();
+    auto intances_name = timelines_.list();
+    if(std::find(intances_name.begin(), intances_name.end(), instance_name) != intances_name.end())
+    {
+      timelines_.add(instance_name);
+      timeline_ = timelines_.get(instance_name);
+      if(timeline_ != nullptr)
+        return true;
+    }
+
+    if(instance_name.empty() == false)
+      displayErrorInfo("Instance " + instance_name + " does not exist");
+    return false;
   }
+  else
+    return true;
 }

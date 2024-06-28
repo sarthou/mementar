@@ -5,26 +5,26 @@
 #include <string>
 
 #include "mementar/core/LtManagement/EpisodicTree/CompressedLeafNode.h"
+#include "mementar/core/memGraphs/Branchs/types/SoftPoint.h"
 
-namespace mementar
-{
+namespace mementar {
 
-class ArchivedLeaf
-{
-public:
-  ArchivedLeaf(CompressedLeafNode* tree, size_t nb, const std::string& directory);
-  ArchivedLeaf(const time_t& key, const std::string& directory);
+  class ArchivedLeaf
+  {
+  public:
+    ArchivedLeaf(CompressedLeafNode* tree, size_t nb, const std::string& directory);
+    ArchivedLeaf(const SoftPoint::Ttime& key, const std::string& directory);
 
-  std::string getDirectory() { return directory_; }
-  time_t getKey() { return key_; }
+    std::string getDirectory() const { return directory_; }
+    SoftPoint::Ttime getKey() const { return key_; }
 
-  BplusTree<time_t, Fact*>* getTree(size_t i);
-  std::vector<Context> getContexts();
+    BplusTree<SoftPoint::Ttime, Fact*>* getTree(size_t i);
+    std::vector<Context> getContexts();
 
-private:
-  time_t key_;
-  std::string directory_;
-};
+  private:
+    SoftPoint::Ttime key_;
+    std::string directory_;
+  };
 
 } // namespace mementar
 

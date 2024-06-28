@@ -1,38 +1,38 @@
-#include <iostream>
-#include <fstream>
-#include <streambuf>
+#include "mementar/core/LtManagement/archiving_compressing/archiving/Archive.h"
 
 #include <chrono>
-#include <stdlib.h>     /* srand, rand */
-#include <time.h>       /* time */
-
+#include <cstdlib> /* srand, rand */
+#include <ctime>   /* time */
+#include <fstream>
+#include <iostream>
+#include <iterator>
+#include <string>
 #include <vector>
 
 #include "mementar/core/LtManagement/archiving_compressing/archiving/Header.h"
-#include "mementar/core/LtManagement/archiving_compressing/archiving/Archive.h"
 
 using namespace std::chrono;
 
-enum action_t
+enum Action_e
 {
   act_list,
   act_extract,
   act_archive
 };
 
-int main (int argc, char* argv[])
+int main(int argc, char* argv[])
 {
   std::vector<std::string> input_files;
-  std::string description_file = "";
-  std::string output_file = "";
-  action_t action = act_archive;
+  std::string description_file;
+  std::string output_file;
+  Action_e action = act_archive;
 
   for(int i = 1; i < argc; i++)
   {
     if(std::string(argv[i]) == "-i")
     {
-      if(i+1 < argc)
-        input_files.push_back(std::string(argv[++i]));
+      if(i + 1 < argc)
+        input_files.emplace_back(argv[++i]);
       else
       {
         std::cout << "expected argument after the -i option" << std::endl;
@@ -41,7 +41,7 @@ int main (int argc, char* argv[])
     }
     else if(std::string(argv[i]) == "-o")
     {
-      if(i+1 < argc)
+      if(i + 1 < argc)
         output_file = std::string(argv[++i]);
       else
       {
@@ -51,7 +51,7 @@ int main (int argc, char* argv[])
     }
     else if(std::string(argv[i]) == "-d")
     {
-      if(i+1 < argc)
+      if(i + 1 < argc)
         description_file = std::string(argv[++i]);
       else
       {
@@ -75,17 +75,17 @@ int main (int argc, char* argv[])
     }
   }
 
-  if(input_files.size() == 0)
+  if(input_files.empty())
   {
     std::cout << "specify an input file with -i" << std::endl;
     return -1;
   }
-  if((output_file == "") && (action != act_list))
+  if((output_file.empty()) && (action != act_list))
   {
     std::cout << "specify the output file with -o" << std::endl;
     return -1;
   }
-  if((description_file == "") && (action == act_archive))
+  if((description_file.empty()) && (action == act_archive))
   {
     std::cout << "specify a description_file file with -d" << std::endl;
     return -1;
@@ -98,7 +98,7 @@ int main (int argc, char* argv[])
   {
     std::ifstream t(description_file);
     std::string in((std::istreambuf_iterator<char>(t)),
-                     std::istreambuf_iterator<char>());
+                   std::istreambuf_iterator<char>());
     mementar::Archive arch(in, input_files);
 
     std::vector<char> data = arch.load();

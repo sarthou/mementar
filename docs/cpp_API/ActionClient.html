@@ -1,0 +1,280 @@
+<html lang="en_US">
+
+<head>
+  <title>ActionClient Class | Mementar 0.0.4</title>
+  <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+  <link href="../style/mementar_api.css" rel="stylesheet" type="text/css">
+  <link href="../img/logo/favicon.ico" rel="shortcut icon">
+  <link href="../img/logo/favicon-32x32.png" rel="icon" type="image/png">
+  <link href="../img/logo/favicon-16x16.png" rel="icon" type="image/png">
+</head>
+
+<body>
+  <div class="header" id="header">
+    <header class="fixed" id="navbar">
+      <div class="container">
+        <div class="navbar-header">
+          <div id="header-buttons">
+            <ul id="header-ul" data-event="hover_intent" data-effect="fade" data-effect-speed="500">
+              <li class="header-item"><a class="header-link" href="https://github.com/sarthou/mementar/wiki"
+                  tabindex="0">Wiki</a></li>
+              <li class="header-item"><a class="header-link" href="https://github.com/sarthou/mementar"
+                  tabindex="0"><img
+                    src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Octicons-mark-github.svg/1200px-Octicons-mark-github.svg.png"
+                    alt="github" width="40px" height="40px" /></a></li>
+            </ul>
+          </div>
+          <a class="navbar-icon" href="../index.html">
+            <img src="../img/logo/mementar_light.png " alt="mementar" width="65px" height="65px" />
+          </a>
+        </div>
+      </div>
+    </header>
+  </div>
+
+  <div class="main">
+
+    <div class="navigationbar">
+      <ul class="sub-navigation">
+        <li><a href="https://github.com/sarthou/mementar/tree/master/src/API">C++ API sources</a></li>
+        <li><a href="https://github.com/sarthou/mementar/tree/master/include/mementar/API">C++ API headers</a></li>
+        <li><a href="https://gitlab.com/sarthou/mementar/pipelines">Pipelines</a></li>
+      </ul>
+      <h1>Mementar API Documentation</h1>
+    </div>
+
+    <div class="content">
+      <div class="sidebar" style="transition: all 0.2s ease-out 0s; top: -588px;">
+        <div class="contents class-content">
+          <div id="contents-toggle" class=""></div>
+          <h3>Contents</h3>
+          <ul style="display: block;">
+            <li class="level1"><a href="#public-functions">Public Functions</a></li>
+            <li class="level1"><a href="#details">Detailed Description</a></li>
+          </ul>
+        </div>
+
+        <div class="contents">
+          <div id="contents-toggle" class=""></div>
+          <h3>Getting Start</h3>
+          <ul style="display: block;">
+            <li class="level1"><a href="../Download.html">Download</a></li>
+            <li class="level1">Install Mementar</li>
+            <li class="level2"><a href="../InstallMementarROS1.html">- Install with ROS1</a></li>
+            <li class="level2"><a href="../InstallMementarROS2.html">- Install with ROS2</a></li>
+            <li class="level1"><a href="../SetUp.html">Set Up Your Environnement</a></li>
+            <li class="level1"><a href="../Tutorials.html">Tutorials</a></li>
+          </ul>
+        </div>
+
+        <div class="contents">
+          <div id="contents-toggle" class=""></div>
+          <h3><a href="CppAPI.html">All C++ Classes</a></h3>
+          <ul style="display: block;">
+            <li class="level1"><a href="ActionClient.html"><b>ActionClient</b></a></li>
+            <li class="level1"><a href="ActionsPublisher.html">ActionsPublisher</a></li>
+            <li class="level1"><a href="ActionsSubscriber.html">ActionsSubscriber</a></li>
+            <li class="level1"><a href="ClientBase.html">ClientBase</a></li>
+            <li class="level1"><a href="Fact.html">Fact</a></li>
+            <li class="level1"><a href="FactClient.html">FactClient</a></li>
+            <li class="level1"><a href="InstanceManagerClient.html">InstanceManagerClient</a></li>
+            <li class="level1"><a href="ManagerClient.html">ManagerClient</a></li>
+            <li class="level1"><a href="OccasionsPublisher.html">OccasionsPublisher</a></li>
+            <li class="level1"><a href="OccasionsSubscriber.html">OccasionsSubscriber</a></li>
+            <li class="level1"><a href="TimelineManipulator.html">TimelineManipulator</a></li>
+            <li class="level1"><a href="TimelinesManipulator.html">TimelinesManipulator</a></li>
+          </ul>
+        </div>
+
+      </div>
+
+      <div class="context">
+        <h1 class="title">ActionClient Class</h1>
+        <p>The ActionClient class provides a ROS service abstraction for actions exploration. <a
+            href="#details">More...</a></p>
+        <div class="table">
+          <table class="alignedsummary">
+            <tbody>
+              <tr>
+                <td class="memItemLeft rightAlign topAlign"> Header:</td>
+                <td class="memItemRight bottomAlign"> <span class="preprocessor">#include
+                    &quot;mementar/clients/ActionClient.h&quot;</span></td>
+              </tr>
+              <tr>
+                <td class="memItemLeft rightAlign topAlign"> Inherits:</td>
+                <td class="memItemRight bottomAlign"> <a href="ClientBase.html">ClientBase</a></td>
+              </tr>
+              <tr>
+                <td class="memItemLeft rightAlign topAlign"> Namespace:</td>
+                <td class="memItemRight bottomAlign"> <span class="preprocessor">mementar</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <a name="public-functions"></a>
+        <h2 id="public-functions">Public Functions</h2>
+        <div class="table">
+          <table class="alignedsummary">
+            <tbody>
+              <tr>
+                <td class="memItemLeft rightAlign topAlign"> </td>
+                <td class="memItemRight bottomAlign"><b><a
+                      href="ActionClient.html#ActionClient">ActionClient</a></b>(const std::string&amp; <i>name</i>)
+                </td>
+              </tr>
+              <tr>
+                <td class="memItemLeft rightAlign topAlign"> bool </td>
+                <td class="memItemRight bottomAlign"><b><a href="ActionClient.html#exist">exist</a></b>(const
+                  std::string& <i>action_name</i>)</td>
+              </tr>
+              <tr>
+                <td class="memItemLeft rightAlign topAlign"> std::vector&lt;std::string&gt; </td>
+                <td class="memItemRight bottomAlign"><b><a href="ActionClient.html#getPending">getPending</a></b>()</td>
+              </tr>
+              <tr>
+                <td class="memItemLeft rightAlign topAlign"> bool </td>
+                <td class="memItemRight bottomAlign"><b><a href="ActionClient.html#isPending">isPending</a></b>(const
+                  std::string& <i>action_name</i>)
+                </td>
+              </tr>
+              <tr>
+                <td class="memItemLeft rightAlign topAlign"> compat::mem_ros::Time </td>
+                <td class="memItemRight bottomAlign"><b><a
+                      href="ActionClient.html#getStartStamp">getStartStamp</a></b>(const
+                  std::string& <i>action_name</i>)
+                </td>
+              </tr>
+              <tr>
+                <td class="memItemLeft rightAlign topAlign"> compat::mem_ros::Time </td>
+                <td class="memItemRight bottomAlign"><b><a
+                      href="ActionClient.html#getEndStamp">getEndStamp</a></b>(const std::string& <i>action_name</i>)
+                </td>
+              </tr>
+              <tr>
+                <td class="memItemLeft rightAlign topAlign"> compat::mem_ros::Time </td>
+                <td class="memItemRight bottomAlign"><b><a
+                      href="ActionClient.html#getDuration">getDuration</a></b>(const std::string& <i>action_name</i>)
+                </td>
+              </tr>
+              <tr>
+                <td class="memItemLeft rightAlign topAlign"> std::string </td>
+                <td class="memItemRight bottomAlign"><b><a
+                      href="ActionClient.html#getStartFact">getStartFact</a></b>(const std::string& <i>action_name</i>)
+                </td>
+              </tr>
+              <tr>
+                <td class="memItemLeft rightAlign topAlign"> std::string </td>
+                <td class="memItemRight bottomAlign"><b><a href="ActionClient.html#getEndFact">getEndFact</a></b>(const
+                  std::string& <i>action_name</i>)</td>
+              </tr>
+              <tr>
+                <td class="memItemLeft rightAlign topAlign"> std::vector&lt;std::string&gt; </td>
+                <td class="memItemRight bottomAlign"><b><a
+                      href="ActionClient.html#getFactsDuring">getFactsDuring</a></b>(const std::string&
+                  <i>action_name</i>)
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="table">
+          <a name="details"></a>
+          <div class="descr">
+            <h2 id="details">Detailed Description</h2>
+            <p>The ActionClient class provides an abstraction of mementar actions ROS service.</p>
+            <p>The mementar actions service allows the exploration of actions contained by mementar core.</p>
+            <p>This class is based on <a href="ClientBase.html">ClientBase</a> and so ensure a persistent connection
+              with mementar/actions service. The persistent connection ensures a minimal response time. A reconnection
+              logic is implemented in the event that the persistent connection fails. </p>
+          </div>
+
+          <div class="func">
+            <h2>Public Functions Documentation</h2>
+
+            <h3 class="fn" id="ActionClient"><a name="ActionClient"></a>ActionClient::<span
+                class="name">ActionClient</span>(const <span class="type">std::string</span>&amp; <i>name</i> =
+              &quot;&quot;)</h3>
+            <p>Constructs an action client.</p>
+            <p>Can be used in a multi-timeline mode by specifying the name of the timeline <i>name</i>. For classic use,
+              <i>name</i> should be defined as &quot;&quot;.
+            </p>
+
+            <h3 class="fn" id="exist"><a name="exist"></a><span class="type">bool</span> ActionClient::<span
+                class="name">exist</span>(const <span class="type">std::string</span>&amp; <i>action_name</i>)
+            </h3>
+            <p>Returns true if the action <i>action_name</i> exists.</p>
+
+            <h3 class="fn" id="getPending"><a name="getPending"></a><span class="type">std::vector&lt;string&gt;</span>
+              ActionClient::<span class="name">getPending</span>()</h3>
+            <p>Returns the list of pending actions.</p>
+
+            <h3 class="fn" id="isPending"><a name="isPending"></a><span class="type">bool</span>
+              ActionClient::<span class="name">isPending</span>(const <span class="type">std::string</span>&amp;
+              <i>action_name</i>)
+            </h3>
+            <p>Returns true if the action <i>action_name</i> is pending.</p>
+
+            <h3 class="fn" id="getStartStamp"><a name="getStartStamp"></a><span
+                class="type">compat::mem_ros::Time</span> ActionClient::<span class="name">getStartStamp</span>(const
+              <span class="type">std::string</span>&amp; <i>action_name</i>)
+            </h3>
+            <p>Returns the starting time stamp of the action <i>action_name</i>.</p>
+            <p>If the action does not exist the time stamp will be 0.</p>
+
+            <h3 class="fn" id="getEndStamp"><a name="getEndStamp"></a><span class="type">compat::mem_ros::Time</span>
+              ActionClient::<span class="name">getEndStamp</span>(const <span class="type">std::string</span>&amp;
+              <i>action_name</i>)
+            </h3>
+            <p>Returns the ending time stamp of the action <i>action_name</i>.</p>
+            <p>If the action does not exist or is not yet finished, the time stamp will be 0.</p>
+
+            <h3 class="fn" id="getDuration"><a name="getDuration"></a><span class="type">compat::mem_ros::Time</span>
+              ActionClient::<span class="name">getDuration</span>(const <span class="type">std::string</span>&amp;
+              <i>action_name</i>)
+            </h3>
+            <p>Returns the duration of the action <i>action_name</i>.</p>
+            <p>If the action does not exist or is not yet finished, the time stamp will be 0.</p>
+
+            <h3 class="fn" id="getStartFact"><a name="getStartFact"></a>std::string</span>
+              ActionClient::<span class="name">getStartFact</span>(const <span class="type">std::string</span>&amp;
+              <i>action_name</i>)
+            </h3>
+            <p>Returns the fact representing the beginning of the action <i>action_name</i>.</p>
+            <p>If the action does not exist the returned string will be empty.</p>
+
+            <h3 class="fn" id="getEndFact"><a name="getEndFact"></a>std::string</span>
+              ActionClient::<span class="name">getEndFact</span>(const <span class="type">std::string</span>&amp;
+              <i>action_name</i>)
+            </h3>
+            <p>Returns the fact representing the ending of the action <i>action_name</i>.</p>
+            <p>If the action does not exist or is not yet finished, the returned string will be empty.</p>
+
+            <h3 class="fn" id="getFactsDuring"><a name="getFactsDuring"></a>std::vector&lt;std::string&gt;</span>
+              ActionClient::<span class="name">getFactsDuring</span>(const <span class="type">std::string</span>&amp;
+              <i>action_name</i>)
+            </h3>
+            <p>Returns the list of fact having took place during the action <i>action_name</i>.</p>
+            <p>Even if the action is pending, all facts having took place since its beginning will be considered.</p>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</body>
+
+<footer>
+  <div align="center">
+    <p>
+      Brought to you by:
+      <a class="laas_logo" href="https://www.laas.fr/public/">
+        <img src="../img/LogoLAAS-2016_BW.png " alt="LAAS-CNRS" height="60px" />
+      </a>
+    </p>
+  </div>
+</footer>
+
+</html>

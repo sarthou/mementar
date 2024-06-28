@@ -2,6 +2,8 @@
   <arg name="onto_display" default="false"/>
   <arg name="onto_config_file" default="none"/>
   <arg name="onto_intern_file" default="none"/>
+  <arg name="onto_robot_file" default="none"/>
+  <arg name="onto_human_file" default="none"/>
   <arg name="onto_files" default=""/>
 
   <arg name="mementar_intern_directory" default="none"/>
@@ -13,6 +15,8 @@
       <arg name="config_file" value="$(arg onto_config_file)" />
       <arg name="files" value="$(arg onto_files)" />
       <arg name="intern_file" value="$(arg onto_intern_file)" />
+      <arg name="robot_file" value="$(arg onto_robot_file)" />
+      <arg name="human_file" value="$(arg onto_human_file)" />
     </include>
   </group>
 

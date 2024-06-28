@@ -1,57 +1,60 @@
 #include "mementar/core/LtManagement/archiving_compressing/compressing/LzUncompress.h"
 
-#include <iostream>
-#include <fstream>
-#include <math.h>
+#include <cmath>
+#include <cstddef>
+#include <cstdint>
+#include <string>
+#include <vector>
 
-namespace mementar
-{
+#include "mementar/core/LtManagement/archiving_compressing/binaryManagement/BinaryManager.h"
+#include "mementar/core/LtManagement/archiving_compressing/binaryManagement/BitFileGetter.h"
 
-LzUncompress::LzUncompress() : BinaryManager("mlz")
-{
-}
+namespace mementar {
 
-std::string LzUncompress::uncompress(const std::vector<char>& data)
-{
-  std::string out;
-  BitFileGetter bit(0, 0, 8);
-  bit.set(data);
+  LzUncompress::LzUncompress() : BinaryManager("mlz")
+  {}
 
-  size_t offset = 0;
-
-  const auto out_file_size = toInteger<size_t>({(uint8_t)bit.getType3(), (uint8_t)bit.getType3(), (uint8_t)bit.getType3(), (uint8_t)bit.getType3()});
-  out.reserve(out_file_size);
-
-  const size_t search_size_ = toInteger<uint16_t>({(uint8_t)bit.getType3(), (uint8_t)bit.getType3()});
-  bit.setSize1(neededBitCount(search_size_));
-
-  const size_t la_size_ = toInteger<uint16_t>({(uint8_t)bit.getType3(), (uint8_t)bit.getType3()});
-  bit.setSize2(neededBitCount(la_size_));
-
-  while(out.size() < out_file_size)
+  std::string LzUncompress::uncompress(const std::vector<char>& data)
   {
-    if(bit.getBit())
+    std::string out;
+    BitFileGetter bit(0, 0, 8);
+    bit.set(data);
+
+    size_t offset = 0;
+
+    const auto out_file_size = toInteger<size_t>({(uint8_t)bit.getType3(), (uint8_t)bit.getType3(), (uint8_t)bit.getType3(), (uint8_t)bit.getType3()});
+    out.reserve(out_file_size);
+
+    const size_t search_size = (size_t)toInteger<uint16_t>({(uint8_t)bit.getType3(), (uint8_t)bit.getType3()});
+    bit.setSize1(neededBitCount(search_size));
+
+    const size_t la_size = (size_t)toInteger<uint16_t>({(uint8_t)bit.getType3(), (uint8_t)bit.getType3()});
+    bit.setSize2(neededBitCount(la_size));
+
+    while(out.size() < out_file_size)
     {
-      offset = bit.getType1();
-      out += out.substr(out.size() - offset, bit.getType2());
+      if(bit.getBit())
+      {
+        offset = bit.getType1();
+        out += out.substr(out.size() - offset, bit.getType2());
+      }
+      else
+        out.push_back(bit.getChar());
     }
-    else
-      out.push_back(bit.getChar());
+
+    return out;
   }
 
-  return out;
-}
-
-int LzUncompress::neededBitCount(size_t max_value)
-{
-  int nb_bit = 1;
-  size_t tmp_max = 2;
-  while(tmp_max < max_value)
+  int LzUncompress::neededBitCount(size_t max_value)
   {
-    tmp_max = tmp_max<<1;
-    nb_bit++;
+    int nb_bit = 1;
+    size_t tmp_max = 2;
+    while(tmp_max < max_value)
+    {
+      tmp_max = tmp_max << 1;
+      nb_bit++;
+    }
+    return nb_bit;
   }
-  return nb_bit;
-}
 
 } // namespace mementar

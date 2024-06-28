@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>mementarGUI</class>
- <widget class="QMainWindow" name="mementarGUI">
+ <class>MementarGUI</class>
+ <widget class="QMainWindow" name="MementarGUI">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>mementarGUI</string>
+   <string>MementarGUI</string>
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -50,7 +50,7 @@
         </item>
 
         <item>
-         <layout class="QHBoxLayout" name="action_functions_layer1_layout">
+         <layout class="QHBoxLayout" name="action_functions_layer0_layout">
           <item>
            <widget class="QPushButtonExtended" name="action_exist_button">
             <property name="cursor">
@@ -64,6 +64,24 @@
             </property>
            </widget>
           </item>
+          <item>
+           <widget class="QPushButtonExtended" name="action_removeAction_button">
+            <property name="cursor">
+             <cursorShape>PointingHandCursor</cursorShape>
+            </property>
+            <property name="whatsThis">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;removeAction&lt;/span&gt; will remove the action provided in parameter and the related facts&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+            <property name="text">
+             <string>removeAction</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+
+        <item>
+         <layout class="QHBoxLayout" name="action_functions_layer1_layout">
           <item>
            <widget class="QPushButtonExtended" name="action_getPending_button">
             <property name="cursor">

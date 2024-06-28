@@ -8,8 +8,7 @@
 class CallBackTimer
 {
 public:
-  CallBackTimer()
-  :execute_(false)
+  CallBackTimer() : execute_(false)
   {}
 
   ~CallBackTimer()
@@ -25,19 +24,18 @@ public:
       th_.join();
   }
 
-  void start(int interval, std::function<void(void)> func)
+  void start(int interval, const std::function<void(void)>& func)
   {
     if(execute_.load(std::memory_order_acquire))
       stop();
 
     execute_.store(true, std::memory_order_release);
-    th_ = std::thread([this, interval, func]()
-    {
-      while (execute_.load(std::memory_order_acquire))
+    th_ = std::thread([this, interval, func]() {
+      while(execute_.load(std::memory_order_acquire))
       {
         func();
         std::this_thread::sleep_for(
-        std::chrono::milliseconds(interval));
+          std::chrono::milliseconds(interval));
       }
     });
   }

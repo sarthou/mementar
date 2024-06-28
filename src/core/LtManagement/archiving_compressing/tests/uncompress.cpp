@@ -1,34 +1,34 @@
-#include <iostream>
-#include <fstream>
-#include <streambuf>
-
 #include <chrono>
-#include <stdlib.h>     /* srand, rand */
-#include <time.h>       /* time */
+#include <cstdlib> /* srand, rand */
+#include <ctime>   /* time */
+#include <fstream>
+#include <iostream>
+#include <string>
+#include <vector>
 
-#include "mementar/core/LtManagement/archiving_compressing/compressing/LzUncompress.h"
 #include "mementar/core/LtManagement/archiving_compressing/compressing/Huffman.h"
+#include "mementar/core/LtManagement/archiving_compressing/compressing/LzUncompress.h"
 
 using namespace std::chrono;
 
-enum code_t
+enum Code_e
 {
   lz77,
   huffman,
   other_code
 };
 
-int main (int argc, char* argv[])
+int main(int argc, char* argv[])
 {
-  std::string input_file = "";
-  std::string output_file = "";
-  code_t code_type = other_code;
+  std::string input_file;
+  std::string output_file;
+  Code_e code_type = other_code;
 
   for(int i = 1; i < argc; i++)
   {
     if(std::string(argv[i]) == "-i")
     {
-      if(i+1 < argc)
+      if(i + 1 < argc)
         input_file = std::string(argv[++i]);
       else
       {
@@ -38,7 +38,7 @@ int main (int argc, char* argv[])
     }
     else if(std::string(argv[i]) == "-o")
     {
-      if(i+1 < argc)
+      if(i + 1 < argc)
         output_file = std::string(argv[++i]);
       else
       {
@@ -61,12 +61,12 @@ int main (int argc, char* argv[])
     }
   }
 
-  if(input_file == "")
+  if(input_file.empty())
   {
     std::cout << "specify the input file with -i" << std::endl;
     return -1;
   }
-  if(output_file == "")
+  if(output_file.empty())
   {
     std::cout << "specify the output file with -o" << std::endl;
     return -1;
@@ -96,7 +96,7 @@ int main (int argc, char* argv[])
     if(huff.readBinaryFile(data, input_file))
     {
       size_t tree_size = huff.setTree(data);
-      data = std::vector<char>(data.begin() + tree_size, data.end());
+      data = std::vector<char>(data.begin() + (int)tree_size, data.end());
       out = huff.getFile(data);
     }
   }
@@ -106,15 +106,15 @@ int main (int argc, char* argv[])
   ///////////////////////////////////////////////////////////////////
 
   std::ofstream myfile;
-  myfile.open (output_file);
+  myfile.open(output_file);
   myfile << out;
   myfile.close();
 
-  //std::cout << out << std::endl;
+  // std::cout << out << std::endl;
 
   std::cout << "time = " << time_span.count() << "s" << std::endl;
 
   return 0;
 }
 
-//’
+// ’

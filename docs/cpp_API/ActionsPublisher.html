@@ -1,0 +1,251 @@
+<html lang="en_US">
+
+<head>
+  <title>ActionsPublisher Class | Mementar 0.0.4</title>
+  <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+  <link href="../style/mementar_api.css" rel="stylesheet" type="text/css">
+  <link href="../img/logo/favicon.ico" rel="shortcut icon">
+  <link href="../img/logo/favicon-32x32.png" rel="icon" type="image/png">
+  <link href="../img/logo/favicon-16x16.png" rel="icon" type="image/png">
+</head>
+
+<body>
+  <div class="header" id="header">
+    <header class="fixed" id="navbar">
+      <div class="container">
+        <div class="navbar-header">
+          <div id="header-buttons">
+            <ul id="header-ul" data-event="hover_intent" data-effect="fade" data-effect-speed="500">
+              <li class="header-item"><a class="header-link" href="https://github.com/sarthou/mementar/wiki"
+                  tabindex="0">Wiki</a></li>
+              <li class="header-item"><a class="header-link" href="https://github.com/sarthou/mementar"
+                  tabindex="0"><img
+                    src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Octicons-mark-github.svg/1200px-Octicons-mark-github.svg.png"
+                    alt="github" width="40px" height="40px" /></a></li>
+            </ul>
+          </div>
+          <a class="navbar-icon" href="../index.html">
+            <img src="../img/logo/mementar_light.png " alt="mementar" width="65px" height="65px" />
+          </a>
+        </div>
+      </div>
+    </header>
+  </div>
+
+  <div class="main">
+
+    <div class="navigationbar">
+      <ul class="sub-navigation">
+        <li><a href="https://github.com/sarthou/mementar/tree/master/src/API">C++ API sources</a></li>
+        <li><a href="https://github.com/sarthou/mementar/tree/master/include/mementar/API">C++ API headers</a></li>
+        <li><a href="https://gitlab.com/sarthou/mementar/pipelines">Pipelines</a></li>
+      </ul>
+      <h1>Mementar API Documentation</h1>
+    </div>
+
+    <div class="content">
+      <div class="sidebar" style="transition: all 0.2s ease-out 0s; top: -588px;">
+        <div class="contents class-content">
+          <div id="contents-toggle" class=""></div>
+          <h3>Contents</h3>
+          <ul style="display: block;">
+            <li class="level1"><a href="#public-functions">Public Functions</a></li>
+            <li class="level1"><a href="#details">Detailed Description</a></li>
+          </ul>
+        </div>
+
+        <div class="contents">
+          <div id="contents-toggle" class=""></div>
+          <h3>Getting Start</h3>
+          <ul style="display: block;">
+            <li class="level1"><a href="../Download.html">Download</a></li>
+            <li class="level1">Install Mementar</li>
+            <li class="level2"><a href="../InstallMementarROS1.html">- Install with ROS1</a></li>
+            <li class="level2"><a href="../InstallMementarROS2.html">- Install with ROS2</a></li>
+            <li class="level1"><a href="../SetUp.html">Set Up Your Environnement</a></li>
+            <li class="level1"><a href="../Tutorials.html">Tutorials</a></li>
+          </ul>
+        </div>
+
+        <div class="contents">
+          <div id="contents-toggle" class=""></div>
+          <h3><a href="CppAPI.html">All C++ Classes</a></h3>
+          <ul style="display: block;">
+            <li class="level1"><a href="ActionClient.html">ActionClient</a></li>
+            <li class="level1"><a href="ActionsPublisher.html"><b>ActionsPublisher</b></a></li>
+            <li class="level1"><a href="ActionsSubscriber.html">ActionsSubscriber</a></li>
+            <li class="level1"><a href="ClientBase.html">ClientBase</a></li>
+            <li class="level1"><a href="Fact.html">Fact</a></li>
+            <li class="level1"><a href="FactClient.html">FactClient</a></li>
+            <li class="level1"><a href="InstanceManagerClient.html">InstanceManagerClient</a></li>
+            <li class="level1"><a href="ManagerClient.html">ManagerClient</a></li>
+            <li class="level1"><a href="OccasionsPublisher.html">OccasionsPublisher</a></li>
+            <li class="level1"><a href="OccasionsSubscriber.html">OccasionsSubscriber</a></li>
+            <li class="level1"><a href="TimelineManipulator.html">TimelineManipulator</a></li>
+            <li class="level1"><a href="TimelinesManipulator.html">TimelinesManipulator</a></li>
+          </ul>
+        </div>
+
+      </div>
+
+      <div class="context">
+        <h1 class="title">ActionsPublisher Class</h1>
+        <p>The ActionsPublisher class provides an abstraction for mementar action insertion topic. <a
+            href="#details">More...</a></p>
+        <div class="table">
+          <table class="alignedsummary">
+            <tbody>
+              <tr>
+                <td class="memItemLeft rightAlign topAlign"> Header:</td>
+                <td class="memItemRight bottomAlign"> <span class="preprocessor">#include
+                    &quot;mementar/ActionsPublisher.h&quot;</span>
+                </td>
+              </tr>
+              <tr>
+                <td class="memItemLeft rightAlign topAlign"> Namespace:</td>
+                <td class="memItemRight bottomAlign"> <span class="preprocessor">mementar</span>
+              <tr>
+            </tbody>
+          </table>
+        </div>
+
+        <a name="public-functions"></a>
+        <h2 id="public-functions">Public Functions</h2>
+        <div class="table">
+          <table class="alignedsummary">
+            <tbody>
+              <tr>
+                <td class="memItemLeft rightAlign topAlign"> </td>
+                <td class="memItemRight bottomAlign"><b><a
+                      href="ActionsPublisher.html#ActionsPublisher">ActionsPublisher</a></b>(const
+                  std::string&amp; <i>name</i> = "")
+                </td>
+              </tr>
+              <tr>
+                <td class="memItemLeft rightAlign topAlign"> void </td>
+                <td class="memItemRight bottomAlign"><b><a href="ActionsPublisher.html#insert1">insert</a></b>(const
+                  std::string&amp; <i>name</i>, const
+                  compat::mem_ros::Time&amp; <i>start_stamp</i> = compat::mem_ros::Node::get().currentTime(), const
+                  compat::mem_ros::Time&amp; <i>end_stamp</i> = compat::mem_ros::Time(0))
+                </td>
+              </tr>
+              <tr>
+                <td class="memItemLeft rightAlign topAlign"> void </td>
+                <td class="memItemRight bottomAlign"><b><a href="ActionsPublisher.html#insert2">insert</a></b>(const
+                  std::string&amp; <i>name</i>, time_t <i>start_stamp</i>, time_t <i>end_stamp</i> = 0)
+                </td>
+              </tr>
+              <tr>
+                <td class="memItemLeft rightAlign topAlign"> void </td>
+                <td class="memItemRight bottomAlign"><b><a
+                      href="ActionsPublisher.html#insertEnd1">insertEnd</a></b>(const
+                  std::string&amp; <i>name</i>, const
+                  compat::mem_ros::Time&amp; <i>end_stamp</i> = compat::mem_ros::Node::get().currentTime())
+                </td>
+              </tr>
+              <tr>
+                <td class="memItemLeft rightAlign topAlign"> void </td>
+                <td class="memItemRight bottomAlign"><b><a
+                      href="ActionsPublisher.html#insertEnd2">insertEnd</a></b>(const
+                  std::string&amp; <i>name</i>, time_t <i>end_stamp</i>)
+                </td>
+              </tr>
+              <tr>
+                <td class="memItemLeft rightAlign topAlign"> void </td>
+                <td class="memItemRight bottomAlign"><b><a
+                      href="ActionsPublisher.html#registerFeederNotificationCallback">registerFeederNotificationCallback</a></b>(const
+                  std::function&lt;void(const std::string&)&gt;&amp; <i>callback</i>)
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <a name="details"></a>
+        <div class="descr">
+          <h2 id="details">Detailed Description</h2>
+          <p>The ActionsPublisher class provides an abstraction for mementar action insertion ROS topic.</p>
+          <p>The insertion process is asynchronous and therefore does not guarantee any response time.</p>
+          <p>In mementar, a fact is a datum that is not linked to a temporal stamp. When a fact occurs at a moment t, it
+            is called an occasion. An occasion is a particular time or instance of an event. An event occurs on a time
+            interval. It is thus composed of two occasions, one being the beginning of the event and the other the end.
+            An event is therefore a change of state of a fact, so that two facts have the same subject and the same
+            predicate, but the object changes.</p>
+        </div>
+
+        <div class="func">
+          <h2>Public Functions Documentation</h2>
+
+          <h3 class="fn" id="ActionsPublisher"><a name="ActionsPublisher"></a>ActionsPublisher::<span
+              class="name">ActionsPublisher</span>(const <span class="type">std::string</span>&amp; <i>name</i> = "")
+          </h3>
+          <p>Constructs an ActionsPublisher.</p>
+          <p>Can be used in a multi-process mode by specifying the name of the mementar instance <i>name</i>. For
+            classic use, <i>name</i> should be defined as &quot;&quot;.</p>
+
+          <h3 class="fn" id="insert1"><a name="insert1"></a><span class="type">void</span>
+            ActionsPublisher::<span class="name">insert</span>(const <span class="type">std::string</span>&amp;
+            <i>name</i>,
+            const <span class="type">compat::mem_ros::Time</span>&amp; <i>start_stamp</i> =
+            mem_ros::Node::get().currentTime(),
+            const <span class="type">compat::mem_ros::Time</span>&amp; <i>end_stamp</i> =
+            compat::mem_ros::Time(0))
+          </h3>
+          <p>Inserts the action defined in its name <i>name</i> starting at the time stamp <i>start_stamp</i>
+            and ending at <i>end_stamp</i>.</p>
+          <p>If the start_stamp parameter is not set, it will be set at the current time.</p>
+          <p>If the end_stamp parameter is not set, it will be set at the 0 representing an unfinished action.</p>
+
+          <h3 class="fn" id="insert2"><a name="insert2"></a><span class="type">void</span>
+            ActionsPublisher::<span class="name">insert</span>(const <span class="type">std::string</span>&amp;
+            <i>name</i>,
+            <span class="type">time_t</span> <i>start_stamp</i>,
+            <span class="type">time_t</span> <i>end_stamp</i> = 0)
+          </h3>
+          <p>Inserts the action defined in its name <i>name</i> starting at the time stamp <i>start_stamp</i>
+            and ending at <i>end_stamp</i>.</p>
+          <p>If the end_stamp parameter is not set, it will be set at the 0 representing an unfinished action.</p>
+
+          <h3 class="fn" id="insertEnd1"><a name="insertEnd1"></a><span class="type">void</span>
+            ActionsPublisher::<span class="name">insertEnd</span>(const <span class="type">std::string</span>&amp;
+            <i>name</i>,
+            const <span class="type">compat::mem_ros::Time</span>&amp; <i>end_stamp</i> =
+            mem_ros::Node::get().currentTime())
+          </h3>
+          <p>Inserts the ending of the action defined in its name <i>name</i> at <i>end_stamp</i>.</p>
+          <p>If the end_stamp parameter is not set, it will be set at the current time.</p>
+
+          <h3 class="fn" id="insertEnd2"><a name="insertEnd2"></a><span class="type">void</span>
+            ActionsPublisher::<span class="name">insertEnd</span>(const <span class="type">std::string</span>&amp;
+            <i>name</i>,
+            <span class="type">time_t</span> <i>end_stamp</i>)
+          </h3>
+          <p>Inserts the ending of the action defined in its name <i>name</i> at <i>end_stamp</i>.</p>
+
+          <h3 class="fn" id="registerFeederNotificationCallback"><a name="registerFeederNotificationCallback"></a><span
+              class="type">void</span> FeederPublisher::<span
+              class="name">registerFeederNotificationCallback</span>(const <span
+              class="type">std::function</span>&lt;<span class="type">void</span>(const <span
+              class="type">std::string</span>&amp;)&gt;&amp; <i>callback</i>)</h3>
+          <p>Registers a callback function to get notifications from the publisher.</p>
+          <p>The parameter <i>callback</i> is the callback function taking a string.</p>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+</body>
+
+<footer>
+  <div align="center">
+    <p>
+      Brought to you by:
+      <a class="laas_logo" href="https://www.laas.fr/public/">
+        <img src="../img/LogoLAAS-2016_BW.png " alt="LAAS-CNRS" height="60px" />
+      </a>
+    </p>
+  </div>
+</footer>
+
+</html>

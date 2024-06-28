@@ -2,6 +2,6 @@
 
 namespace mementar {
 
-SoftPoint::Ttime SoftPoint::default_time = 0;
+  SoftPoint::Ttime SoftPoint::default_time = 0;
 
-} //namespace mementar
+} // namespace mementar

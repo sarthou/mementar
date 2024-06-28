@@ -1,80 +1,99 @@
 #ifndef MEMENTAR_CONTEXTUALIZEDFACT_H
 #define MEMENTAR_CONTEXTUALIZEDFACT_H
 
-#include "mementar/core/memGraphs/Branchs/types/Fact.h"
-#include "mementar/core/memGraphs/Branchs/types/Action.h"
-#include "mementar/core/memGraphs/Branchs/ValuedNode.h"
-
-#include "mementar/core/memGraphs/ExtendedBtree/EventLinkedLeaf.h"
-
 #include <string>
+
+#include "mementar/core/memGraphs/Branchs/ValuedNode.h"
+#include "mementar/core/memGraphs/Branchs/types/Action.h"
+#include "mementar/core/memGraphs/Branchs/types/Fact.h"
+#include "mementar/core/memGraphs/ExtendedBtree/EventLinkedLeaf.h"
 
 namespace mementar {
 
-class ContextualizedFact : public Fact, public ValuedNode, public LinkedEvent<EventLinkedLeaf<SoftPoint::Ttime, ContextualizedFact*>, ContextualizedFact>
-{
-public:
-  using LeafType = EventLinkedLeaf<SoftPoint::Ttime, ContextualizedFact*>;
-
-  ContextualizedFact(const std::string& id, const Fact& other, Action* action = nullptr) : Fact(other), ValuedNode(id)
+  class ContextualizedFact : public Fact,
+                             public ValuedNode,
+                             public LinkedEvent<EventLinkedLeaf<SoftPoint::Ttime, ContextualizedFact*>, ContextualizedFact>
   {
-    action_ = action;
-  }
+  public:
+    using LeafType = EventLinkedLeaf<SoftPoint::Ttime, ContextualizedFact*>;
 
-  ContextualizedFact(const std::string& id, const std::string& data, const SoftPoint& soft_point, Action* action = nullptr) : Fact(data, soft_point), ValuedNode(id)
-  {
-    action_ = action;
-  }
+    ContextualizedFact(const std::string& id,
+                       const Fact& other,
+                       Action* action = nullptr) : Fact(other),
+                                                   ValuedNode(id),
+                                                   action_(action),
+                                                   deduction_level_(0)
+    {}
 
-  virtual ~ContextualizedFact() {}
+    ContextualizedFact(const std::string& id,
+                       const std::string& data,
+                       const SoftPoint& soft_point,
+                       Action* action = nullptr) : Fact(data, soft_point),
+                                                   ValuedNode(id),
+                                                   action_(action),
+                                                   deduction_level_(0)
+    {}
 
-  std::string getId() const { return getValue(); }
+    virtual ~ContextualizedFact() = default;
 
-  bool isPartOfAction() const { return action_ != nullptr; }
-  Action* getActionPart() { return action_; }
+    std::string getId() const { return getValue(); }
 
-  std::string toString() const { return getValue() + " " + SoftPoint::toString() + " : " + getData() + std::string(action_ ? " => part of action " + action_->getName() : ""); }
+    bool isPartOfAction() const { return action_ != nullptr; }
+    Action* getActionPart() const { return action_; }
 
-  bool operator==(const ContextualizedFact& other)
-  {
-    return this->Fact::operator==(other);
-  }
+    std::string toString() const { return getValue() + " " + SoftPoint::toString() + " : " + getData() + std::string((action_ != nullptr) ? " => part of action " + action_->getName() : ""); }
 
-  bool isPartOf(const ContextualizedFact& other)
-  {
-    return ( (subject_ == other.subject_) &&
-             (predicat_ == other.predicat_) );
-  }
+    bool operator==(const ContextualizedFact& other) const
+    {
+      return this->Fact::operator==(other);
+    }
 
-  friend std::ostream& operator<<(std::ostream& os, const ContextualizedFact& ctx_fact)
-  {
-    os << ctx_fact.toString();
-    return os;
-  }
+    bool isPartOf(const ContextualizedFact& other) const
+    {
+      return ((subject_ == other.subject_) &&
+              (predicat_ == other.predicat_));
+    }
 
-  std::vector<ContextualizedFact*> getNextData()
-  {
-    std::vector<ContextualizedFact*> res;
-    auto next_leaf = getNextLeaf();
-    if(next_leaf != nullptr)
-      res = next_leaf->getData();
+    friend std::ostream& operator<<(std::ostream& os, const ContextualizedFact& ctx_fact)
+    {
+      os << ctx_fact.toString();
+      return os;
+    }
 
-    return res;
-  }
+    std::vector<ContextualizedFact*> getNextData()
+    {
+      std::vector<ContextualizedFact*> res;
+      auto* next_leaf = getNextLeaf();
+      if(next_leaf != nullptr)
+        res = next_leaf->getData();
 
-  std::vector<ContextualizedFact*> getPreviousData()
-  {
-    std::vector<ContextualizedFact*> res;
-    auto prev_leaf = getPreviousLeaf();
-    if(prev_leaf != nullptr)
-      res = prev_leaf->getData();
+      return res;
+    }
 
-    return res;
-  }
+    std::vector<ContextualizedFact*> getPreviousData()
+    {
+      std::vector<ContextualizedFact*> res;
+      auto* prev_leaf = getPreviousLeaf();
+      if(prev_leaf != nullptr)
+        res = prev_leaf->getData();
 
-private:
-  Action* action_;
-};
+      return res;
+    }
+
+    void setDeductionLevel(size_t level)
+    {
+      deduction_level_ = level;
+    }
+
+    size_t getDeductionLevel() const
+    {
+      return deduction_level_;
+    }
+
+  private:
+    Action* action_;
+    size_t deduction_level_;
+  };
 
 } // namespace mementar
 
