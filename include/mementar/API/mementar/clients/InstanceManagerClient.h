@@ -9,6 +9,7 @@ namespace mementar {
   public:
     explicit InstanceManagerClient(const std::string& name) : ClientBase(name.empty() ? "manage_instance" : "manage_instance/" + name) {}
 
+    bool reset();
     bool save(const std::string& name);
     bool draw(const std::string& name);
 

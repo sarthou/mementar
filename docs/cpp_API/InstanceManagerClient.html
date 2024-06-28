@@ -127,6 +127,10 @@
               </tr>
               <tr>
                 <td class="memItemLeft rightAlign topAlign"> bool </td>
+                <td class="memItemRight bottomAlign"><b><a href="InstanceManagerClient.html#reset">reset</a></b>()</td>
+              </tr>
+              <tr>
+                <td class="memItemLeft rightAlign topAlign"> bool </td>
                 <td class="memItemRight bottomAlign"><b><a href="InstanceManagerClient.html#save">save</a></b>(const
                   std::string& <i>path</i>)</td>
               </tr>
@@ -147,7 +151,7 @@
             <p>The InstanceManagerClient class provides an abstraction of mementar instance management ROS service.</p>
             <p>The mementar instance management service allows the management of one specific mementar instance.</p>
             <p>This class is based on <a href="ClientBase.html">ClientBase</a> and so ensure a persistent connection
-              with ontologenius/class service. The persistent connection ensures a minimal response time. A reconnection
+              with mementar service. The persistent connection ensures a minimal response time. A reconnection
               logic is implemented in the event that the persistent connection fails. </p>
           </div>
 
@@ -161,6 +165,11 @@
             <p>Can be used in a multi-timeline mode by specifying the name of the timeline <i>name</i>. For classic use,
               <i>name</i> should be defined as &quot;&quot;.
             </p>
+
+            <h3 class="fn" id="reset"><a name="reset"></a><span class="type">bool</span> InstanceManagerClient::<span
+                class="name">reset</span>()
+            </h3>
+            <p>Resets completly the timeline.</p>
 
             <h3 class="fn" id="save"><a name="save"></a><span class="type">bool</span> InstanceManagerClient::<span
                 class="name">save</span>(const <span class="type">std::string</span>&amp; <i>path</i>)

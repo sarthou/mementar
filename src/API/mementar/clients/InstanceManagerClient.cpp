@@ -3,6 +3,12 @@
 #include <string>
 
 namespace mementar {
+
+  bool InstanceManagerClient::reset()
+  {
+    return callBool("reset", "");
+  }
+
   bool InstanceManagerClient::save(const std::string& name)
   {
     return callBool("save", name);
@@ -12,4 +18,5 @@ namespace mementar {
   {
     return callBool("draw", name);
   }
+
 } // namespace mementar
