@@ -1,7 +1,7 @@
 <html lang="en_US">
 
 <head>
-  <title>Install | Mementar 0.0.4</title>
+  <title>Install ROS2 | Mementar 0.0.4</title>
   <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
   <link href="style/mementar_api.css" rel="stylesheet" type="text/css">
   <link href="img/logo/favicon.ico" rel="shortcut icon">
@@ -53,7 +53,9 @@
           <h3>Getting Start</h3>
           <ul style="display: block;">
             <li class="level1"><a href="Download.html">Download</a></li>
-            <li class="level1"><a href="InstallMementar.html"><b>Install Mementar</b></a></li>
+            <li class="level1">Install Mementar</li>
+            <li class="level2"><a href="InstallMementarROS1.html">- Install with ROS1</a></li>
+            <li class="level2"><a href="InstallMementarROS2.html"><b>- Install with ROS2</b></a></li>
             <li class="level1"><a href="SetUp.html">Set Up Your Environnement</a></li>
             <li class="level1"><a href="Tutorials.html">Tutorials</a></li>
           </ul>
@@ -80,38 +82,36 @@
       </div>
 
       <div class="context">
-        <h1 class="title">Install Mementar</h1>
+        <h1 class="title">Install Mementar ROS2</h1>
         <p>Since Mementar is a ROS package, make sure that ROS is installed on your platform. Mementar is fully
-          supported and maintained by <a class="type" href="http://wiki.ros.org/kinetic/Installation">ROS Kinetic
-            Kame</a> and <a class="type" href="http://wiki.ros.org/melodic/Installation">ROS Melodic Morenia</a>.
+          supported and maintained on <a class="type" href="https://docs.ros.org/en/humble/Installation.html">ROS
+            Humble</a>.
           Desktop ROS configuration is not required for use of mementar.</p>
 
         <p>Mementar is strongly linked to the Ontologenius software to provide a semantic abstraction of the knowledge
           it stores.</p>
 
-        <p>Clone the package on your catkin workspace:</p>
+        <p>First you have to install dependency:</p>
         <div class="code_block">
-          <p>cd ~/catkin_ws/src/</br>git clone https://github.com/sarthou/mementar.git</br>git clone
-            https://github.com/sarthou/ontologenius.git</br>cd ..</br>catkin_make</p>
+          <p>sudo apt install ros-cmake-modules</p>
         </div>
 
-        <h2>Troubles</h2>
-        <p>If you have the following error :</p>
+        <p>Clone the package on your ros2 workspace:</p>
         <div class="code_block">
-          <p>Could not find a package configuration file provided by "qt_build" with any of the following names:<br><br>
-            qt_buildConfig.cmake<br> qt_build-config.cmake</p>
-        </div>
-        <p>You just have to install qt-build:</p>
-        <div class="code_block">
-          <p>sudo apt-get install ros-DISTRO-qt-build</p>
+          <p>cd ~/ros2_ws/src/</br>
+            </br>git clone https://github.com/sarthou/ontologenius.git</br>
+            </br>git clone https://github.com/sarthou/mementar.git</br>
+            </br>cd ..</br>
+            </br>colcon build --symlink-install</p>
         </div>
 
         <h2>Test Mementar installation</h2>
-        <p>Just run rostest to check if all the features work well on your platform:</p>
+        <p>Just run colcon test to check if all the features work well on your platform:</p>
         <div class="code_block">
-          <p>catkin_make run_tests_mementar_rostest</p>
+          <p>colcon test --packages-select mementar</p>
         </div>
-        <!--p class="tip">Some asynchronous mechanisms are used. A computer with little computing power can therefore affect some tests due to a slow response time.</p-->
+        <p class="tip">Some asynchronous mechanisms are used. A computer with little computing power can therefore
+          affect some tests due to a slow response time.</p>
 
         <nav class="course-pagination">
           <span class="course-pagination__separator"></span>

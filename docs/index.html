@@ -69,7 +69,16 @@
         <!-- Liens de navigation, formulaires et autres -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
           <ul class="nav navbar-nav">
-            <li class="menu-item"><a href="InstallMementar.html" title="Install">Install</a></li>
+            <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children dropdown">
+              <a title="Install" href="#" data-toggle="dropdown" class="dropdown-toggle" aria-haspopup="true">Install
+                <span class="caret"></span></a>
+              <ul role="menu" class=" dropdown-menu">
+                <li class="menu-item menu-item-type-post_type menu-item-object-page"><a title="Install ROS1"
+                    href="InstallMementarROS1.html">ROS 1</a></li>
+                <li class="menu-item menu-item-type-post_type menu-item-object-page"><a title="Install ROS2"
+                    href="InstallMementarROS2.html">ROS 2</a></li>
+              </ul>
+            </li>
             <li class="menu-item"><a href="Tutorials.html" title="Tutorials">Tutorials</a></li>
             <li class="menu-item"><a href="cpp_API/CppAPI.html" title="API">API</a></li>
             <li class="menu-item"><a href="https://github.com/sarthou/mementar/wiki" title="Wiki">Wiki</a></li>
