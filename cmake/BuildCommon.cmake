@@ -178,9 +178,22 @@ target_link_libraries(mementarGUI
 target_include_directories(mementarGUI PUBLIC include)
 
 meme_install_executables(
-    mementar_single
-    mementar_multi
-    mementar_timeline
-    mementarGUI)
+  mementar_single
+  mementar_multi
+  mementar_timeline
+  mementarGUI)
+
+meme_install_libs(
+  mementar_interface
+  mementar_lib
+  mementar_compat
+  mementar_core_lib
+  mementar_events_lib
+  mementar_drawer_lib
+  mementar_lt_lib
+  mementar_memGraphs_lib
+  mementar_compression_lib
+  mementar_events_lib
+)
 
 # ##################################
