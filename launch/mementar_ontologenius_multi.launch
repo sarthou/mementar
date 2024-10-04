@@ -5,6 +5,7 @@
   <arg name="onto_robot_file" default="none"/>
   <arg name="onto_human_file" default="none"/>
   <arg name="onto_files" default=""/>
+  <arg name="onto_lang" default="en"/>
 
   <arg name="mementar_intern_directory" default="none"/>
   <arg name="mementar_config_file" default="$(find mementar)/files/config_example.yaml"/>
@@ -17,6 +18,7 @@
       <arg name="intern_file" value="$(arg onto_intern_file)" />
       <arg name="robot_file" value="$(arg onto_robot_file)" />
       <arg name="human_file" value="$(arg onto_human_file)" />
+      <arg name="language" value="$(arg onto_lang)" />
     </include>
   </group>
 
