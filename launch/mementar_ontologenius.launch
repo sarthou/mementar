@@ -3,6 +3,7 @@
   <arg name="onto_config_file" default="none"/>
   <arg name="onto_intern_file" default="none"/>
   <arg name="onto_files" default=""/>
+  <arg name="onto_root" default="none"/>
 
   <arg name="mementar_intern_directory" default="none"/>
   <arg name="mementar_config_file" default="$(find mementar)/files/config_example.yaml"/>
@@ -13,6 +14,7 @@
       <arg name="config_file" value="$(arg onto_config_file)" />
       <arg name="files" value="$(arg onto_files)" />
       <arg name="intern_file" value="$(arg onto_intern_file)" />
+      <arg name="root" value="$(arg onto_root)" />
     </include>
   </group>
 
